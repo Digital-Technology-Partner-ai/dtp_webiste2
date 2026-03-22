@@ -10,14 +10,20 @@ export function initSectionHeadersAnimations(): void {
 
   console.log('🎯 Initializing section headers animations');
 
-  const headers = document.querySelectorAll('.ma-section-header');
+  // Target both standard section headers and left-content areas (process section)
+  const headers = document.querySelectorAll('.ma-section-header, .left-content');
   
   headers.forEach((header) => {
     const tag = header.querySelector('.ma-section-tag') as HTMLElement;
     const title = header.querySelector('h2') as HTMLElement;
 
-    // Set initial states
-    if (tag) gsap.set(tag, { opacity: 0, x: -20 });
+    if (!tag) return; // Skip if no tag found
+
+    // Store original tag text and clear it for typewriter effect
+    const tagText = tag.textContent || '';
+    gsap.set(tag, { opacity: 1, x: 0 });
+    tag.textContent = '';
+    
     if (title) gsap.set(title, { opacity: 0, y: 30 });
 
     ScrollTrigger.create({
@@ -25,30 +31,55 @@ export function initSectionHeadersAnimations(): void {
       start: 'top 85%',
       once: true,
       onEnter: () => {
-        const tl = gsap.timeline();
-
-        // Tag slides in from left
-        if (tag) {
-          tl.to(tag, {
-            opacity: 1,
-            x: 0,
-            duration: 0.5,
-            ease: 'power2.out',
-          });
-        }
-
-        // Title fades up
-        if (title) {
-          tl.to(title, {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            ease: 'power3.out',
-          }, '-=0.3');
-        }
+        // Typewriter animation for tag
+        typeWriter(tag, tagText, 30, () => {
+          // Animate title after tag completes
+          if (title) {
+            gsap.to(title, {
+              opacity: 1,
+              y: 0,
+              duration: 0.6,
+              ease: 'power3.out',
+            });
+          }
+        });
       },
     });
   });
 
   console.log('✅ Section headers animations initialized');
+}
+
+/**
+ * Typewriter function - reveals text character by character
+ * Matching the HeroTypewriter component animation style
+ */
+function typeWriter(
+  element: HTMLElement,
+  text: string,
+  speed: number,
+  callback?: () => void
+): void {
+  let index = 0;
+  let lastTime = performance.now();
+  
+  function type(currentTime: number): void {
+    const elapsed = currentTime - lastTime;
+    
+    if (elapsed >= speed) {
+      if (index < text.length) {
+        element.textContent = text.substring(0, index + 1);
+        index++;
+        lastTime = currentTime;
+      } else {
+        // Animation complete
+        if (callback) callback();
+        return;
+      }
+    }
+    
+    requestAnimationFrame(type);
+  }
+  
+  requestAnimationFrame(type);
 }
