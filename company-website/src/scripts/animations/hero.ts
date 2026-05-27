@@ -2,8 +2,7 @@
 // Hero section animations - text reveal, parallax, stats counter
 
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { prefersReducedMotion, isMobile, splitTextIntoWords, animateCounter } from './utils';
+import { prefersReducedMotion, isMobile, splitTextIntoWords } from './utils';
 
 export function initHeroAnimations(): void {
   if (prefersReducedMotion()) return;
@@ -133,9 +132,7 @@ function initStatsCounter(): void {
     const start = parseInt(element.dataset['start'] || '0');
     const target = parseInt(element.dataset['target'] || '0');
     const suffix = element.dataset['suffix'] || '';
-    const direction = element.dataset['direction'] || 'up';
-    
-    return { element, start, target, suffix, direction };
+    return { element, start, target, suffix };
   });
 
   // Create intersection observer for triggering
@@ -144,7 +141,7 @@ function initStatsCounter(): void {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           // Animate all stats simultaneously with GSAP
-          stats.forEach(({ element, start, target, suffix, direction }) => {
+          stats.forEach(({ element, start, target, suffix }) => {
             const obj = { value: start };
             
             gsap.to(obj, {

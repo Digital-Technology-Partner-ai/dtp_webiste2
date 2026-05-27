@@ -140,10 +140,8 @@ const getColorClasses = (color: string) => {
     </div>
 
     {variant === 'minimal' ? (
-      <!-- Minimal version for homepage - Scroll-triggered horizontal timeline -->
       <div class="max-w-7xl mx-auto" id="journey-container">
         <div class="journey-scroll-wrapper">
-          <!-- Left side: Horizontal timeline with numbered circles -->
           <div class="journey-timeline-left">
             <div class="journey-timeline-track">
               {journeySteps.map((step, index) => (
@@ -160,7 +158,6 @@ const getColorClasses = (color: string) => {
             </div>
           </div>
 
-          <!-- Right side: Step descriptions (only one visible at a time) -->
           <div class="journey-content-right">
             <div class="journey-progress-bar"></div>
             {journeySteps.map((step) => (
@@ -174,7 +171,6 @@ const getColorClasses = (color: string) => {
         </div>
       </div>
     ) : (
-      <!-- Detailed version for services page with accordions -->
       <div class="space-y-6">
         {journeySteps.map((step) => {
           const colorClasses = getColorClasses(step.color);

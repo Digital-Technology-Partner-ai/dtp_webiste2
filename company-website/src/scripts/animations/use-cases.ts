@@ -83,7 +83,7 @@ function initCardCascade(): void {
   ];
 
   cards.forEach((card, index) => {
-    const direction = directions[index % directions.length];
+    const direction = directions[index % directions.length] ?? directions[0]!;
     
     gsap.set(card, {
       opacity: 0,

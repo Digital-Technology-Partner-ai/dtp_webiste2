@@ -3,7 +3,7 @@
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { prefersReducedMotion, isMobile } from './utils';
+import { prefersReducedMotion } from './utils';
 
 export function initBenefitsAnimations(): void {
   if (prefersReducedMotion()) return;

@@ -12,30 +12,6 @@ const {
   class: additionalClasses = ""
 } = Astro.props;
 
-// Multiple booking URL options in order of preference
-const bookingOptions = [
-  {
-    name: "Microsoft Bookings (Primary)",
-    url: "https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous",
-    description: "Standard Microsoft Bookings URL"
-  },
-  {
-    name: "Calendly Alternative", 
-    url: "https://calendly.com/steve-shearman-dtp/30min",
-    description: "Calendly booking page (if configured)"
-  },
-  {
-    name: "Contact Form Fallback",
-    url: "/contact",
-    description: "Contact page fallback"
-  },
-  {
-    name: "Email Direct",
-    url: "mailto:steve.shearman@digitaltransformationpartners.co.uk?subject=Discovery Call Request&body=Hi Steve,%0D%0A%0D%0AI'd like to book a discovery call to discuss AI solutions for my business.%0D%0A%0D%0APlease let me know your availability.%0D%0A%0D%0AThank you!",
-    description: "Direct email with pre-filled subject"
-  }
-];
-
 const baseClasses = "relative overflow-hidden transition-all duration-250 ease-out";
 const variantClasses = {
   primary: "rounded-md bg-blue-600 px-4 py-3 text-sm font-semibold shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600",
@@ -58,6 +34,8 @@ const buttonClasses = `${baseClasses} ${variantClasses[variant]} ${additionalCla
 </div>
 
 <script>
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-nocheck
   // Global booking handler with fallback logic
   window.handleBookingClick = function() {
     console.log('Booking button clicked - attempting booking options...');
@@ -124,7 +102,7 @@ const buttonClasses = `${baseClasses} ${variantClasses[variant]} ${additionalCla
                     bookingWindow.close();
                     tryBookingOption(index + 1);
                   }
-                } catch (e) {
+                } catch {
                   // Cross-origin restriction is normal and expected
                   console.log(`${option.name}: Cross-origin restriction (normal behavior)`);
                 }

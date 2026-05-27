@@ -2,6 +2,7 @@
 // Shared utilities for animations
 
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 /**
  * Check if user prefers reduced motion
@@ -119,8 +120,6 @@ export function createScrollTrigger(
   animation: gsap.TweenVars,
   triggerOptions?: ScrollTrigger.Vars
 ): ScrollTrigger {
-  const { ScrollTrigger } = gsap;
-  
   return ScrollTrigger.create({
     trigger: element,
     start: 'top 80%',

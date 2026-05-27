@@ -8,6 +8,14 @@ node_modules/
 /company-website/dist/
 /company-website/.astro/
 
+# Generated reports and archives
+/company-website/test-results/
+/company-website/playwright-report/
+/company-website/test-results.json
+/company-website/lighthouse-*.report.html
+/company-website/lighthouse-*.report.json
+/company-website/deploy.zip
+
 # Logs
 npm-debug.log*
 yarn-debug.log*

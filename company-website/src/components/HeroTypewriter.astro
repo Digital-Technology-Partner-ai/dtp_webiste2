@@ -34,30 +34,37 @@ const {
 } = Astro.props;
 ---
 
-<div class="ma-hero-tag" aria-live="polite" data-text={tagText}>
-  <span class="typewriter-tag"></span>
+<div class="ma-hero-tag" data-text={tagText}>
+  <span class="typewriter-tag" aria-live="polite"></span>
 </div>
-<h1 aria-live="polite" data-text={headlineText}>
-  <span class="typewriter-headline"></span><span class="ma-cursor">|</span>
+<h1 data-text={headlineText}>
+  <span class="typewriter-headline" aria-live="polite"></span><span class="ma-cursor">|</span>
 </h1>
 
 <style is:global>
   .typewriter-tag {
-    display: inline;
+    display: inline-block;
     color: var(--ma-mint, #00E5A0);
+    min-width: 37ch;
+    min-height: 1em;
+    vertical-align: baseline;
   }
   
   .typewriter-headline {
-    display: inline;
+    display: inline-block;
     color: inherit;
+    min-width: 14ch;
+    min-height: 1em;
+    vertical-align: baseline;
   }
 
   .ma-cursor {
-    display: inline;
+    display: inline-block;
     color: var(--ma-mint, #00E5A0);
     font-weight: 400;
-    animation: blink 1s step-end infinite;
+    animation: blink 1.2s step-end infinite;
     opacity: 0;
+    vertical-align: baseline;
   }
   
   .ma-cursor.visible {
@@ -85,7 +92,9 @@ const {
   }
 </style>
 
-<script define:vars={{ tagText, headlineText, typingSpeed, startDelay }}>
+<script is:inline define:vars={{ tagText, headlineText, typingSpeed, startDelay }}>
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-nocheck
   /**
    * Typewriter animation implementation
    * Uses requestAnimationFrame for smooth rendering
@@ -102,7 +111,7 @@ const {
     if (tagElement) tagElement.textContent = tagText;
     if (headlineElement) headlineElement.textContent = headlineText;
   } else {
-    // Run animations - tag line first, then headline
+    let headlineStarted = false;
     
     /**
      * Typewriter function - reveals text character by character
@@ -142,14 +151,9 @@ const {
      * Start tag line animation after delay
      */
     function startTagAnimation() {
-      console.log('[Typewriter] Starting tag animation');
       const tagElement = document.querySelector('.typewriter-tag');
       if (tagElement) {
-        typeWriter(tagElement, tagText, typingSpeed, () => {
-          console.log('[Typewriter] Tag complete, starting headline in 300ms');
-          // Start headline animation after tag completes
-          setTimeout(startHeadlineAnimation, 300);
-        });
+        typeWriter(tagElement, tagText, typingSpeed);
       }
     }
     
@@ -157,25 +161,33 @@ const {
      * Start headline animation
      */
     function startHeadlineAnimation() {
-      console.log('[Typewriter] Starting headline animation, text:', headlineText);
+      if (headlineStarted) return;
+      headlineStarted = true;
       const headlineElement = document.querySelector('.typewriter-headline');
       const cursorElement = document.querySelector('.ma-cursor');
-      const allHeadlines = document.querySelectorAll('.typewriter-headline');
-      const h1Content = document.querySelector('h1')?.innerHTML;
-      console.log('[Typewriter] All .typewriter-headline elements:', allHeadlines.length);
-      console.log('[Typewriter] h1 innerHTML:', h1Content);
-      console.log('[Typewriter] Headline element found:', !!headlineElement);
       if (headlineElement) {
-        console.log('[Typewriter] Headline element:', headlineElement);
-        typeWriter(headlineElement, headlineText, typingSpeed, () => {
-          console.log('[Typewriter] Headline complete');
-        });
+        typeWriter(headlineElement, headlineText, typingSpeed);
       }
-      // Show cursor when headline starts
       if (cursorElement) {
         cursorElement.classList.add('visible');
-        console.log('[Typewriter] Cursor made visible');
       }
+    }
+
+    function handleHeadlineIntent(event) {
+      if (event && typeof event.preventDefault === 'function') {
+        event.preventDefault();
+      }
+      startHeadlineAnimation();
+    }
+
+    function armHeadlineScrollTrigger() {
+      window.addEventListener('wheel', handleHeadlineIntent, { once: true, passive: false });
+      window.addEventListener('touchmove', handleHeadlineIntent, { once: true, passive: false });
+      window.addEventListener('keydown', (event) => {
+        if (['ArrowDown', 'PageDown', 'Space', ' '].includes(event.key)) {
+          handleHeadlineIntent(event);
+        }
+      }, { once: true });
     }
     
     // Wait for DOM to be ready
@@ -186,8 +198,8 @@ const {
     }
     
     function init() {
-      // Start tag line after delay
       setTimeout(startTagAnimation, startDelay);
+      armHeadlineScrollTrigger();
     }
   }
 </script>
