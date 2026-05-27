@@ -25,13 +25,14 @@ One goblin wrinkle: the GitHub repository is named `dtp_webiste2`, not `dtp_webs
 - **DTP software category:** product candidate / company-owned website
 - **Development state:** Product
 - **Commercial status:** live DTP business asset; needs hygiene and QA hardening
-- **Last verified:** 2026-05-27 18:15 BST
-- **Works locally:** yes for production build and targeted Playwright browser test
-- **Tests:** build, lint, type-check and hero typewriter Chromium Playwright suite pass after commit `60047cb`
+- **Last verified:** 2026-05-27 18:53 BST
+- **Works locally:** yes for production build, lint, type-check and targeted Chromium Playwright browser test
+- **Tests:** build, lint, type-check and targeted hero typewriter Chromium Playwright suite pass; full multi-browser Playwright run is not clean because Firefox/WebKit browser binaries are not installed locally and one Chromium cursor-blink test was flaky in the full concurrent run
 - **Main risks:**
   - There are two Netlify config files. Root `netlify.toml` appears to be the deployment config for the monorepo layout; `company-website/netlify.toml` has conflicting build base/publish settings and may be stale.
   - The route set includes design-lab/design-option pages and `booking-test`, which may be useful internally but should be reviewed before treating the whole build as production-polished.
   - `npm audit fix` reduced vulnerabilities from 26 to 7. The remaining low/moderate items require semver-major or otherwise breaking dependency moves, so they are blocked pending a dedicated Astro/dependency migration pass rather than forced against the live site.
+  - Codex Bridge independently reviewed the remaining audit state on 2026-05-27 and agreed not to force the Astro 6/tooling migration against the live site. Its direct bridge write failed because the Codex sandbox could not write to the bridge SQLite database, so Hudson relayed the Codex stdout into the bridge thread.
   - Public-route smoke verification passed for all 58 sitemap URLs on 2026-05-27, but route content quality/mobile visual QA still needs a separate review if Steve wants production polish rather than availability only.
 
 ## How to run
@@ -83,10 +84,11 @@ Results:
 
 - `npm run lint`: passed.
 - `npm run type-check`: passed with 0 errors, 0 warnings, 0 hints.
-- Hero typewriter Chromium Playwright suite: 13 passed.
+- Hero typewriter Chromium Playwright suite: 13 passed when run targeted with `--project=chromium`.
+- Full `npx playwright test`: 12 passed, 27 failed on 2026-05-27. Most failures were because Firefox/WebKit browser binaries are not installed locally after the Playwright update; the full concurrent run also showed one Chromium cursor-blink timing failure that passed when the Chromium project was rerun by itself.
 - `npm run build`: passed; 55 pages built.
 
-Older briefing failures were fixed in the follow-up cleanup: 16 ESLint errors, 174 Astro check errors, and the hero typewriter Playwright failures are no longer the current baseline.
+Older briefing failures were fixed in the follow-up cleanup: 16 ESLint errors, 174 Astro check errors, and the targeted hero typewriter Chromium Playwright failures are no longer the current baseline. Full multi-browser Playwright coverage still needs a separate browser-install/flake-hardening pass if DTP wants it as a required gate.
 
 ## Architecture map
 
@@ -122,11 +124,13 @@ Dependency audit note:
 
 - `npm audit fix` was run on 2026-05-27 and pushed in commit `60047cb`.
 - Vulnerabilities reduced from 26 to 7: 1 low, 6 moderate, 0 high, 0 critical.
-- Remaining audit fixes require semver-major/breaking dependency moves, including Astro 6 and Astro tooling changes. Treat that as a dedicated migration task, not a blind `npm audit fix --force` on the live site.
+- Hudson rechecked `npm audit` on 2026-05-27 18:53 BST: the remaining findings are `@astrojs/check`, `@astrojs/language-server`, `@astrojs/tailwind`, `astro`, `volar-service-yaml`, `yaml`, and `yaml-language-server`.
+- Remaining audit fixes require semver-major/breaking or suspicious downgrade-looking dependency moves: Astro 6, `@astrojs/check@0.9.2`, and `@astrojs/tailwind@2.1.3` according to npm audit. Treat that as a dedicated migration task, not a blind `npm audit fix --force` on the live site.
+- Codex Bridge reached the same recommendation: accept the current 7 low/moderate residual risk for now and plan a deliberate Astro 6/tooling migration branch if DTP wants a zero-vulnerability audit.
 
 ## Repository hygiene
 
-Current Git state after follow-up delivery: clean on `main` after commit `60047cb` was pushed.
+Current Git state after follow-up delivery: clean on `main` before this briefing update. Dependency/QA cleanup was pushed in commit `60047cb`; briefing closeout was pushed in commit `caf021d`.
 
 Remote:
 
