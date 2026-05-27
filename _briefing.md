@@ -25,18 +25,14 @@ One goblin wrinkle: the GitHub repository is named `dtp_webiste2`, not `dtp_webs
 - **DTP software category:** product candidate / company-owned website
 - **Development state:** Product
 - **Commercial status:** live DTP business asset; needs hygiene and QA hardening
-- **Last verified:** 2026-05-27 17:08 BST
-- **Works locally:** yes for production build; dev server not separately smoke-tested in browser during this pass
-- **Tests:** partial/failing — build passes, type-check/lint/Playwright have known failures
+- **Last verified:** 2026-05-27 18:15 BST
+- **Works locally:** yes for production build and targeted Playwright browser test
+- **Tests:** build, lint, type-check and hero typewriter Chromium Playwright suite pass after commit `60047cb`
 - **Main risks:**
-  - TypeScript checking reports 174 errors across 77 files, mostly strict DOM typing and implicit-any issues in Astro inline scripts.
-  - ESLint reports 16 errors, including a parser error in `src/components/DevelopmentJourney.astro`.
-  - Chromium Playwright test run reports 8 passed and 5 failed for the hero typewriter suite.
-  - The repository tracks generated/test artefacts including `company-website/test-results`, `playwright-report`, Lighthouse reports and `deploy.zip`; these should be cleaned in a deliberate hygiene PR/commit, not mixed with feature work.
   - There are two Netlify config files. Root `netlify.toml` appears to be the deployment config for the monorepo layout; `company-website/netlify.toml` has conflicting build base/publish settings and may be stale.
   - The route set includes design-lab/design-option pages and `booking-test`, which may be useful internally but should be reviewed before treating the whole build as production-polished.
-  - `npm install` reported 26 package vulnerabilities: 1 low, 10 moderate, 15 high. This was not fixed during briefing.
-  - I could not complete a live public-route curl smoke check in this run because the tool safety layer blocked the command; do not treat live-site verification as completed from this briefing alone.
+  - `npm audit fix` reduced vulnerabilities from 26 to 7. The remaining low/moderate items require semver-major or otherwise breaking dependency moves, so they are blocked pending a dedicated Astro/dependency migration pass rather than forced against the live site.
+  - Public-route smoke verification passed for all 58 sitemap URLs on 2026-05-27, but route content quality/mobile visual QA still needs a separate review if Steve wants production polish rather than availability only.
 
 ## How to run
 
@@ -48,7 +44,7 @@ npm install
 npm run dev
 ```
 
-The repo’s Playwright config expects the local dev server at `http://localhost:4321`.
+The repo’s Playwright config starts the local dev server at `http://127.0.0.1:4321` to avoid IPv6 `localhost` ambiguity.
 
 ## How to build
 
@@ -60,7 +56,7 @@ npm install
 npm run build
 ```
 
-Result: passed. Astro built 55 static pages into `company-website/dist/`.
+Result: passed. Astro built 55 static pages into `company-website/dist/`. Reverified after dependency/QA cleanup in commit `60047cb`.
 
 Build warnings observed:
 
@@ -73,52 +69,24 @@ Build warnings observed:
 
 ## How to test
 
-Verified commands and results from 2026-05-27:
+Verified commands and results from 2026-05-27 after commit `60047cb`:
 
 ```bash
 cd "/Users/hudsonrebel/DTP Coding Projects/dtp_website2/company-website"
+npm run lint
+npm run type-check
+npx playwright test tests/hero-typewriter.spec.ts --project=chromium --reporter=list
 npm run build
 ```
 
-Result: passed.
+Results:
 
-```bash
-npm run type-check
-```
+- `npm run lint`: passed.
+- `npm run type-check`: passed with 0 errors, 0 warnings, 0 hints.
+- Hero typewriter Chromium Playwright suite: 13 passed.
+- `npm run build`: passed; 55 pages built.
 
-Result: failed. `astro check` reported 174 errors across 77 files. Representative areas:
-
-- `src/components/BookingButton.astro`
-- `src/components/CommandPalette.astro`
-- `src/components/FAQ.astro`
-- `src/components/FAQMini.astro`
-- `src/components/TestimonialCarousel.astro`
-- `src/pages/booking-test.astro`
-- `src/scripts/animations/*.ts`
-
-```bash
-npm run lint
-```
-
-Result: failed. ESLint reported 16 errors, including:
-
-- unused variables in `BookingButton.astro`, `TestimonialCarousel.astro`, `ScrollProgress.astro`, `booking-test.astro`, `benefits.ts`, `hero.ts`
-- parser error in `src/components/DevelopmentJourney.astro`: `JSX expressions must have one parent element`
-
-```bash
-npx playwright install chromium
-npx playwright test --project=chromium --reporter=list
-```
-
-Result: 8 passed, 5 failed. Failing tests were in `tests/hero-typewriter.spec.ts`:
-
-- headline expected to be empty before scroll, but current implementation auto-starts after tag animation
-- cursor opacity check sampled `1` twice despite blink animation
-- strict-mode locator conflict in the screen-reader test
-- CLS/layout-shift test received `0.02809945424397786` instead of `0`
-- text-container position changed during animation/reflow check
-
-The first test run failed entirely because Chromium was not installed in the Playwright cache; `npx playwright install chromium` fixed that local prerequisite.
+Older briefing failures were fixed in the follow-up cleanup: 16 ESLint errors, 174 Astro check errors, and the hero typewriter Playwright failures are no longer the current baseline.
 
 ## Architecture map
 
@@ -152,12 +120,13 @@ Important external/service assumptions:
 
 Dependency audit note:
 
-- `npm install` completed but reported 26 vulnerabilities: 1 low, 10 moderate, 15 high.
-- This briefing does not change dependencies or run `npm audit fix`; that needs a separate hygiene task and regression check.
+- `npm audit fix` was run on 2026-05-27 and pushed in commit `60047cb`.
+- Vulnerabilities reduced from 26 to 7: 1 low, 6 moderate, 0 high, 0 critical.
+- Remaining audit fixes require semver-major/breaking dependency moves, including Astro 6 and Astro tooling changes. Treat that as a dedicated migration task, not a blind `npm audit fix --force` on the live site.
 
 ## Repository hygiene
 
-Current Git state after briefing pre-edit verification: clean on `main` before `_briefing.md` was written.
+Current Git state after follow-up delivery: clean on `main` after commit `60047cb` was pushed.
 
 Remote:
 
@@ -182,10 +151,9 @@ main 1c6d94e [origin/main] Update use cases section and add typewriter animation
 Observed hygiene issues:
 
 - Root repo contains a minimal `package.json` only for Playwright while the real app package is in `company-website/`.
-- Generated/test artefacts are tracked, including `company-website/test-results`, `company-website/playwright-report`, Lighthouse reports and `deploy.zip`.
-- Verification modified tracked `company-website/test-results/*`; these were restored with `git restore -- company-website/test-results` before writing this briefing.
+- Generated/test artefacts (`company-website/test-results`, `playwright-report`, Lighthouse reports and `deploy.zip`) were removed from Git tracking in commit `60047cb` and added to `.gitignore`; local generated copies may still exist and are safe to recreate.
 - The source Inbox copy remains at `/Users/hudsonrebel/My Drive/DTP Inbox/dtp_website2`. Its `.git/config` is missing, so it should be treated as provenance/source evidence, not the canonical working repo.
-- No deletion, cleanup, dependency update, history rewrite, or Netlify config change was done during this briefing pass.
+- No deletion/archive of the Inbox provenance copy was done during this pass.
 
 ## Related DTP records
 
@@ -201,32 +169,27 @@ Observed hygiene issues:
 
 ## Open questions
 
-1. Should the GitHub repository be renamed from `dtp_webiste2` to `dtp_website2` or `dtp-website`? The current typo is harmless technically but deeply annoying, like a pebble in a shoe.
+1. Should the GitHub repository be renamed from `dtp_webiste2` to `dtp-website`? Hudson recommends `dtp-website` as the clean public name, but not until any Netlify/GitHub integration implications are checked immediately before renaming.
 2. Should the old Inbox copy be archived after Steve confirms the canonical clone is enough, or retained as provenance for now?
 3. Should design/test/debug routes such as `design-lab`, `design-option-*`, `design-v*`, and `booking-test` remain published on the production build?
 4. Should the two Netlify config files be consolidated so there is one obvious deployment source of truth?
-5. Should Hudson run a separate live-site verification pass once the command-block issue is cleared, including public route checks and mobile screenshots?
-6. Should dependency audit fixes be attempted now, or treated as a scheduled hygiene task after the live site baseline is captured?
+5. Should the remaining 7 low/moderate audit findings be handled via a dedicated Astro/dependency major-version migration? Do not force this casually; the suggested audit fixes include breaking dependency moves.
 
 ## Next recommended actions
 
 Hudson-owned, safe next actions:
 
-1. Commit this `_briefing.md` to the DTP GitHub repo and push it to `main` if the tree contains only the briefing file.
-2. Create/update `wiki/projects/dtp-website.md` so the DTP wiki points at the canonical repo and records today’s verification.
-3. Mark the `coding-projects` intake card done once repo and wiki records are written.
-4. Create follow-up coding-project cards for:
-   - dependency audit and package update pass
-   - repo hygiene cleanup for tracked generated/test artefacts
-   - TypeScript/lint cleanup
-   - Playwright hero typewriter regression repair
-   - Netlify config consolidation and production-route review
+1. Confirm Netlify deployment state for commit `60047cb` if/when deployment visibility is needed.
+2. Create/update `wiki/projects/dtp-website.md` so the DTP wiki points at the canonical repo and records current verification.
+3. Review production exposure of design/debug routes and decide whether to remove, gate or leave them.
+4. Consolidate the root and app-level Netlify config files after confirming which one Netlify actually uses.
 
 Steve-decision items:
 
 1. Decide whether to rename the GitHub repository.
 2. Approve any deletion/archive of the old Inbox copy.
 3. Decide whether internal design/debug pages should be removed from production or gated.
+4. Approve a dedicated Astro/dependency major-version migration if the remaining audit findings need to be cleared now.
 
 ## Steve's notes
 
