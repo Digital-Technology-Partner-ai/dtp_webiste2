@@ -1,0 +1,90 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Header from '../../../components/Header.astro';
+---
+
+<Layout title="WhichLogin - Remember how you signed in" description="WhichLogin is a local-only macOS menu bar app from Digital Technology Partner that helps you remember which sign-in method you used for each service.">
+  <div class="wl-page">
+    <Header />
+
+    <main class="wl-main">
+      <article class="wl-container">
+        <header class="wl-hero">
+          <p class="wl-kicker">WhichLogin for macOS</p>
+          <h1>Remember how you signed in.</h1>
+          <p class="wl-lede">A small menu bar app for the moment when a website asks you to sign in and you cannot remember whether you used Apple, Google, Microsoft, GitHub, SSO, a passkey, or email.</p>
+          <div class="wl-actions">
+            <a class="wl-primary" href="mailto:info@digitaltechnologypartner.ai?subject=WhichLogin%20beta">Ask about the beta</a>
+            <a class="wl-secondary" href="/apps/whichlogin/privacy-policy">Read the privacy policy</a>
+          </div>
+        </header>
+
+        <section class="wl-section wl-callout">
+          <h2>WhichLogin is not a password manager.</h2>
+          <p>It does not store passwords, tokens, or account credentials. It stores a short local reminder of the sign-in route you used for a service, so the next login attempt is less of a guessing game.</p>
+        </section>
+
+        <section class="wl-section">
+          <h2>What it helps with</h2>
+          <div class="wl-grid">
+            <div class="wl-card"><h3>Too many sign-in routes</h3><p>Modern services offer Apple, Google, Microsoft, GitHub, SSO, passkeys, magic links and email/password. WhichLogin keeps the reminder in one place.</p></div>
+            <div class="wl-card"><h3>Local-first by design</h3><p>Your records stay on your Mac. DTP does not run a WhichLogin cloud service and does not receive your saved reminders.</p></div>
+            <div class="wl-card"><h3>Clean domains, not full URLs</h3><p>When a URL is pasted or checked from a browser helper, WhichLogin reduces it to a clean service domain before saving.</p></div>
+            <div class="wl-card"><h3>Export and import</h3><p>You can export your records and import them again. Exported files may contain hints you entered, so they should be kept somewhere safe.</p></div>
+          </div>
+        </section>
+
+        <section class="wl-section wl-two-col">
+          <div>
+            <h2>Current status</h2>
+            <p>WhichLogin is being prepared for TestFlight on macOS. We are using the beta to check whether the app is useful enough for real-world daily use before making broader product decisions.</p>
+          </div>
+          <div class="wl-card">
+            <h3>Beta question</h3>
+            <p>If you have ever stared at a login screen wondering which route you used last time, we want to know whether this solves enough of that annoyance to keep using it.</p>
+          </div>
+        </section>
+
+        <section class="wl-section wl-links">
+          <h2>Product links</h2>
+          <ul>
+            <li><a href="/apps/whichlogin/support">Support</a></li>
+            <li><a href="/apps/whichlogin/privacy-policy">Privacy Policy</a></li>
+            <li><a href="mailto:info@digitaltechnologypartner.ai?subject=WhichLogin">Contact DTP about WhichLogin</a></li>
+          </ul>
+        </section>
+      </article>
+    </main>
+  </div>
+</Layout>
+
+<style>
+  .wl-page { min-height: 100vh; background: #0a0a0f; color: #f8fafc; }
+  .wl-main { padding: 7.5rem 1.25rem 4rem; }
+  .wl-container { width: min(100%, 1040px); margin: 0 auto; }
+  .wl-hero { text-align: center; margin-bottom: 3.5rem; }
+  .wl-kicker { color: #5eead4; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; margin-bottom: 1rem; }
+  h1 { font-size: clamp(3rem, 7vw, 5.8rem); line-height: 0.92; letter-spacing: -0.06em; margin: 0 0 1.2rem; }
+  h2 { font-size: clamp(1.55rem, 3vw, 2.1rem); line-height: 1.15; margin: 0 0 1.2rem; }
+  h3 { color: #5eead4; font-size: 1.15rem; margin: 0 0 0.55rem; }
+  p { color: #cbd5e1; line-height: 1.75; }
+  .wl-lede { font-size: clamp(1.1rem, 2vw, 1.32rem); max-width: 820px; margin: 0 auto; }
+  .wl-actions { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem; }
+  .wl-primary, .wl-secondary { border-radius: 999px; padding: 0.9rem 1.25rem; font-weight: 700; text-decoration: none; }
+  .wl-primary { color: #0f172a; background: #5eead4; }
+  .wl-secondary { color: #f8fafc; border: 1px solid rgba(148, 163, 184, 0.32); background: rgba(15, 23, 42, 0.72); }
+  .wl-section { margin-bottom: 3rem; }
+  .wl-callout, .wl-card { background: linear-gradient(135deg, rgba(30, 41, 59, 0.82) 0%, rgba(15, 23, 42, 0.94) 100%); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 1.5rem; padding: clamp(1.25rem, 3vw, 2rem); box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22); }
+  .wl-callout { border-color: rgba(94, 234, 212, 0.32); }
+  .wl-callout h2 { color: #5eead4; }
+  .wl-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .wl-two-col { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr); gap: 1.25rem; align-items: start; }
+  .wl-links ul { display: flex; flex-wrap: wrap; gap: 0.75rem; list-style: none; padding: 0; margin: 0; }
+  .wl-links a { display: inline-flex; color: #5eead4; border: 1px solid rgba(94, 234, 212, 0.28); border-radius: 999px; padding: 0.75rem 1rem; text-decoration: none; font-weight: 700; }
+  .wl-links a:hover { color: #99f6e4; border-color: rgba(153, 246, 228, 0.6); }
+  @media (max-width: 720px) {
+    .wl-grid, .wl-two-col { grid-template-columns: 1fr; }
+    .wl-main { padding-top: 6.5rem; }
+    h1 { letter-spacing: -0.04em; }
+  }
+</style>
