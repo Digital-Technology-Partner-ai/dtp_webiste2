@@ -54,7 +54,7 @@ const [featured, ...rest] = news;
                       })}
                     </span>
                   </div>
-                  <h2><a href={`/news/${featured.slug}`}>{featured.data.title}</a></h2>
+                  <h2><a href={`/news/${featured.id}`}>{featured.data.title}</a></h2>
                   <p>{featured.data.description}</p>
                   <div class="news-tags">
                     {(featured.data.tags || []).slice(0, 4).map((tag) => (
@@ -81,7 +81,7 @@ const [featured, ...rest] = news;
                         })}
                       </span>
                     </div>
-                    <h3><a href={`/news/${article.slug}`}>{article.data.title}</a></h3>
+                    <h3><a href={`/news/${article.id}`}>{article.data.title}</a></h3>
                     <p>{article.data.description}</p>
                   </article>
                 ))}

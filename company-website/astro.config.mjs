@@ -1,12 +1,12 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
-import tailwind from '@astrojs/tailwind';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   site: 'https://digitaltechnologypartner.ai', // Production domain for absolute URLs
-  integrations: [
-    sitemap(),
-    tailwind()
-  ],
-  output: 'static'
+  integrations: [sitemap()],
+  output: 'static',
+  vite: {
+    plugins: [tailwindcss()],
+  },
 });
