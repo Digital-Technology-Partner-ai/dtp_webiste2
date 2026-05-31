@@ -1,0 +1,166 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Header from '../../../components/Header.astro';
+---
+
+<Layout title="Support - WhichLogin" description="Support information for WhichLogin, a local-only macOS app from Digital Technology Partner.">
+  <div class="wl-page">
+    <Header />
+
+    <main class="wl-main">
+      <article class="wl-container">
+        <header class="wl-hero">
+          <p class="wl-kicker">WhichLogin</p>
+          <h1>Support</h1>
+          <p class="wl-lede">Help for the macOS app that remembers which sign-in route you use for each service.</p>
+        </header>
+
+        <section class="wl-callout">
+          <h2>Need help?</h2>
+          <p>Email Digital Technology Partner at info@digitaltechnologypartner.ai. Please include the app name, your macOS version, and a short description of what happened.</p>
+          <a href="mailto:info@digitaltechnologypartner.ai?subject=WhichLogin%20support">Email WhichLogin support</a>
+        </section>
+
+        <section class="wl-section">
+          <h2>Common questions</h2>
+          <div class="wl-grid">
+            <div class="wl-card"><h3>Does WhichLogin store my passwords?</h3><p>No. WhichLogin is not a password manager. It is designed to record the sign-in route you use, such as email, Apple, Google, Microsoft, SSO, GitHub, or another provider.</p></div>
+            <div class="wl-card"><h3>Where is my data stored?</h3><p>Your WhichLogin records are stored locally on your Mac. DTP does not run a WhichLogin cloud service and does not receive your records.</p></div>
+            <div class="wl-card"><h3>Can I import or export records?</h3><p>Yes. Use the app’s Settings screen to export or import supported records files. Keep exported files somewhere safe because they may contain account hints and notes you entered.</p></div>
+            <div class="wl-card"><h3>Why does the app ask before checking a browser?</h3><p>WhichLogin is intentionally explicit about browser help. If you choose to use browser detection, URLs are reduced to clean domains before saving, so query strings and fragments are not kept in the app records.</p></div>
+            <div class="wl-card"><h3>How do I report a problem?</h3><p>Email info@digitaltechnologypartner.ai with enough detail for us to reproduce the issue. Do not send passwords. If you need to share an export file, wait until we ask and we will agree a safe route.</p></div>
+          </div>
+        </section>
+
+        <section class="wl-section">
+          <h2>Privacy</h2>
+          <div class="wl-card">
+            <p>WhichLogin is designed as a local-only utility. It stores records on your Mac, avoids passwords, and strips full URLs down to clean domains before saving.</p>
+            <a class="wl-text-link" href="/apps/whichlogin/privacy-policy">Read the WhichLogin Privacy Policy</a>
+          </div>
+        </section>
+      </article>
+    </main>
+  </div>
+</Layout>
+
+<style>
+  .wl-page {
+    min-height: 100vh;
+    background: #0a0a0f;
+    color: #f8fafc;
+  }
+
+  .wl-main {
+    padding: 7.5rem 1.25rem 4rem;
+  }
+
+  .wl-container {
+    width: min(100%, 920px);
+    margin: 0 auto;
+  }
+
+  .wl-hero {
+    text-align: center;
+    margin-bottom: 3.5rem;
+  }
+
+  .wl-kicker {
+    color: #5eead4;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 0.95;
+    margin: 0 0 1rem;
+  }
+
+  h2 {
+    font-size: clamp(1.55rem, 3vw, 2.1rem);
+    line-height: 1.15;
+    margin: 0 0 1.2rem;
+  }
+
+  h3 {
+    color: #5eead4;
+    font-size: 1.15rem;
+    margin: 0 0 0.55rem;
+  }
+
+  p {
+    color: #cbd5e1;
+    line-height: 1.75;
+  }
+
+  .wl-lede {
+    font-size: 1.2rem;
+    margin: 0;
+  }
+
+  .wl-section {
+    margin-bottom: 3rem;
+  }
+
+  .wl-callout, .wl-card {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.82) 0%, rgba(15, 23, 42, 0.94) 100%);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 1.5rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+  }
+
+  .wl-callout {
+    border-color: rgba(94, 234, 212, 0.32);
+    margin-bottom: 3rem;
+  }
+
+  .wl-callout h2 {
+    color: #5eead4;
+  }
+
+  .wl-callout a {
+    color: #0f172a;
+    background: #5eead4;
+    display: inline-flex;
+    border-radius: 999px;
+    padding: 0.85rem 1.2rem;
+    font-weight: 700;
+    text-decoration: none;
+    margin-top: 0.5rem;
+  }
+
+  .wl-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .wl-card p:last-child, .wl-callout p:last-child {
+    margin-bottom: 0;
+  }
+
+  .wl-text-link {
+    color: #5eead4;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .wl-text-link:hover {
+    color: #99f6e4;
+  }
+
+  @media (max-width: 720px) {
+    .wl-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .wl-main {
+      padding-top: 6.5rem;
+    }
+  }
+</style>
