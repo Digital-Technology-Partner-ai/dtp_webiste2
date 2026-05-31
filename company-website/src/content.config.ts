@@ -1,21 +1,25 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { glob } from 'astro/loaders';
+import { z } from 'zod';
 
 const blogCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
   schema: z.object({
     title: z.string(),
     pubDate: z.date(),
     description: z.string(),
     author: z.string(),
-    image: z.object({
-      url: z.string(),
-      alt: z.string(),
-    }).optional(),
+    image: z
+      .object({
+        url: z.string(),
+        alt: z.string(),
+      })
+      .optional(),
   }),
 });
 
 const caseStudiesCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/case-studies' }),
   schema: z.object({
     title: z.string(),
     client: z.string(),
@@ -29,7 +33,7 @@ const caseStudiesCollection = defineCollection({
 });
 
 const servicesCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/services' }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
@@ -37,7 +41,7 @@ const servicesCollection = defineCollection({
 });
 
 const testimonialsCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/testimonials' }),
   schema: z.object({
     name: z.string(),
     role: z.string(),
@@ -46,7 +50,7 @@ const testimonialsCollection = defineCollection({
 });
 
 const newsCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/news' }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
