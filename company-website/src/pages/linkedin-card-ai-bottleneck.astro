@@ -1,0 +1,56 @@
+---
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DTP LinkedIn Card — AI Bottleneck</title>
+  </head>
+  <body>
+    <main class="card bottleneck-card">
+      <div class="grain" aria-hidden="true"></div>
+      <section class="content">
+        <p class="kicker">digitaltechnologypartner.ai/ai-bottleneck</p>
+        <h1>AI did not remove the bottleneck. It moved it.</h1>
+        <p class="body">Teams can now generate drafts, summaries, recommendations and agents faster than the business can validate, own and absorb them. Advisory work starts where the bottleneck actually is.</p>
+        <div class="proof bottleneck" aria-hidden="true">
+          <span>output</span>
+          <i></i><i></i><i></i>
+          <b>review · own · integrate</b>
+          <em>change</em>
+        </div>
+        <footer class="footer-row">
+          <div class="cta">Book a Discovery Call</div>
+          <img class="logo" src="/images/DTP logo - White-2.png" alt="Digital Technology Partner" width="54" height="54" />
+        </footer>
+      </section>
+    </main>
+  </body>
+</html>
+
+<style>
+  @font-face { font-family: 'Inter Tight Local'; src: local('Inter Tight'), local('Inter'); }
+  :root { --bg: #050507; --mint: #05CC90; --white: #EBEBEB; --muted: #BFC3CA; --panel: #121222; --amber: #ffd278; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 100%; min-height: 100%; background: var(--bg); }
+  body { font-family: Inter, 'Inter Tight Local', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: var(--white); }
+  .card { width: 1080px; height: 1350px; position: relative; overflow: hidden; background: #050507; isolation: isolate; }
+  .card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 720px 640px at 80% 30%, rgba(5,204,144,.10), transparent 62%), radial-gradient(ellipse 520px 520px at 16% 82%, rgba(255,185,45,.055), transparent 64%); z-index: -2; }
+  .card::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.024) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px); background-size: 72px 72px; mask-image: linear-gradient(90deg, black, rgba(0,0,0,.26) 70%, transparent); opacity: .70; z-index: -1; }
+  .grain { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,.025), transparent 18%, rgba(5,204,144,.025) 100%); pointer-events: none; }
+  .content { position: relative; height: 100%; padding: 104px 92px 92px; display: flex; flex-direction: column; justify-content: flex-start; }
+  .kicker { margin: 0 0 52px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 24px; line-height: 1.2; color: var(--mint); letter-spacing: .035em; }
+  h1 { margin: 0; max-width: 840px; font-size: 118px; line-height: .91; letter-spacing: -.068em; font-weight: 850; color: var(--white); }
+  .body { max-width: 820px; margin: 54px 0 0; color: rgba(235,235,235,.78); font-size: 34px; line-height: 1.45; letter-spacing: -.018em; }
+  .proof { margin-top: 56px; max-width: 840px; padding: 25px 27px; border: 1px solid rgba(5,204,144,.25); border-radius: 24px; background: rgba(18,18,34,.74); box-shadow: 0 24px 80px rgba(0,0,0,.25); }
+  .bottleneck { display: grid; grid-template-columns: auto 1fr 1fr 1fr auto auto; gap: 16px; align-items: center; }
+  .bottleneck span, .bottleneck b, .bottleneck em { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 20px; text-transform: uppercase; letter-spacing: .075em; white-space: nowrap; }
+  .bottleneck span { color: var(--mint); font-weight: 500; }
+  .bottleneck b { color: rgba(255,210,120,.92); font-weight: 650; }
+  .bottleneck em { font-style: normal; color: rgba(235,235,235,.72); }
+  .bottleneck i { height: 16px; border-radius: 999px; background: linear-gradient(90deg, rgba(5,204,144,.8), rgba(5,204,144,.16)); display: block; min-width: 36px; }
+  .footer-row { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 32px; max-width: 820px; }
+  .cta { display: inline-flex; align-items: center; min-height: 78px; padding: 0 36px; border-radius: 999px; background: var(--mint); color: #050507; font-size: 25px; font-weight: 760; letter-spacing: -.02em; box-shadow: 0 18px 50px rgba(5,204,144,.18); }
+  .logo { width: 54px; height: 54px; max-width: 54px; object-fit: contain; opacity: .94; flex: 0 0 54px; }
+</style>
