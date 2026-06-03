@@ -1,30 +1,193 @@
 ---
-// Homepage concept 3: Operating Loop
-// Process-led DTP homepage exploration for AI readiness through delivery.
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
 ---
 
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DTP homepage concept — Operating Loop</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <style>
-    :root{--bg:#030406;--panel:#101322;--panel2:#171a2f;--text:#eceff2;--muted:#a4aabb;--mint:#05cc90;--orange:#ffb86b;--blue:#7aa2ff;--line:rgba(255,255,255,.1)}
-    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',system-ui,sans-serif;line-height:1.5;overflow-x:hidden} a{text-decoration:none;color:inherit}.mono{font-family:'IBM Plex Mono',monospace}.container{max-width:1200px;margin:0 auto;padding:0 28px}.nav{position:fixed;top:20px;left:50%;transform:translateX(-50%);width:min(1120px,calc(100% - 32px));z-index:5;border:1px solid var(--line);border-radius:999px;background:rgba(16,19,34,.78);backdrop-filter:blur(18px)}.nav-inner{height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 18px}.brand{font-family:'Space Grotesk';font-weight:700}.links{display:flex;gap:20px;color:var(--muted);font-size:14px}.nav-cta{background:var(--mint);color:#02120d;border-radius:999px;padding:9px 13px;font-weight:700}.hero{padding:148px 0 80px;position:relative}.orbit-bg{position:absolute;inset:-120px -20vw auto auto;width:760px;height:760px;border:1px solid rgba(5,204,144,.18);border-radius:50%;opacity:.8}.orbit-bg:before,.orbit-bg:after{content:"";position:absolute;border:1px solid rgba(255,255,255,.08);border-radius:50%;inset:90px}.orbit-bg:after{inset:190px;border-color:rgba(5,204,144,.12)}.hero-grid{position:relative;display:grid;grid-template-columns:.92fr 1.08fr;gap:62px;align-items:center}.tag{font-family:'IBM Plex Mono';font-size:13px;color:var(--mint);text-transform:uppercase;letter-spacing:.08em}.hero h1{font-family:'Space Grotesk';font-size:clamp(50px,7vw,92px);line-height:.94;letter-spacing:-.06em;margin:18px 0 22px}.hero p{font-size:22px;color:#c3c8d3;margin:0 0 30px;max-width:620px}.buttons{display:flex;gap:12px;flex-wrap:wrap}.btn{display:inline-flex;padding:15px 18px;border-radius:12px;border:1px solid var(--line);font-weight:700}.btn.primary{background:var(--mint);border-color:var(--mint);color:#02120d}.loop{height:560px;position:relative;border:1px solid var(--line);border-radius:34px;background:radial-gradient(circle at 50% 50%,rgba(5,204,144,.12),transparent 40%),linear-gradient(145deg,rgba(23,26,47,.86),rgba(7,8,14,.86));box-shadow:0 24px 90px rgba(0,0,0,.54);overflow:hidden}.loop:before{content:"";position:absolute;inset:36px;border:1px dashed rgba(5,204,144,.32);border-radius:50%}.node{position:absolute;width:160px;padding:15px;border:1px solid var(--line);border-radius:18px;background:rgba(16,19,34,.92)}.node strong{display:block;font-family:'Space Grotesk';font-size:18px}.node span{font-size:13px;color:var(--muted)}.n1{top:42px;left:50%;transform:translateX(-50%)}.n2{top:190px;right:48px}.n3{bottom:58px;right:130px}.n4{bottom:58px;left:130px}.n5{top:190px;left:48px}.centre{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:210px;height:210px;border-radius:50%;background:rgba(5,204,144,.1);border:1px solid rgba(5,204,144,.36);display:grid;place-items:center;text-align:center;padding:26px}.centre strong{font-family:'Space Grotesk';font-size:28px;line-height:1}.centre span{color:var(--muted);font-size:13px;margin-top:8px;display:block}.section{padding:84px 0;border-top:1px solid var(--line)}.section-head{max-width:800px}.section h2{font-family:'Space Grotesk';font-size:clamp(38px,5vw,68px);line-height:.98;letter-spacing:-.05em;margin:14px 0 18px}.section p.intro{font-size:20px;color:var(--muted)}.split{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:36px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:26px;padding:28px;min-height:310px}.panel h3{font-family:'Space Grotesk';font-size:34px;margin:0 0 16px}.panel p{color:var(--muted);font-size:18px}.chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px}.chip{font-family:'IBM Plex Mono';font-size:12px;border:1px solid rgba(5,204,144,.26);color:var(--mint);background:rgba(5,204,144,.06);border-radius:999px;padding:8px 10px}.ladder{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:34px}.tier{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:24px;padding:26px}.tier:nth-child(2){border-color:rgba(5,204,144,.35)}.tier small{font-family:'IBM Plex Mono';color:var(--mint)}.tier h3{font-family:'Space Grotesk';font-size:30px;margin:18px 0 10px}.tier p{color:var(--muted);margin:0}.work-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:24px;overflow:hidden;margin-top:34px}.work{background:#06070c;padding:24px;min-height:190px}.work b{color:var(--mint);font-family:'IBM Plex Mono'}.work h3{font-family:'Space Grotesk';margin:35px 0 8px}.work p{color:var(--muted);font-size:14px;margin:0}.final{padding:92px 0 112px}.final-card{background:linear-gradient(135deg,rgba(5,204,144,.14),rgba(122,162,255,.08));border:1px solid rgba(5,204,144,.25);border-radius:34px;padding:44px;display:flex;justify-content:space-between;gap:36px;align-items:center}.final h2{font-family:'Space Grotesk';font-size:50px;line-height:1;margin:0 0 12px}.final p{color:var(--muted);font-size:18px;margin:0}@media(max-width:980px){.hero-grid,.split{grid-template-columns:1fr}.ladder,.work-strip{grid-template-columns:1fr}.links{display:none}.loop{height:620px}.node{width:145px}.final-card{display:block}.final .btn{margin-top:24px}}
-  </style>
-</head>
-<body>
-  <nav class="nav"><div class="nav-inner"><a class="brand" href="/">DTP</a><div class="links"><a href="#loop">Loop</a><a href="#readiness">Readiness</a><a href="#build">Build</a><a class="nav-cta" href="#start">Start</a></div></div></nav>
-  <main>
-    <section class="hero"><div class="orbit-bg"></div><div class="container hero-grid"><div><div class="tag">// AI readiness into working systems</div><h1>Make AI adoption visible, then make the useful parts real.</h1><p>DTP helps companies move from scattered AI interest to leadership clarity, focused proof of concept work, and practical tools that people can actually use.</p><div class="buttons"><a class="btn primary" href="#start">Talk to DTP</a><a class="btn" href="#loop">View the operating loop</a></div></div><div class="loop" id="loop"><div class="node n1"><strong>Map</strong><span>Where AI is already appearing.</span></div><div class="node n2"><strong>Diagnose</strong><span>Capability, risk, value and friction.</span></div><div class="node n3"><strong>Decide</strong><span>Encourage, control, investigate or stop.</span></div><div class="node n4"><strong>Build</strong><span>Small proofs and MVPs where justified.</span></div><div class="node n5"><strong>Operate</strong><span>Evidence, ownership and adoption.</span></div><div class="centre"><div><strong>Decision loop</strong><span>not a one-off AI workshop</span></div></div></div></div></section>
-    <section class="section" id="readiness"><div class="container"><div class="section-head"><div class="tag">// First, understand the operating reality</div><h2>Leadership needs evidence, not another generic AI promise.</h2><p class="intro">The useful work begins when you can see where AI is already being used, which opportunities matter, what risks need control, and which proofs are worth funding.</p></div><div class="ladder"><article class="tier"><small>01 / Signal</small><h3>Readiness Snapshot</h3><p>A quick way to qualify whether there is enough signal to look deeper.</p></article><article class="tier"><small>02 / Evidence</small><h3>Readiness Diagnostic</h3><p>A clearer evidence base before leadership decides what should happen next.</p></article><article class="tier"><small>03 / Decision</small><h3>Readiness Advisory</h3><p>Interpretation, challenge and a leadership playback that turns evidence into action.</p></article></div></div></section>
-    <section class="section" id="build"><div class="container"><div class="split"><article class="panel"><div class="tag">// What this is not</div><h3>Not “we will build you an AI thing”.</h3><p>That is too easy to say and often the wrong place to start. If the business does not know what to build, what it can absorb, or where the risk sits, jumping to delivery just creates smarter-looking waste.</p><div class="chips"><span class="chip">no hype</span><span class="chip">no fake maturity score</span><span class="chip">no blind build sprint</span></div></article><article class="panel"><div class="tag">// What DTP can do next</div><h3>From decision to delivery.</h3><p>When the evidence points to a useful opportunity, DTP can build the proof, MVP or operating workflow, then help pilot it with the right controls and feedback loop.</p><div class="chips"><span class="chip">PoC</span><span class="chip">MVP</span><span class="chip">pilot</span><span class="chip">operational AI</span><span class="chip">internal agents</span></div></article></div></div></section>
-    <section class="section"><div class="container"><div class="section-head"><div class="tag">// Places DTP creates value</div><h2>Useful AI work usually connects several layers.</h2></div><div class="work-strip"><article class="work"><b>01</b><h3>Leadership clarity</h3><p>Decision packs, readiness reviews and adoption maps.</p></article><article class="work"><b>02</b><h3>Operational workflows</h3><p>Agents, automations and data flows around real work.</p></article><article class="work"><b>03</b><h3>Proof and product</h3><p>Focused builds that test whether an idea deserves more investment.</p></article><article class="work"><b>04</b><h3>Adoption control</h3><p>Feedback loops, evidence, governance and ownership.</p></article></div></div></section>
-    <section class="final" id="start"><div class="container"><div class="final-card"><div><div class="tag">// Start with the right question</div><h2>What is AI already doing to your business?</h2><p>Once that is visible, the next build decision gets much easier.</p></div><a class="btn primary" href="https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous" target="_blank" rel="noopener noreferrer">Book a discovery call</a></div></div></section>
+<Layout
+  title="DTP — AI Readiness Operating Loop"
+  description="A DTP homepage concept focused on the operating loop from AI readiness signal to proof, MVP, pilot and adoption."
+>
+  <Header />
+  <main class="concept operating-loop">
+    <section class="loop-hero">
+      <div class="loop-orb" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="ma-container loop-hero-grid">
+        <div>
+          <span class="ma-section-tag">// operating_loop.for_ai_value</span>
+          <h1>Turn AI interest into decisions, proof and adoption.</h1>
+          <p class="lead">DTP helps organisations move through the loop properly: understand the readiness signal, decide what matters, build the narrow proof, and keep the operating evidence visible.</p>
+          <div class="ma-hero-actions"><a class="ma-btn ma-btn-mint" href="https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous" target="_blank" rel="noopener noreferrer">Book a Discovery Call</a><a class="ma-btn ma-btn-outline" href="#loop">Explore the loop →</a></div>
+        </div>
+        <div class="loop-device">
+          <div class="device-header"><b>AI Readiness Loop</b><span>live operating picture</span></div>
+          <div class="loop-map">
+            <div class="node n1 active"><small>01</small>Listen</div><div class="node n2"><small>02</small>Diagnose</div><div class="node n3"><small>03</small>Decide</div><div class="node n4"><small>04</small>Build</div><div class="node n5"><small>05</small>Adopt</div>
+          </div>
+          <div class="device-footer"><span>next best action</span><strong>Prove the highest-confidence workflow.</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ma-section intro-section">
+      <div class="ma-container intro-grid">
+        <div><span class="ma-section-tag">// why_this_matters</span><h2>AI is not a one-off project. It is an operating loop.</h2></div>
+        <p>Useful AI work keeps moving between evidence, decision and implementation. The organisations that get value fastest are not the ones that run the most demos. They are the ones that can see what is happening, make better choices and test tightly.</p>
+      </div>
+    </section>
+
+    <section class="loop-section" id="loop">
+      <div class="ma-container loop-cards">
+        <article><span>01</span><h3>Listen</h3><p>Capture how people are already using AI, where pressure is building, and which work is ready for change.</p></article>
+        <article><span>02</span><h3>Diagnose</h3><p>Separate enthusiasm from actual readiness across value, data, capability, governance and adoption.</p></article>
+        <article><span>03</span><h3>Decide</h3><p>Give leadership a practical choice: encourage, control, investigate, stop or prove.</p></article>
+        <article><span>04</span><h3>Build</h3><p>Where evidence supports it, deliver focused PoCs, MVPs, internal tools, workflow agents or pilots.</p></article>
+        <article><span>05</span><h3>Adopt</h3><p>Track whether the work changes the process, improves decisions, and earns continued investment.</p></article>
+      </div>
+    </section>
+
+    <section class="ma-section service-section">
+      <div class="ma-container service-grid">
+        <div class="service-copy"><span class="ma-section-tag">// offer_stack</span><h2>The loop is supported by four practical services.</h2><p>Each one can stand alone. Together they create a route from uncertain AI activity to useful operational proof.</p></div>
+        <div class="service-list">
+          <div><h3>AI Readiness Snapshot</h3><p>Low-friction signal for leaders who need to know whether there is enough substance to go deeper.</p></div>
+          <div><h3>AI Readiness Diagnostic</h3><p>A structured look at adoption, appetite, risk, process opportunity, data and capability.</p></div>
+          <div><h3>AI Readiness Advisory</h3><p>Interpretation and challenge so leadership can make the next decision rather than admire the data.</p></div>
+          <div><h3>Focused AI Builds</h3><p>Focused builds where the diagnostic shows a worthwhile use case and an owner who can absorb it.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="evidence-section">
+      <div class="ma-container evidence-grid">
+        <div><span class="ma-section-tag">// evidence_not_hype</span><h2>What changes when the loop is working?</h2></div>
+        <div class="evidence-board">
+          <div><b>Visibility</b><p>Leadership knows where AI is already touching work.</p></div>
+          <div><b>Prioritisation</b><p>The organisation stops treating every AI idea as equal.</p></div>
+          <div><b>Control</b><p>Risk and governance become part of delivery, not an afterthought.</p></div>
+          <div><b>Momentum</b><p>The best opportunities move quickly into small, useful proofs.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ma-cta"><div class="ma-container ma-cta-inner"><h2>Build the AI loop before you build the next AI thing.</h2><p>If you know where the evidence is, the next build becomes much easier to justify.</p><a class="ma-btn ma-btn-mint ma-btn-lg" href="https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous" target="_blank" rel="noopener noreferrer">Book a Discovery Call</a></div></section>
   </main>
-</body>
-</html>
+</Layout>
+
+<style>
+  .operating-loop { background: var(--ma-bg); }
+
+  /* Hero */
+  .loop-hero { position: relative; overflow: hidden; padding: 10.5rem 0 6rem; border-bottom: 1px solid var(--ma-border); }
+  .loop-hero:before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 68% 38%, rgba(0,229,160,.14), transparent 28%),
+                radial-gradient(circle at 22% 70%, rgba(87,99,255,.12), transparent 34%);
+  }
+
+  /* Softer concentric rings — less busy */
+  .loop-orb { position: absolute; right: 4vw; top: 7rem; width: 530px; height: 530px; border: 1px solid rgba(0,229,160,.14); border-radius: 50%; opacity: .42; }
+  .loop-orb span { position: absolute; inset: 12%; border: 1px solid rgba(255,255,255,.05); border-radius: 50%; }
+  .loop-orb span:nth-child(2) { inset: 28%; border-color: rgba(255,255,255,.04); }
+  .loop-orb span:nth-child(3) { inset: 43%; background: rgba(0,229,160,.06); box-shadow: 0 0 60px rgba(0,229,160,.18); }
+
+  .loop-hero-grid { position: relative; z-index: 2; display: grid; grid-template-columns: 1.02fr .98fr; gap: 4rem; align-items: center; }
+  .loop-hero h1 { font-size: clamp(3.5rem, 7vw, 6.6rem); line-height: .95; letter-spacing: -.065em; }
+  .lead { font-size: 1.2rem; max-width: 650px; margin: 1.4rem 0 2.2rem; color: rgba(255,255,255,.8); }
+
+  /* Loop device */
+  .loop-device {
+    background: linear-gradient(145deg, rgba(26,26,46,.88), rgba(10,10,15,.95));
+    border: 1px solid var(--ma-border);
+    border-radius: 24px;
+    padding: 1.25rem;
+    box-shadow: 0 28px 90px rgba(0,0,0,.44);
+  }
+  .device-header, .device-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+    border: 1px solid var(--ma-border);
+    border-radius: 14px;
+    padding: 1rem;
+    background: rgba(255,255,255,.03);
+  }
+  .device-header b, .device-footer strong { font-family: var(--ma-font-display); color: var(--ma-white); }
+  .device-header span, .device-footer span { font-family: var(--ma-font-mono); font-size: .72rem; color: rgba(255,255,255,.52); }
+
+  /* Loop map nodes */
+  .loop-map { height: 380px; position: relative; margin: 1rem; border: 1px dashed rgba(0,229,160,.14); border-radius: 50%; }
+  .loop-map:before { content: ""; position: absolute; inset: 22%; border: 1px solid rgba(255,255,255,.08); border-radius: 50%; }
+  .node {
+    position: absolute;
+    width: 112px;
+    height: 112px;
+    border-radius: 50%;
+    background: rgba(26,26,46,.9);
+    border: 1px solid rgba(255,255,255,.14);
+    display: grid;
+    place-items: center;
+    text-align: center;
+    font-family: var(--ma-font-display);
+    box-shadow: 0 4px 24px rgba(0,0,0,.38);
+  }
+  .node small { display: block; font-family: var(--ma-font-mono); color: rgba(255,255,255,.45); font-size: .7rem; }
+  .node.active {
+    background: rgba(0,229,160,.1);
+    border: 1px solid rgba(0,229,160,.5);
+    box-shadow: 0 0 0 4px rgba(0,229,160,.08), 0 4px 32px rgba(0,229,160,.2);
+  }
+  .node.active small { color: var(--ma-mint); }
+  .n1 { top: 0; left: 50%; transform: translateX(-50%); }
+  .n2 { top: 31%; right: 0; }
+  .n3 { bottom: 0; right: 18%; }
+  .n4 { bottom: 0; left: 18%; }
+  .n5 { top: 31%; left: 0; }
+
+  /* Intro section */
+  .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+  .intro-grid h2, .service-copy h2, .evidence-grid h2 { font-size: clamp(2.2rem, 4.8vw, 4.4rem); line-height: 1; }
+  .intro-grid p { font-size: 1.18rem; color: rgba(255,255,255,.78); }
+
+  /* Five-step loop cards — premium framework feel */
+  .loop-section { padding: 1px 0; background: var(--ma-surface-alt); border-block: 1px solid var(--ma-border); }
+  .loop-cards { display: grid; grid-template-columns: repeat(5,1fr); gap: 1px; background: var(--ma-border); padding: 0; }
+  .loop-cards article { background: var(--ma-surface-alt); padding: 2.2rem 1.8rem; min-height: 280px; }
+  .loop-cards span { font-family: var(--ma-font-mono); color: var(--ma-mint); font-size: .82rem; letter-spacing: .04em; }
+  .loop-cards h3 { font-size: 1.6rem; margin: 3rem 0 .75rem; }
+  .loop-cards p { color: rgba(255,255,255,.72); font-size: .95rem; line-height: 1.6; }
+
+  /* Service section */
+  .service-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 4rem; }
+  .service-copy p { color: rgba(255,255,255,.76); }
+  .service-list { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .service-list div { background: var(--ma-surface); border: 1px solid var(--ma-border); border-radius: 14px; padding: 1.35rem; }
+  .service-list h3 { font-size: 1.25rem; margin-bottom: .5rem; }
+  .service-list p { color: rgba(255,255,255,.72); font-size: .96rem; line-height: 1.55; }
+
+  /* Evidence section — smoother transition, more breathing room */
+  .evidence-section {
+    padding: 8rem 0 7rem;
+    background: #dff8ee;
+    color: #0a0a0f;
+    border-top: 1px solid rgba(10,10,15,.1);
+  }
+  .evidence-grid { display: grid; grid-template-columns: .75fr 1.25fr; gap: 4rem; }
+  .evidence-grid h2 { color: #0a0a0f; }
+  .evidence-board { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .evidence-board div { background: #f0fdf6; border: 1px solid rgba(10,10,15,.12); border-radius: 14px; padding: 1.35rem; }
+  .evidence-board b { font-family: var(--ma-font-display); font-size: 1.35rem; }
+  .evidence-board p { color: #2e4038; margin-top: .4rem; line-height: 1.55; }
+
+  /* CTA breathing room */
+  .operating-loop .ma-cta { padding: 7rem 0 8rem; }
+
+  @media (max-width: 980px) {
+    .loop-hero-grid, .intro-grid, .service-grid, .evidence-grid { grid-template-columns: 1fr; }
+    .loop-cards, .service-list, .evidence-board { grid-template-columns: 1fr; }
+    .loop-map { height: 460px; }
+    .loop-orb { display: none; }
+  }
+</style>
