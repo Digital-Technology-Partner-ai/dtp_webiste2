@@ -1,0 +1,78 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+---
+
+<Layout
+  title="DTP — LinkedIn Above Fold — AI Foundry"
+  description="A DTP above-the-fold concept for promoting AI Foundry advisory and delivery work."
+>
+  <Header />
+  <main class="social-fold foundry-fold">
+    <section class="fold-hero">
+      <div class="fold-grid-bg" aria-hidden="true"></div>
+      <div class="ma-container foundry-grid">
+        <div class="foundry-copy">
+          <span class="fold-kicker">// linkedin_card.seed_02 / ai_foundry</span>
+          <h1>An AI Foundry is not a lab for clever demos.</h1>
+          <p>It is a controlled route from messy business opportunity to tested working proof: intake, challenge, evidence, build, decision. Without that route, the Foundry becomes a theatre with a backlog.</p>
+          <div class="fold-actions">
+            <a class="ma-btn ma-btn-mint" href="https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous" target="_blank" rel="noopener noreferrer">Book a Discovery Call</a>
+            <a class="ma-btn ma-btn-outline" href="/homepage-ai-readiness-operating-loop/">Explore the operating loop</a>
+          </div>
+        </div>
+
+        <aside class="foundry-artefact" aria-label="AI Foundry operating route illustration">
+          <div class="foundry-header">
+            <span>foundry.intake_route</span>
+            <b>from idea to governed proof</b>
+          </div>
+          <div class="foundry-route">
+            <div class="route-node active"><small>01</small><strong>Intake</strong><em>business problem</em></div>
+            <div class="route-node"><small>02</small><strong>Challenge</strong><em>value / risk / owner</em></div>
+            <div class="route-node"><small>03</small><strong>Prove</strong><em>narrow build</em></div>
+            <div class="route-node final"><small>04</small><strong>Decide</strong><em>scale / stop / learn</em></div>
+          </div>
+          <div class="foundry-gate">
+            <div>
+              <small>current gate</small>
+              <strong>Is this a real operating problem or just an interesting AI idea?</strong>
+            </div>
+            <span>gate_01</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .social-fold { background: #050507; color: #EBEBEB; }
+  .fold-hero { min-height: 100vh; position: relative; overflow: hidden; padding: 8.75rem 0 4.75rem; display: grid; align-items: center; }
+  .fold-grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px), radial-gradient(ellipse 55% 55% at 70% 38%, rgba(5,204,144,.11), transparent 60%); background-size: 72px 72px, 72px 72px, auto; mask-image: radial-gradient(ellipse at center, black 0%, transparent 82%); pointer-events: none; }
+  .foundry-grid { position: relative; z-index: 2; display: grid; grid-template-columns: .95fr 1.05fr; gap: 4.75rem; align-items: center; }
+  .fold-kicker { display: block; font-family: var(--ma-font-mono); font-size: .74rem; letter-spacing: .06em; color: var(--ma-mint); margin-bottom: 1.7rem; }
+  .foundry-copy h1 { font-size: clamp(3.25rem, 6.65vw, 6.35rem); line-height: .91; letter-spacing: -.066em; max-width: 760px; }
+  .foundry-copy p { max-width: 615px; margin: 1.55rem 0 2.25rem; font-size: 1.18rem; line-height: 1.72; color: rgba(235,235,235,.78); }
+  .fold-actions { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+
+  .foundry-artefact { position: relative; background: linear-gradient(150deg, #17172a 0%, #10101d 58%, #08080e 100%); border: 1px solid rgba(255,255,255,.11); border-radius: 24px; padding: 1.45rem; box-shadow: 0 36px 120px rgba(0,0,0,.54), inset 0 0 0 1px rgba(5,204,144,.045); }
+  .foundry-artefact::before { content: ''; position: absolute; inset: 1.45rem; border: 1px solid rgba(5,204,144,.08); border-radius: 18px; pointer-events: none; }
+  .foundry-header { position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: .2rem .2rem 1.2rem; border-bottom: 1px solid rgba(255,255,255,.07); }
+  .foundry-header span { font-family: var(--ma-font-mono); font-size: .72rem; color: var(--ma-mint); letter-spacing: .07em; }
+  .foundry-header b { font-family: var(--ma-font-display); font-size: 1rem; color: rgba(235,235,235,.82); }
+  .foundry-route { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin: 1.4rem 0; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.07); border-radius: 16px; overflow: hidden; }
+  .route-node { min-height: 225px; padding: 1.2rem 1rem; background: #10101d; display: flex; flex-direction: column; justify-content: space-between; }
+  .route-node small { font-family: var(--ma-font-mono); font-size: .72rem; color: var(--ma-mint); }
+  .route-node strong { font-family: var(--ma-font-display); font-size: 1.42rem; line-height: 1.05; color: var(--ma-white); margin-top: auto; }
+  .route-node em { font-style: normal; font-family: var(--ma-font-mono); font-size: .74rem; line-height: 1.35; color: rgba(235,235,235,.72); letter-spacing: .03em; margin-top: .7rem; }
+  .route-node.active { background: rgba(5,204,144,.08); }
+  .route-node.final { background: linear-gradient(180deg, rgba(5,204,144,.12), rgba(16,16,29,1)); }
+  .foundry-gate { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: center; border: 1px solid rgba(5,204,144,.28); background: rgba(5,204,144,.065); border-radius: 16px; padding: 1.25rem; }
+  .foundry-gate small { display: block; font-family: var(--ma-font-mono); color: var(--ma-mint); font-size: .68rem; text-transform: uppercase; letter-spacing: .08em; margin-bottom: .45rem; }
+  .foundry-gate strong { font-family: var(--ma-font-display); color: var(--ma-white); font-size: 1.25rem; line-height: 1.25; }
+  .foundry-gate span { font-family: var(--ma-font-mono); color: var(--ma-mint); border: 1px solid rgba(5,204,144,.25); border-radius: 999px; padding: .35rem .7rem; font-size: .7rem; }
+
+  @media (max-width: 1000px) { .foundry-grid { grid-template-columns: 1fr; } .fold-hero { padding-top: 9rem; } }
+  @media (max-width: 760px) { .foundry-route { grid-template-columns: 1fr; } .route-node { min-height: 130px; } .foundry-gate { grid-template-columns: 1fr; } .foundry-copy h1 { font-size: clamp(3rem, 14vw, 4.6rem); } }
+</style>
