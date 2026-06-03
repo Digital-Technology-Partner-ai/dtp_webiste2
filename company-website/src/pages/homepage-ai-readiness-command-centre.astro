@@ -5,192 +5,811 @@ import Header from '../components/Header.astro';
 
 <Layout
   title="DTP — AI Readiness Command Centre"
-  description="Digital Technology Partner helps leadership teams understand AI adoption, choose what to build, and deliver focused proofs, MVPs and pilots."
+  description="Digital Technology Partner gives leadership teams an operating picture of AI adoption, then turns the strongest opportunities into focused proofs, MVPs and pilots."
 >
   <Header />
   <main class="concept command-centre">
-    <section class="ma-hero concept-hero">
-      <div class="gradient-mesh-bg hero-mesh"></div>
-      <div class="ma-hero-grid-bg"></div>
-      <div class="ma-hero-scan"></div>
-      <div class="ma-container hero-layout">
-        <div class="hero-copy">
-          <span class="ma-section-tag">// ai_readiness.command_centre</span>
-          <h1>Know where AI can help before you start building.</h1>
-          <p class="ma-hero-sub">DTP gives leadership teams a clear view of AI adoption inside the business, then turns the strongest opportunities into focused proof of concept, MVP and pilot work.</p>
+
+    <!-- ─── HERO ─── -->
+    <section class="cc-hero">
+      <div class="cc-hero-mesh" aria-hidden="true"></div>
+      <div class="ma-container cc-hero-grid">
+
+        <div class="cc-copy">
+          <span class="cc-eyebrow">// readiness.command_centre</span>
+          <h1>Leadership needs the operating picture before the build.</h1>
+          <p>AI adoption is already happening inside most organisations. DTP maps where it sits, what it risks, and what is ready to prove — then builds the focused things the evidence supports.</p>
           <div class="ma-hero-actions">
             <a class="ma-btn ma-btn-mint" href="https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous" target="_blank" rel="noopener noreferrer">Book a Discovery Call</a>
-            <a class="ma-btn ma-btn-outline" href="#route">See the route →</a>
-          </div>
-          <div class="proof-strip">
-            <div class="proof-pill"><em>01</em><span>Readiness first</span></div>
-            <div class="proof-pill"><em>05</em><span>Decision gates</span></div>
-            <div class="proof-pill"><em>00</em><span>Blind builds</span></div>
+            <a class="ma-btn ma-btn-outline" href="#cc-route">See the route →</a>
           </div>
         </div>
+
         <aside class="command-panel" aria-label="AI readiness command centre illustration">
-          <div class="panel-top"><span>readiness.scan / leadership</span><i></i></div>
-          <div class="signal-grid">
-            <div class="signal"><b>Use cases</b><span><em style="width:76%"></em></span><strong>mapped</strong></div>
-            <div class="signal"><b>Risk</b><span><em style="width:48%"></em></span><strong>visible</strong></div>
-            <div class="signal"><b>Capability</b><span><em style="width:61%"></em></span><strong>uneven</strong></div>
-            <div class="signal"><b>Data</b><span><em style="width:39%"></em></span><strong>patchy</strong></div>
+          <div class="cp-header">
+            <div>
+              <div class="cp-label">readiness.scan</div>
+              <div class="cp-sublabel">leadership / operating view</div>
+            </div>
+            <div class="cp-live-badge">
+              <i class="cp-dot"></i>
+              <span>live</span>
+            </div>
           </div>
-          <div class="decision-card"><small>recommended next decision</small><strong>Encourage, control, investigate, stop, or prove.</strong></div>
+
+          <div class="cp-section">
+            <div class="cp-section-heading">dimension analysis</div>
+            <div class="cp-signals">
+              <div class="cp-signal">
+                <b>Use Cases</b>
+                <div class="cp-bar"><div class="cp-fill" style="width:76%"></div></div>
+                <span class="cp-badge cp-ok">mapped</span>
+              </div>
+              <div class="cp-signal">
+                <b>Capability</b>
+                <div class="cp-bar"><div class="cp-fill" style="width:61%"></div></div>
+                <span class="cp-badge cp-warn">uneven</span>
+              </div>
+              <div class="cp-signal">
+                <b>Data</b>
+                <div class="cp-bar"><div class="cp-fill" style="width:39%"></div></div>
+                <span class="cp-badge cp-warn">patchy</span>
+              </div>
+              <div class="cp-signal">
+                <b>Risk</b>
+                <div class="cp-bar"><div class="cp-fill" style="width:48%"></div></div>
+                <span class="cp-badge cp-ok">visible</span>
+              </div>
+              <div class="cp-signal">
+                <b>Appetite</b>
+                <div class="cp-bar"><div class="cp-fill" style="width:87%"></div></div>
+                <span class="cp-badge cp-ok">high</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="cp-divider"></div>
+
+          <div class="cp-section">
+            <div class="cp-section-heading">decision trace</div>
+            <div class="cp-trace">
+              <div class="cp-trace-item">
+                <span class="cp-decision cp-d-prove">prove</span>
+                <span class="cp-trace-label">document routing assistant</span>
+              </div>
+              <div class="cp-trace-item">
+                <span class="cp-decision cp-d-investigate">investigate</span>
+                <span class="cp-trace-label">customer data exposure risk</span>
+              </div>
+              <div class="cp-trace-item">
+                <span class="cp-decision cp-d-control">control</span>
+                <span class="cp-trace-label">unsanctioned tool usage</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="cp-action">
+            <small>board-level next action</small>
+            <strong>Evidence-led diagnostic before any build commitment.</strong>
+          </div>
         </aside>
+
       </div>
     </section>
 
-    <section class="ma-section" id="route">
+    <!-- ─── THREE OPERATIONAL FACTS ─── -->
+    <section class="cc-band">
+      <div class="ma-container cc-band-grid">
+        <article>
+          <span>01</span>
+          <h3>Adoption is already in progress.</h3>
+          <p>Teams are using AI tools — often faster than training, policy or oversight can keep pace with.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <h3>Leadership is working from fragments.</h3>
+          <p>Scattered demos, anecdotal risk, isolated use cases. Not enough to form a coherent picture or make a sound decision.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <h3>Build decisions get premature.</h3>
+          <p>Without a readiness picture, organisations commit in the wrong place, overbuild, or underinvest in what matters.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ─── READINESS ROUTE ─── -->
+    <section class="cc-route" id="cc-route">
       <div class="ma-container">
-        <div class="ma-section-header wide"><span class="ma-section-tag">// from_visibility_to_value</span><h2>AI adoption is already happening. Leadership needs the operating picture.</h2><p>Most organisations do not need another generic AI promise. They need to know where value, risk, capability and appetite actually sit before committing time and money to the next build.</p></div>
-        <div class="ma-benefits-grid readiness-grid">
-          <article class="ma-benefit-card primary"><div class="ma-card-line"></div><span class="card-index">01</span><h3>Readiness Snapshot</h3><p>A low-friction signal check for where the AI questions are forming and whether a deeper diagnostic is justified.</p></article>
-          <article class="ma-benefit-card"><div class="ma-card-line"></div><span class="card-index">02</span><h3>Readiness Diagnostic</h3><p>An evidence base leadership can trust before deciding what to encourage, control, investigate or stop.</p></article>
-          <article class="ma-benefit-card"><div class="ma-card-line"></div><span class="card-index">03</span><h3>Readiness Advisory</h3><p>Human interpretation, challenge and leadership playback — not a dashboard dropped into someone’s inbox.</p></article>
+        <div class="cc-route-intro">
+          <span class="ma-section-tag">// from_visibility_to_value</span>
+          <h2>Start with the leadership decision.</h2>
+          <p>DTP maps the adoption landscape first, then moves into proof of concept, MVP or pilot only where there is enough evidence to justify the commitment.</p>
+        </div>
+
+        <div class="cc-route-cols">
+          <div class="cc-route-col">
+            <div class="cc-route-top"><div class="cc-node"></div></div>
+            <div class="cc-route-body">
+              <div class="cc-route-meta">
+                <span class="ccr-num">01</span>
+                <span class="ccr-phase">entry point</span>
+              </div>
+              <h3>Readiness Snapshot</h3>
+              <p>A low-friction signal check for where the AI questions are forming and whether a deeper diagnostic is justified.</p>
+            </div>
+          </div>
+          <div class="cc-route-col">
+            <div class="cc-route-top"><div class="cc-node"></div></div>
+            <div class="cc-route-body">
+              <div class="cc-route-meta">
+                <span class="ccr-num">02</span>
+                <span class="ccr-phase">evidence base</span>
+              </div>
+              <h3>Readiness Diagnostic</h3>
+              <p>An evidence base leadership can trust before deciding what to encourage, control, investigate or stop.</p>
+            </div>
+          </div>
+          <div class="cc-route-col">
+            <div class="cc-route-top"><div class="cc-node"></div></div>
+            <div class="cc-route-body">
+              <div class="cc-route-meta">
+                <span class="ccr-num">03</span>
+                <span class="ccr-phase">leadership layer</span>
+              </div>
+              <h3>Readiness Advisory</h3>
+              <p>Human interpretation, challenge and leadership playback. Not a dashboard left in someone's inbox.</p>
+            </div>
+          </div>
+          <div class="cc-route-col cc-route-col-final">
+            <div class="cc-route-top"><div class="cc-node cc-node-final"></div></div>
+            <div class="cc-route-body">
+              <div class="cc-route-meta">
+                <span class="ccr-num">04</span>
+                <span class="ccr-phase">committed build</span>
+              </div>
+              <h3>Proof, MVP, pilot</h3>
+              <p>Where the case is strong, we design and build the focused thing that proves value against real constraints.</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="ma-section section-alt">
-      <div class="ma-container split-section">
-        <div><span class="ma-section-tag">// still_building</span><h2>We still build. We just refuse to build blindly.</h2><p>When the opportunity is strong enough, DTP can design and build the proof, MVP, pilot or operational workflow. The difference is that the build is tied to evidence, ownership and a real decision.</p></div>
-        <div class="proof-stack">
-          <div class="proof-item"><b>01</b><h3>Opportunity framing</h3><p>What problem is actually worth solving?</p></div>
-          <div class="proof-item"><b>02</b><h3>Proof of concept</h3><p>Can it work against real constraints?</p></div>
-          <div class="proof-item"><b>03</b><h3>MVP or pilot</h3><p>Can people use it and does it change the work?</p></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="ma-section">
+    <!-- ─── OPERATING PICTURE ─── -->
+    <section class="cc-picture">
       <div class="ma-container">
-        <div class="ma-section-header"><span class="ma-section-tag">// decision_flow</span><h2>A route from uncertainty to operational proof.</h2></div>
-        <div class="flow-strip">
-          <div><span>01</span><strong>Map</strong><p>Current AI use, pressure points and business questions.</p></div>
-          <div><span>02</span><strong>Diagnose</strong><p>Capability, data, risk, value and readiness.</p></div>
-          <div><span>03</span><strong>Decide</strong><p>Encourage, control, investigate, stop or prove.</p></div>
-          <div><span>04</span><strong>Build</strong><p>Focused PoC, MVP, pilot or workflow.</p></div>
-          <div><span>05</span><strong>Operate</strong><p>Adoption, ownership and evidence loop.</p></div>
+        <div class="cc-picture-header">
+          <span class="ma-section-tag">// questions_the_picture_answers</span>
+          <h2>What the operating picture makes answerable.</h2>
+          <p>Most organisations cannot answer these questions yet. DTP makes them answerable before the next build decision.</p>
+        </div>
+        <ol class="cc-questions" role="list">
+          <li class="cc-q-item">
+            <span class="ccq-num">01</span>
+            <p class="ccq-text">Where is AI already being used — sanctioned and unsanctioned?</p>
+            <span class="ccq-status">unanswered</span>
+          </li>
+          <li class="cc-q-item">
+            <span class="ccq-num">02</span>
+            <p class="ccq-text">Which use cases deserve encouragement, and which need control?</p>
+            <span class="ccq-status">unanswered</span>
+          </li>
+          <li class="cc-q-item">
+            <span class="ccq-num">03</span>
+            <p class="ccq-text">Where do capability and data gaps make promising use cases unviable right now?</p>
+            <span class="ccq-status">unanswered</span>
+          </li>
+          <li class="cc-q-item">
+            <span class="ccq-num">04</span>
+            <p class="ccq-text">What risk is already in the organisation — visible and uncontrolled?</p>
+            <span class="ccq-status">unanswered</span>
+          </li>
+          <li class="cc-q-item">
+            <span class="ccq-num">05</span>
+            <p class="ccq-text">What is the organisation ready to absorb, and what needs a focused proof first?</p>
+            <span class="ccq-status">unanswered</span>
+          </li>
+        </ol>
+        <div class="cc-resolution">
+          <span>DTP maps the answers before the build starts.</span>
         </div>
       </div>
     </section>
 
-    <section class="ma-cta"><div class="ma-container ma-cta-inner"><h2>Want a clearer view of AI inside your business?</h2><p>Start with a conversation about where leadership needs evidence, not another tool demo.</p><a class="ma-btn ma-btn-mint ma-btn-lg" href="https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous" target="_blank" rel="noopener noreferrer">Book a Discovery Call</a></div></section>
+    <!-- ─── FOCUSED BUILD ─── -->
+    <section class="cc-build">
+      <div class="ma-container cc-build-inner">
+        <div class="cc-build-copy">
+          <span class="ma-section-tag">// focused_delivery</span>
+          <h2>We still build. We just refuse to build blindly.</h2>
+          <p>When the operating picture shows a strong enough case, DTP designs and delivers the focused thing — proof of concept, MVP, pilot or operational workflow — tied to evidence and real success criteria.</p>
+        </div>
+        <div class="cc-build-stack">
+          <div class="cc-build-item">
+            <b>01</b>
+            <div>
+              <h3>Opportunity framing</h3>
+              <p>What problem is actually worth solving? Is there enough evidence to justify the build?</p>
+            </div>
+          </div>
+          <div class="cc-build-item">
+            <b>02</b>
+            <div>
+              <h3>Proof of concept</h3>
+              <p>Can the approach work against real constraints, real data and real users?</p>
+            </div>
+          </div>
+          <div class="cc-build-item">
+            <b>03</b>
+            <div>
+              <h3>MVP or pilot</h3>
+              <p>Can people use it, does it change the work, and is there a clear route to scale?</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── CTA ─── -->
+    <section class="ma-cta">
+      <div class="ma-container ma-cta-inner">
+        <h2>Want a clearer view of AI inside your business?</h2>
+        <p>Start with a conversation about where leadership needs evidence, not another vendor demo.</p>
+        <a class="ma-btn ma-btn-mint ma-btn-lg" href="https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous" target="_blank" rel="noopener noreferrer">Book a Discovery Call</a>
+      </div>
+    </section>
+
   </main>
 </Layout>
 
 <style>
-  .concept-hero {
-    padding: 10.5rem 0 4.5rem;
+  /* ── LOCAL UTILITIES (not in global design system) ── */
+  .ma-hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .ma-cta {
+    background: var(--ma-bg);
+    padding: 7rem 0 8rem;
+    border-top: 1px solid var(--ma-border);
+  }
+
+  .ma-cta-inner {
+    text-align: center;
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  .ma-cta-inner h2 { margin-bottom: 1rem; }
+  .ma-cta-inner p { color: rgba(255,255,255,.72); font-size: 1.05rem; }
+  .ma-cta-inner .ma-btn { margin-top: 2.25rem; }
+
+  /* ── BASE ── */
+  .command-centre { background: var(--ma-bg); }
+
+  /* ── HERO ── */
+  .cc-hero {
+    padding: 10rem 0 5rem;
     position: relative;
     overflow: hidden;
   }
-  .hero-mesh { position: absolute; inset: 0; filter: blur(70px); opacity: .95; }
-  .hero-layout {
+
+  .cc-hero-mesh {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 55% 55% at 72% 38%, rgba(0,229,160,.07) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 50% at 12% 72%, rgba(30,60,180,.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .cc-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr .95fr;
+    gap: 4.5rem;
+    align-items: center;
     position: relative;
     z-index: 2;
-    display: grid;
-    grid-template-columns: 1fr .9fr;
-    gap: 4rem;
-    align-items: center;
   }
-  .hero-copy h1 {
-    font-size: clamp(3.4rem, 7.4vw, 6.8rem);
-    line-height: .92;
-    letter-spacing: -.06em;
-    max-width: 760px;
-  }
-  .wide { max-width: 860px; }
-  .wide p { font-size: 1.08rem; max-width: 720px; color: rgba(255,255,255,.82); }
 
-  /* Proof strip */
-  .proof-strip { display: flex; gap: .65rem; flex-wrap: wrap; margin-top: 2rem; }
-  .proof-pill {
-    display: flex;
-    align-items: center;
-    gap: .6rem;
-    background: rgba(255,255,255,.06);
-    border: 1px solid rgba(255,255,255,.13);
-    border-radius: 8px;
-    padding: .48rem .9rem;
-  }
-  .proof-pill em {
+  .cc-eyebrow {
+    display: block;
     font-family: var(--ma-font-mono);
+    font-size: .72rem;
     color: var(--ma-mint);
-    font-style: normal;
-    font-size: .74rem;
-    font-weight: 700;
-    min-width: 1.5em;
+    letter-spacing: .06em;
+    margin-bottom: 1.8rem;
   }
-  .proof-pill span { font-size: .82rem; color: rgba(255,255,255,.65); white-space: nowrap; }
 
-  /* Command panel */
-  .command-panel {
-    background: linear-gradient(145deg, rgba(26,26,46,.92), rgba(17,17,34,.94));
-    border: 1px solid var(--ma-border);
-    border-radius: 20px;
-    padding: 1.5rem;
-    box-shadow: 0 28px 90px rgba(0,0,0,.42), 0 0 0 1px rgba(0,229,160,.06) inset;
+  .cc-copy h1 {
+    font-size: clamp(3.2rem, 7.2vw, 6.6rem);
+    line-height: .94;
+    letter-spacing: -.06em;
+    max-width: 740px;
   }
-  .panel-top {
+
+  .cc-copy p {
+    font-size: 1.16rem;
+    max-width: 580px;
+    color: rgba(255,255,255,.78);
+    margin: 1.4rem 0 2.2rem;
+    line-height: 1.68;
+  }
+
+  /* ── COMMAND PANEL ── */
+  .command-panel {
+    background: linear-gradient(160deg, #181826 0%, #0f0f1d 100%);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow:
+      0 32px 100px rgba(0,0,0,.5),
+      0 0 0 1px rgba(0,229,160,.05) inset;
+  }
+
+  .cp-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
+    padding: 1.2rem 1.5rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,.07);
+    background: rgba(255,255,255,.025);
+  }
+
+  .cp-label {
     font-family: var(--ma-font-mono);
     font-size: .78rem;
-    color: var(--ma-text-dim);
-    margin-bottom: 1.3rem;
+    color: var(--ma-white);
+    letter-spacing: .03em;
   }
-  .panel-top i { width: 10px; height: 10px; background: var(--ma-mint); border-radius: 50%; box-shadow: 0 0 18px var(--ma-mint); }
-  .signal-grid { display: grid; gap: .85rem; }
-  .signal {
-    display: grid;
-    grid-template-columns: 92px 1fr 82px;
+
+  .cp-sublabel {
+    font-family: var(--ma-font-mono);
+    font-size: .64rem;
+    color: rgba(255,255,255,.52);
+    margin-top: .2rem;
+  }
+
+  .cp-live-badge {
+    display: flex;
     align-items: center;
-    gap: .8rem;
-    background: rgba(255,255,255,.04);
-    border: 1px solid var(--ma-border);
-    border-radius: 10px;
-    padding: .85rem;
+    gap: .4rem;
+    background: rgba(0,229,160,.08);
+    border: 1px solid rgba(0,229,160,.22);
+    border-radius: 99px;
+    padding: .3rem .65rem;
+    flex-shrink: 0;
   }
-  .signal b, .signal strong { font-size: .78rem; }
-  .signal b { color: rgba(255,255,255,.82); }
-  .signal strong { color: var(--ma-white); text-align: right; }
-  .signal span { height: 8px; background: #25283d; border-radius: 99px; overflow: hidden; }
-  .signal em { display: block; height: 100%; background: linear-gradient(90deg, var(--ma-mint), rgba(0,229,160,.12)); }
-  .decision-card {
-    margin-top: 1rem;
+
+  .cp-dot {
+    display: block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ma-mint);
+    box-shadow: 0 0 8px var(--ma-mint);
+    animation: cpPulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes cpPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .35; }
+  }
+
+  .cp-live-badge span {
+    font-family: var(--ma-font-mono);
+    font-size: .62rem;
+    color: var(--ma-mint);
+    letter-spacing: .07em;
+    text-transform: uppercase;
+  }
+
+  .cp-section { padding: 1.1rem 1.5rem; }
+
+  .cp-section-heading {
+    font-family: var(--ma-font-mono);
+    font-size: .62rem;
+    color: rgba(255,255,255,.5);
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    margin-bottom: .85rem;
+  }
+
+  /* Signals */
+  .cp-signals { display: grid; gap: .55rem; }
+
+  .cp-signal {
+    display: grid;
+    grid-template-columns: 80px 1fr 68px;
+    align-items: center;
+    gap: .7rem;
+  }
+
+  .cp-signal b {
+    font-size: .76rem;
+    font-weight: 500;
+    color: rgba(255,255,255,.78);
+  }
+
+  .cp-bar {
+    height: 6px;
+    background: rgba(255,255,255,.07);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .cp-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--ma-mint), rgba(0,229,160,.3));
+    border-radius: 99px;
+  }
+
+  .cp-badge {
+    font-family: var(--ma-font-mono);
+    font-size: .6rem;
+    font-weight: 700;
+    text-align: right;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+
+  .cp-ok  { color: var(--ma-mint); }
+  .cp-warn { color: rgba(255,185,45,.85); }
+
+  .cp-divider {
+    height: 1px;
+    background: rgba(255,255,255,.06);
+    margin: 0 1.5rem;
+  }
+
+  /* Decision trace */
+  .cp-trace { display: grid; gap: .5rem; }
+
+  .cp-trace-item {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    padding: .6rem .8rem;
+    background: rgba(255,255,255,.03);
+    border: 1px solid rgba(255,255,255,.06);
+    border-radius: 8px;
+  }
+
+  .cp-decision {
+    font-family: var(--ma-font-mono);
+    font-size: .6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    padding: .22rem .52rem;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .cp-d-prove {
+    background: rgba(0,229,160,.12);
+    color: var(--ma-mint);
     border: 1px solid rgba(0,229,160,.28);
-    background: var(--ma-mint-dim);
-    border-radius: 12px;
-    padding: 1rem 1.2rem;
   }
-  .decision-card small { display: block; font-family: var(--ma-font-mono); color: var(--ma-mint); margin-bottom: .4rem; }
-  .decision-card strong { font-family: var(--ma-font-display); font-size: 1.3rem; color: var(--ma-white); }
 
-  /* Readiness cards */
-  .card-index { font-family: var(--ma-font-mono); color: var(--ma-mint); font-size: .78rem; display: block; margin-bottom: .5rem; }
-  .readiness-grid .ma-benefit-card {
-    background: linear-gradient(160deg, rgba(26,26,46,.8), rgba(17,17,34,.6));
-    border-color: rgba(255,255,255,.1);
+  .cp-d-investigate {
+    background: rgba(255,185,45,.09);
+    color: rgba(255,185,45,.88);
+    border: 1px solid rgba(255,185,45,.24);
+  }
+
+  .cp-d-control {
+    background: rgba(255,90,70,.08);
+    color: rgba(255,120,100,.82);
+    border: 1px solid rgba(255,90,70,.2);
+  }
+
+  .cp-trace-label {
+    font-size: .76rem;
+    color: rgba(255,255,255,.78);
+  }
+
+  /* Next action */
+  .cp-action {
+    margin: 0 1.5rem 1.5rem;
+    border: 1px solid rgba(0,229,160,.26);
+    background: rgba(0,229,160,.05);
+    border-radius: 10px;
+    padding: .95rem 1.1rem;
+  }
+
+  .cp-action small {
+    display: block;
+    font-family: var(--ma-font-mono);
+    font-size: .6rem;
+    color: var(--ma-mint);
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    margin-bottom: .45rem;
+  }
+
+  .cp-action strong {
+    font-family: var(--ma-font-display);
+    font-size: 1.15rem;
+    color: var(--ma-white);
+    line-height: 1.3;
+  }
+
+  /* ── THREE OPERATIONAL FACTS ── */
+  .cc-band {
+    background: #0c0c14;
+    border-top: 1px solid rgba(255,255,255,.06);
+    padding: 5rem 0;
+  }
+
+  .cc-band-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.06);
     border-radius: 16px;
-    padding: 2rem;
+    overflow: hidden;
   }
-  .readiness-grid .ma-benefit-card.primary {
-    background: linear-gradient(160deg, rgba(0,229,160,.07), rgba(26,26,46,.8));
-    border-color: rgba(0,229,160,.25);
-  }
-  .readiness-grid .ma-benefit-card h3 { font-size: 1.55rem; }
-  .readiness-grid .ma-benefit-card p { color: rgba(255,255,255,.76); line-height: 1.6; }
 
-  /* Split / proof section */
-  .section-alt { background: var(--ma-surface-alt); border-block: 1px solid var(--ma-border); }
-  .split-section { display: grid; grid-template-columns: .85fr 1.15fr; gap: 3rem; align-items: start; }
-  .split-section h2 { font-size: clamp(2rem, 4vw, 3.6rem); }
-  .split-section > div > p { font-size: 1.04rem; color: rgba(255,255,255,.78); }
-  .proof-stack { display: grid; gap: 1rem; }
-  .proof-item {
+  .cc-band-grid article {
+    background: #0c0c14;
+    padding: 2.4rem 2.1rem;
+    min-height: 240px;
+    transition: background .2s;
+  }
+
+  .cc-band-grid article:hover { background: #0f0f1c; }
+
+  .cc-band-grid span {
+    font-family: var(--ma-font-mono);
+    color: var(--ma-mint);
+    font-size: .76rem;
+  }
+
+  .cc-band-grid h3 {
+    font-size: 1.55rem;
+    margin: 2.4rem 0 .75rem;
+    color: var(--ma-white);
+    line-height: 1.18;
+  }
+
+  .cc-band-grid p {
+    color: rgba(255,255,255,.66);
+    line-height: 1.68;
+    font-size: .97rem;
+  }
+
+  /* ── READINESS ROUTE ── */
+  .cc-route {
+    background: #131320;
+    padding: 7rem 0 6.5rem;
+    border-top: 1px solid rgba(255,255,255,.06);
+  }
+
+  .cc-route-intro {
+    max-width: 580px;
+    margin-bottom: 5rem;
+  }
+
+  .cc-route-intro h2 {
+    font-size: clamp(2.1rem, 4.2vw, 4rem);
+    line-height: 1.03;
+    letter-spacing: -.04em;
+    margin: .6rem 0 1rem;
+  }
+
+  .cc-route-intro p {
+    color: rgba(255,255,255,.7);
+    font-size: 1.05rem;
+    line-height: 1.68;
+  }
+
+  .cc-route-cols {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.5rem;
+    position: relative;
+  }
+
+  .cc-route-cols::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: calc(12.5% - 1px);
+    right: calc(12.5% - 1px);
+    height: 2px;
+    background: linear-gradient(90deg, var(--ma-mint) 0%, rgba(0,229,160,.14) 100%);
+    pointer-events: none;
+  }
+
+  .cc-route-top {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.8rem;
+  }
+
+  .cc-node {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #131320;
+    border: 2px solid var(--ma-mint);
+    position: relative;
+    z-index: 1;
+    transition: background var(--ma-transition), transform var(--ma-transition);
+  }
+
+  .cc-route-col:hover .cc-node { background: var(--ma-mint); transform: scale(1.25); }
+
+  .cc-node-final {
+    background: var(--ma-mint);
+    box-shadow: 0 0 0 4px rgba(0,229,160,.18);
+  }
+
+  .cc-route-meta {
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+    margin-bottom: .55rem;
+  }
+
+  .ccr-num {
+    font-family: var(--ma-font-mono);
+    font-size: .68rem;
+    color: var(--ma-mint);
+    letter-spacing: .05em;
+    font-weight: 700;
+  }
+
+  .ccr-phase {
+    font-family: var(--ma-font-mono);
+    font-size: .64rem;
+    color: rgba(255,255,255,.33);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+
+  .cc-route-body h3 {
+    font-size: 1.28rem;
+    line-height: 1.22;
+    margin-bottom: .55rem;
+    letter-spacing: -.025em;
+    transition: color var(--ma-transition);
+  }
+
+  .cc-route-col:hover h3 { color: var(--ma-mint); }
+
+  .cc-route-body p {
+    color: rgba(255,255,255,.62);
+    font-size: .93rem;
+    line-height: 1.65;
+  }
+
+  /* ── OPERATING PICTURE ── */
+  .cc-picture {
+    background: #0a0a12;
+    padding: 7rem 0 6rem;
+    border-top: 1px solid rgba(255,255,255,.06);
+  }
+
+  .cc-picture-header {
+    max-width: 540px;
+    margin-bottom: 3.5rem;
+  }
+
+  .cc-picture-header h2 {
+    font-size: clamp(2.6rem, 5vw, 4.8rem);
+    line-height: .98;
+    letter-spacing: -.05em;
+    margin: .7rem 0 1rem;
+  }
+
+  .cc-picture-header p {
+    color: rgba(255,255,255,.64);
+    font-size: 1.05rem;
+    line-height: 1.68;
+  }
+
+  .cc-questions {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid rgba(255,255,255,.08);
+  }
+
+  .cc-q-item {
+    display: grid;
+    grid-template-columns: 3.5rem 1fr auto;
+    gap: 0 2.2rem;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+    padding: 1.65rem 0;
+    transition: background .18s;
+  }
+
+  .cc-q-item:hover { background: rgba(255,255,255,.015); }
+
+  .ccq-num {
+    font-family: var(--ma-font-mono);
+    font-size: .68rem;
+    color: var(--ma-mint);
+    letter-spacing: .06em;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .ccq-text {
+    font-family: var(--ma-font-display);
+    font-size: clamp(1rem, 1.75vw, 1.25rem);
+    color: rgba(255,255,255,.9);
+    margin: 0;
+    line-height: 1.38;
+    border-left: 1px solid rgba(255,255,255,.1);
+    padding-left: 2.2rem;
+  }
+
+  .ccq-status {
+    font-family: var(--ma-font-mono);
+    font-size: .58rem;
+    color: rgba(0,229,160,.75);
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    white-space: nowrap;
+    border: 1px solid rgba(0,229,160,.22);
+    background: rgba(0,229,160,.06);
+    padding: .3rem .52rem;
+    border-radius: 999px;
+  }
+
+  .cc-resolution {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(0,229,160,.2);
+  }
+
+  .cc-resolution span {
+    font-family: var(--ma-font-display);
+    font-size: clamp(1.3rem, 2.7vw, 2rem);
+    color: var(--ma-mint);
+    line-height: 1.2;
+    letter-spacing: -.02em;
+  }
+
+  /* ── FOCUSED BUILD ── */
+  .cc-build {
+    background: var(--ma-surface-alt);
+    border-top: 1px solid var(--ma-border);
+    padding: 6rem 0;
+  }
+
+  .cc-build-inner {
+    display: grid;
+    grid-template-columns: .9fr 1.1fr;
+    gap: 3.5rem;
+    align-items: start;
+  }
+
+  .cc-build-copy h2 {
+    font-size: clamp(1.9rem, 3.8vw, 3.4rem);
+    line-height: 1.06;
+    letter-spacing: -.04em;
+    margin: .6rem 0 1rem;
+  }
+
+  .cc-build-copy p {
+    color: rgba(255,255,255,.76);
+    font-size: 1.04rem;
+    line-height: 1.68;
+  }
+
+  .cc-build-stack { display: grid; gap: 1rem; }
+
+  .cc-build-item {
     display: grid;
     grid-template-columns: 52px 1fr;
     gap: 1rem;
@@ -198,37 +817,48 @@ import Header from '../components/Header.astro';
     border: 1px solid var(--ma-border);
     border-radius: 12px;
     padding: 1.35rem;
+    transition: border-color var(--ma-transition);
   }
-  .proof-item b { font-family: var(--ma-font-mono); color: var(--ma-mint); }
-  .proof-item p { grid-column: 2; margin-top: -.4rem; color: rgba(255,255,255,.72); }
 
-  /* Flow strip */
-  .flow-strip {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    border: 1px solid var(--ma-border);
-    border-radius: 16px;
-    overflow: hidden;
+  .cc-build-item:hover { border-color: rgba(0,229,160,.22); }
+
+  .cc-build-item b {
+    font-family: var(--ma-font-mono);
+    color: var(--ma-mint);
+    font-size: .8rem;
+    padding-top: .1rem;
   }
-  .flow-strip > div {
-    padding: 1.5rem;
-    background: var(--ma-surface);
-    border-right: 1px solid var(--ma-border);
-    min-height: 185px;
+
+  .cc-build-item h3 {
+    font-size: 1.1rem;
+    margin-bottom: .4rem;
+    letter-spacing: -.02em;
   }
-  .flow-strip > div:last-child { border-right: 0; }
-  .flow-strip span { font-family: var(--ma-font-mono); color: var(--ma-mint); font-size: .75rem; }
-  .flow-strip strong { display: block; font-family: var(--ma-font-display); font-size: 1.35rem; margin: 2rem 0 .5rem; }
-  .flow-strip p { color: rgba(255,255,255,.72); font-size: .92rem; }
 
-  /* CTA breathing room */
-  .command-centre .ma-cta { padding: 7rem 0 8rem; }
+  .cc-build-item p {
+    color: rgba(255,255,255,.68);
+    font-size: .92rem;
+    line-height: 1.58;
+    margin: 0;
+  }
 
-  @media (max-width: 960px) {
-    .hero-layout, .split-section { grid-template-columns: 1fr; }
-    .ma-benefits-grid, .flow-strip { grid-template-columns: 1fr; }
-    .flow-strip > div { border-right: 0; border-bottom: 1px solid var(--ma-border); }
-    .signal { grid-template-columns: 1fr; }
-    .signal strong { text-align: left; }
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1000px) {
+    .cc-hero-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .cc-route-cols {
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    .cc-route-cols::before { display: none; }
+    .cc-build-inner { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 760px) {
+    .cc-band-grid { grid-template-columns: 1fr; }
+    .cc-route-cols { grid-template-columns: 1fr; }
+    .cc-q-item { grid-template-columns: 2.8rem 1fr; }
+    .ccq-status { display: none; }
+    .ccq-text { padding-left: 1.4rem; }
+    .cp-signal { grid-template-columns: 72px 1fr 60px; }
   }
 </style>
