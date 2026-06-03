@@ -16,6 +16,11 @@ import Header from '../components/Header.astro';
           <span class="fold-kicker">// linkedin_card.seed_01 / rapid_assessment</span>
           <h1>Your people are already using AI. Leadership is still waiting for the report.</h1>
           <p>Most organisations do not need another AI inspiration session. They need a fast operating picture: where AI is being used, where risk is forming, and which opportunities are ready to prove.</p>
+          <div class="mobile-proof" aria-hidden="true">
+            <span>01 use visible</span>
+            <span>02 workflows ranked</span>
+            <span>03 next decision</span>
+          </div>
           <div class="fold-actions">
             <a class="ma-btn ma-btn-mint" href="https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous" target="_blank" rel="noopener noreferrer">Book a Discovery Call</a>
             <a class="ma-btn ma-btn-outline" href="/homepage-ai-readiness-board-briefing/">See AI Readiness route</a>
@@ -71,6 +76,7 @@ import Header from '../components/Header.astro';
   .fold-copy h1 { font-size: clamp(3.2rem, 6.45vw, 6.25rem); line-height: .93; letter-spacing: -.064em; max-width: 820px; }
   .fold-copy p { max-width: 620px; margin: 1.55rem 0 2.2rem; font-size: 1.18rem; line-height: 1.72; color: rgba(235,235,235,.78); }
   .fold-actions { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+  .mobile-proof { display: none; }
 
   .assessment-card { background: linear-gradient(155deg, #17172a 0%, #0d0d18 100%); border: 1px solid rgba(255,255,255,.11); border-radius: 22px; overflow: hidden; box-shadow: 0 34px 110px rgba(0,0,0,.52), inset 0 0 0 1px rgba(5,204,144,.05); }
   .card-top { display: flex; justify-content: space-between; gap: 1rem; align-items: flex-start; padding: 1.35rem 1.5rem; background: rgba(255,255,255,.028); border-bottom: 1px solid rgba(255,255,255,.07); }
@@ -90,5 +96,5 @@ import Header from '../components/Header.astro';
   .decision-line strong { font-family: var(--ma-font-display); font-size: 1.38rem; line-height: 1.22; color: var(--ma-white); }
 
   @media (max-width: 1000px) { .fold-grid { grid-template-columns: 1fr; } .fold-hero { padding-top: 9rem; } }
-  @media (max-width: 640px) { .fold-copy h1 { font-size: clamp(3rem, 14vw, 4.4rem); } .signal-row { grid-template-columns: 2rem 1fr; } .signal-row em { grid-column: 2; } }
+  @media (max-width: 640px) { .fold-copy h1 { font-size: clamp(2.55rem, 11.2vw, 3.65rem); } .fold-copy p { margin: 1.1rem 0 1.05rem; font-size: 1rem; line-height: 1.55; } .fold-hero { padding-top: 7.25rem; } .signal-row { grid-template-columns: 2rem 1fr; } .signal-row em { grid-column: 2; } .mobile-proof { display: grid; grid-template-columns: 1fr; gap: .45rem; max-width: 540px; margin: 0 0 1.25rem; padding: .8rem .85rem; border: 1px solid rgba(5,204,144,.22); border-radius: 14px; background: rgba(18,18,34,.72); } .mobile-proof span { font-family: var(--ma-font-mono); font-size: .72rem; letter-spacing: .07em; text-transform: uppercase; color: rgba(235,235,235,.78); } .mobile-proof span:first-child { color: var(--ma-mint); } }
 </style>
