@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Technology Partner — Ecosystem</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script type="importmap">
+    { "imports": { "three": "./libs/three.module.js" } }
+  </script>
+</head>
+<body>
+  <canvas id="scene"></canvas>
+
+  <!-- atmosphere overlays -->
+  <div class="vignette"></div>
+  <div class="scanlines"></div>
+
+  <!-- chrome -->
+  <header class="ui-header">
+    <a class="brand" href="#">
+      <img src="img/dtp-logo-white.png" alt="Digital Technology Partner" />
+    </a>
+    <div class="header-right">
+      <span class="status-line"><i class="status-dot"></i>ECOSYSTEM&nbsp;ONLINE</span>
+      <button class="menu-btn" id="menuBtn" aria-label="menu">
+        <span>INDEX</span><i></i><i></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="ui-footer">
+    <p class="tagline">PEOPLE&nbsp;&middot;&nbsp;TECHNOLOGY&nbsp;&middot;&nbsp;DATA&nbsp;&middot;&nbsp;AI&nbsp;&middot;&nbsp;LEARNING<br/>ONE&nbsp;CONNECTED&nbsp;ECOSYSTEM</p>
+    <p class="hint"><span class="hint-dot"></span>DRAG TO EXPLORE</p>
+  </div>
+
+  <!-- equator ring nav labels (positioned in 3D each frame) -->
+  <nav class="ring-nav" id="ringNav" aria-label="ecosystem navigation"></nav>
+
+  <!-- hover info panel -->
+  <div class="node-panel" id="nodePanel">
+    <span class="np-index"></span>
+    <span class="np-title"></span>
+    <span class="np-desc"></span>
+    <span class="np-enter">ENTER &rsaquo;</span>
+  </div>
+
+  <!-- destination section page -->
+  <section class="section" id="section">
+    <div class="section-inner">
+      <header class="section-header">
+        <button class="back-btn" id="backBtn">
+          <span class="back-arrow">&larr;</span> RETURN TO ECOSYSTEM
+        </button>
+        <span class="section-crumb" id="sectionCrumb">DTP // ECOSYSTEM</span>
+      </header>
+      <div class="section-hero">
+        <p class="section-kicker" id="sectionKicker">DESTINATION 01</p>
+        <h1 class="section-title" id="sectionTitle">WHY DTP</h1>
+        <p class="section-intro" id="sectionIntro"></p>
+      </div>
+      <div class="section-blocks" id="sectionBlocks"></div>
+      <div class="section-cta">
+        <p class="cta-note">This destination is a working concept. Final content, media and forms follow in the next phase.</p>
+        <button class="cta-btn" id="ctaBack">RETURN TO ECOSYSTEM</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- index / menu overlay -->
+  <div class="menu-overlay" id="menuOverlay">
+    <div class="menu-head">
+      <span class="menu-title">ECOSYSTEM INDEX</span>
+      <button class="menu-close" id="menuClose">CLOSE &times;</button>
+    </div>
+    <ul class="menu-list" id="menuList"></ul>
+  </div>
+
+  <!-- loader -->
+  <div class="loader" id="loader">
+    <img class="loader-logo" src="img/dtp-logo-white.png" alt="Digital Technology Partner" />
+    <div class="loader-bar"><i id="loaderBar"></i></div>
+    <span class="loader-status">INITIALISING ECOSYSTEM</span>
+  </div>
+
+  <script src="libs/gsap.min.js"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
