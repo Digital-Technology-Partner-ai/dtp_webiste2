@@ -69,16 +69,28 @@ const doors = [
         <div class="section-copy">
           <span class="ma-section-tag">// one_sentence</span>
           <h2>You don't need a brief. One sentence will do.</h2>
-          <p>Start anywhere. We'll ask the useful questions.</p>
+          <p>
+            Tap the sentence that sounds like yours. It lands in your drafts,
+            addressed with the subject line filled in. Send it as it is or make
+            it yours.
+          </p>
         </div>
-        <div class="opener-grid" aria-label="Example openers">
-          {
-            openers.map((opener) => (
-              <a class="opener-option" href={emailHref(opener)}>
-                {opener}
-              </a>
-            ))
-          }
+        <div class="opener-panel">
+          <div class="opener-grid" aria-label="Example openers">
+            {
+              openers.map((opener) => (
+                <a class="opener-option" href={emailHref(opener)}>
+                  <span>{opener}</span>
+                  <span class="opener-option-mark" aria-hidden="true">
+                    ↗
+                  </span>
+                </a>
+              ))
+            }
+          </div>
+          <p class="opener-fallback">
+            No email app on this machine? It is {emailAddress}. Copy and paste.
+          </p>
         </div>
       </div>
     </section>
@@ -117,7 +129,9 @@ const doors = [
               <div class="map-placeholder">
                 <div class="map-placeholder-inner">
                   <span class="map-icon">&#9906;</span>
-                  <p>111 Gallowgate, Aberdeen AB25 1BU</p>
+                  <p>
+                    111 Gallowgate, Aberdeen, AB25 1BU, Scotland, United Kingdom
+                  </p>
                 </div>
               </div>
               <div class="map-links">
@@ -146,8 +160,8 @@ const doors = [
               <div class="ma-card-line"></div>
               <h3>Our Office</h3>
               <p class="contact-address">
-                111 Gallowgate<br />Aberdeen<br />AB25 1BU<br />Scotland, United
-                Kingdom
+                111 Gallowgate<br />Aberdeen<br />AB25 1BU<br />Scotland<br
+                />United Kingdom
               </p>
             </div>
 
@@ -167,33 +181,6 @@ const doors = [
               </a>
             </div>
 
-            <div class="ma-card">
-              <div class="ma-card-line"></div>
-              <h3>Getting Here</h3>
-              <div class="getting-here-list">
-                <div class="getting-here-item">
-                  <h4>By Car</h4>
-                  <p>
-                    Central Aberdeen location with nearby parking options. A96
-                    and A90 access routes.
-                  </p>
-                </div>
-                <div class="getting-here-item">
-                  <h4>Public Transport</h4>
-                  <p>
-                    Aberdeen Bus Station nearby. Regular services from across
-                    Scotland.
-                  </p>
-                </div>
-                <div class="getting-here-item">
-                  <h4>By Air</h4>
-                  <p>
-                    Aberdeen Airport 20 minutes away. Regular flights from major
-                    UK cities.
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -204,7 +191,7 @@ const doors = [
         <span class="ma-section-tag">// whenever_youre_ready</span>
         <h2>Still deciding? That's allowed.</h2>
         <p>
-          Browse the case studies, read Insights, or start with the one-week
+          Browse the case studies, read Insights, or start with the one week
           Readiness Sprint when the time is right. The door doesn't expire.
         </p>
         <div class="cta-actions">
@@ -308,7 +295,10 @@ const doors = [
   }
 
   .opener-option {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
     margin: 0;
     padding: 1rem 1.1rem;
     border-left: 2px solid rgba(0, 229, 160, 0.68);
@@ -338,6 +328,20 @@ const doors = [
   .opener-option:focus-visible {
     outline: 2px solid rgba(0, 229, 160, 0.72);
     outline-offset: 3px;
+  }
+
+  .opener-option-mark {
+    color: var(--ma-mint);
+    flex: 0 0 auto;
+    font-family: var(--ma-font-mono);
+    font-size: 0.9rem;
+  }
+
+  .opener-fallback {
+    margin-top: 0.85rem;
+    color: var(--ma-text-dim);
+    font-size: 0.86rem;
+    line-height: 1.55;
   }
 
   .doors-section {
@@ -468,25 +472,6 @@ const doors = [
     font-size: 0.85rem;
     color: var(--ma-mint);
     word-break: break-word;
-  }
-
-  .getting-here-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-top: 0.75rem;
-  }
-
-  .getting-here-item h4 {
-    font-size: 0.9rem;
-    color: var(--ma-white);
-    margin-bottom: 0.2rem;
-  }
-
-  .getting-here-item p {
-    font-size: 0.82rem;
-    color: var(--ma-text-dim);
-    line-height: 1.5;
   }
 
   .ma-cta {
