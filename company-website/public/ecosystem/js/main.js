@@ -24,7 +24,7 @@ const SIGNAL_START_PHASE = 0.90;
 const SIGNAL_ENTRY_SPREAD = Math.PI * (220 / 180);
 const SIGNAL_ENTRY_LAT = 0.62;
 const SIGNAL_DEPTH_TRAVEL = 18;
-const SIGNAL_MOTION_SPEED = 1.5;
+const SIGNAL_MOTION_SPEED = 0.75;
 
 function arcTheta(index, count, offset = 0) {
   if (count <= 1) return Math.PI + offset;
@@ -187,6 +187,9 @@ sphereGroup.add(nodesGroup, envGroup);
 
 const dustGroup = new THREE.Group();   // world-level atmosphere, drifts independently
 scene.add(dustGroup);
+
+const signalGroup = new THREE.Group(); // camera-space travel signals
+scene.add(signalGroup);
 
 const universeGroup = new THREE.Group(); // Why DTP star universe, used as distant background
 universeGroup.position.set(0, 0, -42);
@@ -433,22 +436,25 @@ function insideCardBoundary(theta, lat) {
 }
 
 function resetSignal(signal, phase = Math.random()) {
-  const halfSpread = SIGNAL_ENTRY_SPREAD / 2;
-  const startOffset = -halfSpread + Math.random() * SIGNAL_ENTRY_SPREAD;
-  const direction = Math.random() < 0.5 ? -1 : 1;
-  const exitOffset = direction * (halfSpread + 0.55 + Math.random() * 0.45);
-  signal.theta = Math.PI + startOffset;
-  signal.lat = (Math.random() - 0.5) * SIGNAL_ENTRY_LAT;
-  signal.thetaTravel = (exitOffset - startOffset) * (0.82 + Math.random() * 0.18 * SIGNAL_RANDOMNESS);
-  signal.thetaDrift = (Math.random() - 0.5) * 0.035 * SIGNAL_RANDOMNESS;
-  signal.latDrift = (Math.random() - 0.5) * 0.012 * SIGNAL_RANDOMNESS;
+  const side = Math.random() < 0.5 ? -1 : 1;
+  signal.startX = (Math.random() - 0.5) * 14;
+  signal.startY = (Math.random() - 0.5) * 12;
+  signal.startZ = -56 - Math.random() * 18;
+  signal.endX = side * (24 + Math.random() * 24);
+  signal.endY = signal.startY + (Math.random() - 0.5) * 18;
+  signal.endZ = 10 + Math.random() * 12;
+  signal.driftX = (Math.random() - 0.5) * 5 * SIGNAL_RANDOMNESS;
+  signal.driftY = (Math.random() - 0.5) * 5 * SIGNAL_RANDOMNESS;
   signal.depthPhase = phase;
-  signal.speed = (0.0011 + Math.random() * 0.0022) * SIGNAL_MOTION_SPEED;
+  signal.speed = (0.0014 + Math.random() * 0.0024) * SIGNAL_MOTION_SPEED;
 }
 
 const arcs = [];
 const signalPulses = [];
 let universeParticles = null;
+const signalRaycaster = new THREE.Raycaster();
+const signalNdc = new THREE.Vector2();
+const signalWorld = new THREE.Vector3();
 
 function buildUniverseBackground() {
   const mint = new THREE.Color(0x00e5a0);
@@ -561,25 +567,23 @@ function buildEnvironment() {
   const signalTexture = makeSignalTexture();
   const signalCount = SIGNAL_COUNT;
   for (let i = 0; i < signalCount; i++) {
-    const behind = ((Math.sin((i + 1) * 12.9898) * 43758.5453) % 1 + 1) % 1 < SIGNAL_REAR_RATIO;
     const mat = registerAmbient(new THREE.SpriteMaterial({
       map: signalTexture,
       color: MINT,
       transparent: true,
-      opacity: behind ? 0.72 : 0.92,
+      opacity: 0.92,
       depthTest: true,
       depthWrite: false,
-    }), behind ? 0.72 : 0.92);
+    }), 0.92);
     const sprite = new THREE.Sprite(mat);
-    sprite.renderOrder = behind ? 1 : 4;
-    sprite.scale.setScalar(behind ? 0.7 : 0.82);
-    envGroup.add(sprite);
+    sprite.renderOrder = 4;
+    sprite.scale.setScalar(0.82);
+    signalGroup.add(sprite);
     const signal = {
       sprite,
       mat,
-      behind,
       depthFade: 1,
-      scale: behind ? 0.7 : 0.82,
+      scale: 0.82,
     };
     resetSignal(signal, (SIGNAL_START_PHASE + i / signalCount) % 1);
     signalPulses.push(signal);
@@ -983,26 +987,34 @@ function tick(t) {
   // ambient material fade
   for (const m of ambientMats) m.opacity = m.userData.base * ambientFade.v;
 
-  // signal cubes entering through the forward field
+  nodesGroup.updateMatrixWorld(true);
+
+  // signal cubes travelling through space past the viewer
   for (const signal of signalPulses) {
     signal.depthPhase += signal.speed * dt;
     if (signal.depthPhase >= 1) resetSignal(signal, signal.depthPhase % 1);
 
     const eased = signal.depthPhase * signal.depthPhase * (3 - 2 * signal.depthPhase);
-    const theta = signal.theta + signal.thetaTravel * signal.depthPhase + signal.thetaDrift * Math.sin(signal.depthPhase * Math.PI * 2);
-    const lat = signal.lat + signal.latDrift * Math.cos(signal.depthPhase * Math.PI * 2);
-    const frontDepth = signal.behind ? 1.8 : 5.2;
-    const radialDepth = RADIUS + SIGNAL_DEPTH_TRAVEL * 0.5 - eased * (SIGNAL_DEPTH_TRAVEL + frontDepth);
-    _p.copy(sph(radialDepth, theta, lat));
+    _p.set(
+      signal.startX + (signal.endX - signal.startX) * eased + Math.sin(eased * Math.PI * 2) * signal.driftX,
+      signal.startY + (signal.endY - signal.startY) * eased + Math.cos(eased * Math.PI * 2) * signal.driftY,
+      signal.startZ + (signal.endZ - signal.startZ) * eased
+    );
 
-    const nearCard = insideCardBoundary(theta, lat);
-    const targetFade = signal.behind && nearCard ? SIGNAL_REAR_FADE : 1;
-    signal.depthFade += (targetFade - signal.depthFade) * 0.11 * dt;
-
-    const visibleDepth = signal.behind && nearCard ? Math.max(radialDepth, RADIUS + 3.4) : radialDepth;
-    signal.sprite.position.copy(_p.normalize().multiplyScalar(visibleDepth));
-    signal.sprite.scale.setScalar(signal.scale * (0.42 + signal.depthFade * 0.58));
-    signal.mat.opacity = signal.mat.userData.base * ambientFade.v * signal.depthFade;
+    signal.sprite.position.copy(_p);
+    signal.sprite.scale.setScalar(signal.scale * (0.36 + eased * 1.55));
+    signal.sprite.getWorldPosition(signalWorld);
+    signalWorld.project(camera);
+    signalNdc.set(signalWorld.x, signalWorld.y);
+    const insideVisibleCard = Math.abs(signalNdc.x) <= 1 && Math.abs(signalNdc.y) <= 1
+      && (() => {
+        signalRaycaster.setFromCamera(signalNdc, camera);
+        return signalRaycaster.intersectObjects(nodesGroup.children, false).length > 0;
+      })();
+    const targetFade = insideVisibleCard ? SIGNAL_REAR_FADE : 1;
+    signal.depthFade += (targetFade - signal.depthFade) * 0.16 * dt;
+    const pastCameraFade = 1 - Math.max(0, eased - 0.82) / 0.18;
+    signal.mat.opacity = signal.mat.userData.base * ambientFade.v * signal.depthFade * pastCameraFade;
   }
 
   // dust drift
