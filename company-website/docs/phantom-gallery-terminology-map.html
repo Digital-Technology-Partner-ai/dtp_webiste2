@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Phantom Gallery Terminology Map</title>
+  <style>
+    :root {
+      --bg: #07090d;
+      --panel: #0d1218;
+      --ink: #f4f1e8;
+      --muted: #9aa3ad;
+      --line: rgba(244, 241, 232, 0.22);
+      --faint: rgba(244, 241, 232, 0.08);
+      --mint: #05cc90;
+      --blue: #7c8bff;
+      --amber: #f4c84a;
+      --danger: #ff6b6b;
+      --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --body: "Space Grotesk", Avenir Next, Helvetica, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--ink); font-family: var(--body); }
+    body {
+      background:
+        radial-gradient(circle at 50% 48%, rgba(5, 204, 144, 0.12), transparent 32%),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,0.025) 1px, transparent 1px),
+        var(--bg);
+      background-size: auto, 32px 32px, 32px 32px, auto;
+    }
+
+    .shell { max-width: 1440px; margin: 0 auto; padding: 28px; }
+    header { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 22px; }
+    h1 { margin: 0; font-size: clamp(28px, 4vw, 52px); letter-spacing: 0; line-height: 0.92; }
+    .subtitle { max-width: 760px; color: var(--muted); font-size: 15px; line-height: 1.55; margin: 12px 0 0; }
+    .status { font-family: var(--mono); color: var(--mint); font-size: 12px; letter-spacing: 0.18em; white-space: nowrap; }
+
+    .grid { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(360px, 0.75fr); gap: 18px; align-items: stretch; }
+    .panel {
+      background: rgba(9, 13, 19, 0.84);
+      border: 1px solid var(--line);
+      min-height: 0;
+      box-shadow: 0 18px 70px rgba(0,0,0,0.42);
+    }
+    .stage { position: relative; min-height: 760px; overflow: hidden; }
+    .stage svg { display: block; width: 100%; height: 760px; }
+
+    .controls { padding: 22px; display: flex; flex-direction: column; gap: 20px; }
+    .control { display: grid; gap: 8px; }
+    .control label { display: flex; justify-content: space-between; gap: 12px; font-family: var(--mono); font-size: 12px; color: var(--ink); letter-spacing: 0.08em; }
+    .control span { color: var(--mint); }
+    input[type="range"] { width: 100%; accent-color: var(--mint); }
+    .note { border-top: 1px solid var(--line); padding-top: 18px; color: var(--muted); font-size: 14px; line-height: 1.55; }
+    .terms { display: grid; gap: 10px; border-top: 1px solid var(--line); padding-top: 18px; }
+    .term { display: grid; grid-template-columns: 128px 1fr; gap: 12px; font-size: 13px; line-height: 1.4; }
+    .term b { color: var(--ink); font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; }
+    .term span { color: var(--muted); }
+
+    .readout {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      border-top: 1px solid var(--line);
+      padding-top: 18px;
+    }
+    .metric { background: rgba(255,255,255,0.04); border: 1px solid var(--faint); padding: 12px; }
+    .metric small { display: block; color: var(--muted); font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; }
+    .metric strong { display: block; margin-top: 6px; font-size: 24px; color: var(--ink); }
+
+    .label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.11em; fill: var(--ink); }
+    .label-muted { fill: var(--muted); }
+    .tiny { font-size: 9px; letter-spacing: 0.08em; }
+    .sphere { fill: rgba(255,255,255,0.018); stroke: rgba(244,241,232,0.24); stroke-width: 1.4; }
+    .gridline { fill: none; stroke: rgba(244,241,232,0.10); stroke-width: 1; }
+    .axis { stroke: rgba(244,241,232,0.30); stroke-width: 1; stroke-dasharray: 5 6; }
+    .fov { fill: rgba(124,139,255,0.08); stroke: rgba(124,139,255,0.42); stroke-width: 1; stroke-dasharray: 4 5; }
+    .active { fill: rgba(5,204,144,0.12); stroke: rgba(5,204,144,0.70); stroke-width: 2; }
+    .quiet { fill: rgba(255,107,107,0.10); stroke: rgba(255,107,107,0.70); stroke-width: 2; }
+    .belt { fill: none; stroke: rgba(5,204,144,0.34); stroke-width: 3; }
+    .button-dot { fill: var(--mint); stroke: var(--bg); stroke-width: 2; }
+    .button-dot:nth-child(odd) { fill: var(--blue); }
+    .card { fill: rgba(244,241,232,0.10); stroke: rgba(244,241,232,0.56); stroke-width: 1; }
+    .upper-card { fill: rgba(5,204,144,0.18); }
+    .lower-card { fill: rgba(124,139,255,0.18); }
+    .user { fill: var(--ink); stroke: var(--mint); stroke-width: 2; }
+    .arrow { stroke: var(--mint); stroke-width: 2; marker-end: url(#arrow); }
+    .guide { stroke: rgba(244,241,232,0.30); stroke-width: 1; }
+    .callout { fill: rgba(9,13,19,0.92); stroke: var(--line); }
+
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+      header { align-items: start; flex-direction: column; }
+      .stage, .stage svg { min-height: 680px; height: 680px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <h1>Phantom Gallery<br />Terminology Map</h1>
+        <p class="subtitle">A shared vocabulary for the spherical interface. The plan view shows yaw around the user; the elevation view shows the upper card band, equator belt and lower card band.</p>
+      </div>
+      <div class="status">NOT SITE CODE</div>
+    </header>
+
+    <section class="grid">
+      <div class="panel stage">
+        <svg id="diagram" viewBox="0 0 980 760" role="img" aria-label="Interactive Phantom Gallery terminology diagram">
+          <defs>
+            <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L0,6 L7,3 z" fill="#05cc90"></path>
+            </marker>
+          </defs>
+
+          <g id="plan" transform="translate(285 360)">
+            <circle class="sphere" r="245"></circle>
+            <circle class="gridline" r="180"></circle>
+            <circle class="gridline" r="115"></circle>
+            <line class="axis" x1="-275" y1="0" x2="275" y2="0"></line>
+            <line class="axis" x1="0" y1="-275" x2="0" y2="275"></line>
+            <path id="fovCone" class="fov"></path>
+            <path id="quietArc" class="quiet"></path>
+            <path id="activeArc" class="active"></path>
+            <path id="beltArc" class="belt"></path>
+            <g id="planCards"></g>
+            <g id="beltButtons"></g>
+            <circle class="user" r="10"></circle>
+            <line class="arrow" x1="0" y1="0" x2="0" y2="-82"></line>
+            <text class="label" text-anchor="middle" x="0" y="-100">FORWARD VIEW</text>
+            <text class="label label-muted" text-anchor="middle" x="0" y="292">REAR / BEHIND USER</text>
+            <rect class="callout" x="-248" y="-322" width="206" height="58" rx="0"></rect>
+            <text class="label" x="-232" y="-297">PLAN VIEW</text>
+            <text class="label label-muted tiny" x="-232" y="-278">Yaw around the sphere</text>
+          </g>
+
+          <g id="elevation" transform="translate(710 360)">
+            <ellipse class="sphere" cx="0" cy="0" rx="190" ry="245"></ellipse>
+            <ellipse class="gridline" cx="0" cy="0" rx="150" ry="190"></ellipse>
+            <line class="axis" x1="-215" y1="0" x2="215" y2="0"></line>
+            <line class="axis" x1="0" y1="-270" x2="0" y2="270"></line>
+            <path class="belt" d="M-190 0 Q0 28 190 0"></path>
+            <g id="elevationCards"></g>
+            <circle class="user" cx="0" cy="0" r="9"></circle>
+            <line class="arrow" x1="0" y1="0" x2="0" y2="-74"></line>
+            <text class="label" text-anchor="middle" x="0" y="-94">LOOK DIRECTION</text>
+            <text class="label label-muted" text-anchor="middle" x="0" y="-135">UPPER CARD BAND</text>
+            <text class="label label-muted" text-anchor="middle" x="0" y="25">EQUATOR BELT</text>
+            <text class="label label-muted" text-anchor="middle" x="0" y="151">LOWER CARD BAND</text>
+            <rect class="callout" x="-188" y="-322" width="212" height="58" rx="0"></rect>
+            <text class="label" x="-172" y="-297">ELEVATION VIEW</text>
+            <text class="label label-muted tiny" x="-172" y="-278">Pitch, band height, rows</text>
+          </g>
+
+          <g transform="translate(40 706)">
+            <circle cx="0" cy="-4" r="5" fill="#05cc90"></circle>
+            <text class="label label-muted" x="14" y="0">Upper cards</text>
+            <circle cx="130" cy="-4" r="5" fill="#7c8bff"></circle>
+            <text class="label label-muted" x="144" y="0">Lower cards</text>
+            <circle cx="260" cy="-4" r="5" fill="#f4c84a"></circle>
+            <text class="label label-muted" x="274" y="0">Equator buttons</text>
+            <rect x="430" y="-12" width="20" height="16" fill="rgba(255,107,107,0.18)" stroke="rgba(255,107,107,0.72)"></rect>
+            <text class="label label-muted" x="462" y="0">Rear quiet zone</text>
+          </g>
+        </svg>
+      </div>
+
+      <aside class="panel controls">
+        <div class="control">
+          <label for="arc">Active Arc <span id="arcValue">180 deg</span></label>
+          <input id="arc" type="range" min="180" max="300" value="180" />
+        </div>
+        <div class="control">
+          <label for="cardWidth">Card Visual Width <span id="cardWidthValue">38 deg</span></label>
+          <input id="cardWidth" type="range" min="12" max="42" value="38" />
+        </div>
+        <div class="control">
+          <label for="cardsPerBand">Cards Per Band <span id="cardsPerBandValue">6</span></label>
+          <input id="cardsPerBand" type="range" min="3" max="8" value="6" />
+        </div>
+        <div class="control">
+          <label for="beltCount">Equator Buttons <span id="beltCountValue">12</span></label>
+          <input id="beltCount" type="range" min="6" max="16" value="12" />
+        </div>
+        <div class="control">
+          <label for="bandElevation">Band Elevation <span id="bandElevationValue">11 deg</span></label>
+          <input id="bandElevation" type="range" min="8" max="32" value="11" />
+        </div>
+        <div class="control">
+          <label for="galleryRadius">Gallery Radius <span id="galleryRadiusValue">30 units</span></label>
+          <input id="galleryRadius" type="range" min="20" max="36" value="30" />
+        </div>
+        <div class="control">
+          <label for="cameraFov">Camera FOV <span id="cameraFovValue">70 deg</span></label>
+          <input id="cameraFov" type="range" min="45" max="95" value="70" />
+        </div>
+
+        <div class="readout">
+          <div class="metric">
+            <small>GEOMETRIC QUIET ZONE</small>
+            <strong id="quietValue">180 deg</strong>
+          </div>
+          <div class="metric">
+            <small>VISIBLE QUIET GAP</small>
+            <strong id="visibleQuietValue">142 deg</strong>
+          </div>
+          <div class="metric">
+            <small>CARD SLOT SPACING</small>
+            <strong id="slotSpacingValue">36 deg</strong>
+          </div>
+          <div class="metric">
+            <small>OVERLAP PER BAND</small>
+            <strong id="overlapValue">2 deg</strong>
+          </div>
+          <div class="metric">
+            <small>GALLERY RADIUS</small>
+            <strong id="radiusValue">30</strong>
+          </div>
+          <div class="metric">
+            <small>CAMERA PRESSURE</small>
+            <strong id="pressureValue">1.00x</strong>
+          </div>
+        </div>
+
+        <div class="note">
+          The plan cards are now drawn as angular wedges. If card visual width is larger than slot spacing, the wedges overlap, matching the kind of crowding you see in the live sphere. Radius changes perceived spaciousness, while FOV changes camera pressure.
+        </div>
+
+        <div class="terms">
+          <div class="term"><b>ACTIVE ARC</b><span>The angular field where cards and belt buttons are distributed.</span></div>
+          <div class="term"><b>QUIET ZONE</b><span>The intentionally empty rear sector behind the user.</span></div>
+          <div class="term"><b>YAW</b><span>Horizontal rotation around the sphere, like turning left or right.</span></div>
+          <div class="term"><b>PITCH</b><span>Vertical tilt, like looking up toward the upper row or down toward the lower row.</span></div>
+          <div class="term"><b>EQUATOR</b><span>The central navigation belt around the sphere.</span></div>
+          <div class="term"><b>BANDS</b><span>The upper and lower rows of destination cards.</span></div>
+          <div class="term"><b>RADIUS</b><span>The distance from the user at the center to the gallery surface.</span></div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const svgNS = "http://www.w3.org/2000/svg";
+    const controls = {
+      arc: $("arc"),
+      cardWidth: $("cardWidth"),
+      cardsPerBand: $("cardsPerBand"),
+      beltCount: $("beltCount"),
+      bandElevation: $("bandElevation"),
+      galleryRadius: $("galleryRadius"),
+      cameraFov: $("cameraFov"),
+    };
+
+    function polar(radius, deg) {
+      const rad = (deg - 90) * Math.PI / 180;
+      return { x: Math.cos(rad) * radius, y: Math.sin(rad) * radius };
+    }
+
+    function arcPath(radius, startDeg, endDeg, innerRadius = 0) {
+      const start = polar(radius, startDeg);
+      const end = polar(radius, endDeg);
+      const large = Math.abs(endDeg - startDeg) > 180 ? 1 : 0;
+      if (!innerRadius) return `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${large} 1 ${end.x} ${end.y}`;
+      const innerEnd = polar(innerRadius, endDeg);
+      const innerStart = polar(innerRadius, startDeg);
+      return [
+        `M ${start.x} ${start.y}`,
+        `A ${radius} ${radius} 0 ${large} 1 ${end.x} ${end.y}`,
+        `L ${innerEnd.x} ${innerEnd.y}`,
+        `A ${innerRadius} ${innerRadius} 0 ${large} 0 ${innerStart.x} ${innerStart.y}`,
+        "Z",
+      ].join(" ");
+    }
+
+    function wedgePath(radius, centerDeg, widthDeg, thickness) {
+      return arcPath(radius + thickness / 2, centerDeg - widthDeg / 2, centerDeg + widthDeg / 2, radius - thickness / 2);
+    }
+
+    function conePath(radius, fovDeg) {
+      const left = polar(radius, -fovDeg / 2);
+      const right = polar(radius, fovDeg / 2);
+      return `M 0 0 L ${left.x} ${left.y} A ${radius} ${radius} 0 0 1 ${right.x} ${right.y} Z`;
+    }
+
+    function clear(node) {
+      while (node.firstChild) node.removeChild(node.firstChild);
+    }
+
+    function addSvg(parent, tag, attrs) {
+      const el = document.createElementNS(svgNS, tag);
+      Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, value));
+      parent.appendChild(el);
+      return el;
+    }
+
+    function update() {
+      const arc = Number(controls.arc.value);
+      const cardWidth = Number(controls.cardWidth.value);
+      const cardsPerBand = Number(controls.cardsPerBand.value);
+      const beltCount = Number(controls.beltCount.value);
+      const bandElevation = Number(controls.bandElevation.value);
+      const galleryRadius = Number(controls.galleryRadius.value);
+      const cameraFov = Number(controls.cameraFov.value);
+
+      $("arcValue").textContent = `${arc} deg`;
+      $("cardWidthValue").textContent = `${cardWidth} deg`;
+      $("cardsPerBandValue").textContent = cardsPerBand;
+      $("beltCountValue").textContent = beltCount;
+      $("bandElevationValue").textContent = `${bandElevation} deg`;
+      $("galleryRadiusValue").textContent = `${galleryRadius} units`;
+      $("cameraFovValue").textContent = `${cameraFov} deg`;
+
+      const quiet = 360 - arc;
+      const visibleQuiet = Math.max(0, quiet - cardWidth);
+      const slotSpacing = cardsPerBand > 1 ? arc / (cardsPerBand - 1) : 0;
+      const overlap = Math.max(0, cardWidth - slotSpacing);
+      const pressure = (70 / cameraFov) * (30 / galleryRadius);
+      $("quietValue").textContent = `${quiet.toFixed(0)} deg`;
+      $("visibleQuietValue").textContent = `${visibleQuiet.toFixed(0)} deg`;
+      $("slotSpacingValue").textContent = `${slotSpacing.toFixed(0)} deg`;
+      $("overlapValue").textContent = `${overlap.toFixed(0)} deg`;
+      $("radiusValue").textContent = galleryRadius.toFixed(0);
+      $("pressureValue").textContent = `${pressure.toFixed(2)}x`;
+
+      const start = -arc / 2;
+      const end = arc / 2;
+      const outerRadius = galleryRadius * (245 / 30);
+      const innerRadius = outerRadius * 0.56;
+      const beltRadius = outerRadius * 0.81;
+      $("fovCone").setAttribute("d", conePath(outerRadius * 0.98, cameraFov));
+      $("activeArc").setAttribute("d", arcPath(outerRadius, start, end, innerRadius));
+      $("beltArc").setAttribute("d", arcPath(beltRadius, start, end));
+      $("quietArc").setAttribute("d", arcPath(outerRadius, end, 360 + start, innerRadius));
+
+      const planCards = $("planCards");
+      const beltButtons = $("beltButtons");
+      const elevationCards = $("elevationCards");
+      clear(planCards);
+      clear(beltButtons);
+      clear(elevationCards);
+
+      for (let row = 0; row < 2; row++) {
+        const radius = row === 0 ? outerRadius * 0.92 : outerRadius * 0.68;
+        const cls = row === 0 ? "card upper-card" : "card lower-card";
+        const thickness = row === 0 ? 24 : 22;
+        for (let i = 0; i < cardsPerBand; i++) {
+          const deg = cardsPerBand === 1 ? 0 : start + (i / (cardsPerBand - 1)) * arc;
+          addSvg(planCards, "path", {
+            class: cls,
+            d: wedgePath(radius, deg, cardWidth, thickness),
+          });
+        }
+      }
+
+      for (let i = 0; i < beltCount; i++) {
+        const deg = beltCount === 1 ? 0 : start + (i / (beltCount - 1)) * arc;
+        const p = polar(beltRadius, deg);
+        addSvg(beltButtons, "circle", { class: "button-dot", cx: p.x, cy: p.y, r: 6 });
+      }
+
+      const elevationRows = [
+        { y: -bandElevation * 4.7, cls: "card upper-card", label: "UPPER" },
+        { y: bandElevation * 4.7, cls: "card lower-card", label: "LOWER" },
+      ];
+      elevationRows.forEach((row) => {
+        for (let i = 0; i < cardsPerBand; i++) {
+          const spread = 150;
+          const x = cardsPerBand === 1 ? 0 : -spread / 2 + (i / (cardsPerBand - 1)) * spread;
+          addSvg(elevationCards, "rect", {
+            class: row.cls,
+            x: x - 13,
+            y: row.y - 12,
+            width: 26,
+            height: 24,
+            rx: 0,
+          });
+        }
+      });
+    }
+
+    Object.values(controls).forEach((control) => control.addEventListener("input", update));
+    update();
+  </script>
+</body>
+</html>

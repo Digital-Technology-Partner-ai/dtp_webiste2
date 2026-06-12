@@ -1,0 +1,747 @@
+---
+import { getCollection } from 'astro:content';
+import Header from '../components/Header.astro';
+import Layout from '../layouts/Layout.astro';
+
+const approvedNews = await getCollection('news', ({ data }) => data.approved === true);
+const articles = approvedNews.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+const featured = articles[0];
+const latest = articles.slice(1, 7);
+
+const themes = [
+  {
+    id: 'leadership',
+    label: 'Leadership',
+    title: 'What leaders should fund, stop or govern.',
+    tags: ['strategy', 'ai-adoption', 'enterprise-operations'],
+  },
+  {
+    id: 'delivery',
+    label: 'Delivery',
+    title: 'How AI moves from pilot to production.',
+    tags: ['implementation', 'digital-transformation', 'production'],
+  },
+  {
+    id: 'governance',
+    label: 'Governance',
+    title: 'Risk, policy, security and operational control.',
+    tags: ['governance', 'risk', 'compliance'],
+  },
+];
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+---
+
+<Layout
+  title="Insights - Digital Technology Partner"
+  description="Curated DTP insights on AI adoption, delivery, governance, automation and operational AI."
+>
+  <Header />
+  <main class="insights-page">
+    <section class="insights-hero" aria-labelledby="insights-title">
+      <div class="insights-grid"></div>
+      <div class="ma-container insights-hero-inner">
+        <div class="insights-copy" data-insights-reveal>
+          <span class="ma-section-tag">// signal_room</span>
+          <h1 id="insights-title">Insight for leaders turning AI noise into operational decisions.</h1>
+          <p>
+            A curated view of AI adoption, governance, delivery and automation, written for
+            teams who need practical judgement rather than another trend feed.
+          </p>
+          <div class="insights-actions">
+            <a class="ma-btn ma-btn-mint" href="/programmes/ai-adoption-readiness/">
+              Start with readiness
+            </a>
+            <a class="ma-btn ma-btn-outline" href="/news/">View all newsroom articles</a>
+          </div>
+        </div>
+
+        <aside class="signal-console" aria-label="Animated insights signal atlas" data-insights-reveal>
+          <div class="signal-console-top">
+            <span>signal atlas</span>
+            <strong id="signal-console-title">Leadership</strong>
+          </div>
+          <div class="signal-visual">
+            <canvas id="signal-atlas-scene" aria-hidden="true"></canvas>
+            <span class="signal-label signal-label-leadership">leadership</span>
+            <span class="signal-label signal-label-delivery">delivery</span>
+            <span class="signal-label signal-label-risk">risk</span>
+          </div>
+          <div class="signal-readout" aria-live="polite">
+            <span id="signal-console-value">{themes[0].title}</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="ma-section theme-section">
+      <div class="ma-container theme-strip" aria-label="Insight themes">
+        {themes.map((theme) => (
+          <button
+            type="button"
+            data-signal-theme={theme.id}
+            data-signal-label={theme.label}
+            data-signal-value={theme.title}
+            class:list={['theme-button', { active: theme.id === 'leadership' }]}
+            aria-pressed={theme.id === 'leadership' ? 'true' : 'false'}
+          >
+            <span>{theme.label}</span>
+            <strong>{theme.title}</strong>
+          </button>
+        ))}
+      </div>
+    </section>
+
+    <section class="ma-section editorial-section">
+      <div class="ma-container editorial-grid">
+        <div class="editorial-copy" data-insights-reveal>
+          <span class="ma-section-tag">// latest_signal</span>
+          <h2>Read what is changing, then decide what deserves attention.</h2>
+        </div>
+        <div class="editorial-feed">
+          {featured && (
+            <article class="featured-article" data-insights-card>
+              <div class="article-meta">
+                <span>Featured</span>
+                <time datetime={featured.data.pubDate.toISOString()}>{formatDate(featured.data.pubDate)}</time>
+              </div>
+              <h3><a href={`/news/${featured.id}`}>{featured.data.title}</a></h3>
+              <p>{featured.data.description}</p>
+              <div class="article-tags">
+                {[featured.data.category, ...(featured.data.tags || []).slice(0, 3)].map((tag) => <span>{tag}</span>)}
+              </div>
+            </article>
+          )}
+
+          <div class="article-list">
+            {latest.map((article) => (
+              <article data-insights-card>
+                <div class="article-meta">
+                  <span>{article.data.category}</span>
+                  <time datetime={article.data.pubDate.toISOString()}>{formatDate(article.data.pubDate)}</time>
+                </div>
+                <h3><a href={`/news/${article.id}`}>{article.data.title}</a></h3>
+                <p>{article.data.description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ma-section theme-map-section">
+      <div class="ma-container">
+        <div class="theme-map-head" data-insights-reveal>
+          <span class="ma-section-tag">// editorial_lenses</span>
+          <h2>Use Insights as a decision filter.</h2>
+        </div>
+        <div class="theme-map">
+          {themes.map((theme) => (
+            <article data-insights-card>
+              <span>{theme.label}</span>
+              <h3>{theme.title}</h3>
+              <p>{theme.tags.map((tag) => `#${tag}`).join('  ')}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<script>
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canvas = document.getElementById('signal-atlas-scene') as HTMLCanvasElement | null;
+  const gsapReady = import('gsap');
+  const themeButtons = Array.from(document.querySelectorAll('[data-signal-theme]')) as HTMLButtonElement[];
+  const signalTitle = document.getElementById('signal-console-title');
+  const signalValue = document.getElementById('signal-console-value');
+
+  const setTheme = async (button: HTMLButtonElement) => {
+    themeButtons.forEach((item) => {
+      const active = item === button;
+      item.classList.toggle('active', active);
+      item.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+    if (signalTitle) signalTitle.textContent = button.dataset.signalLabel || '';
+    if (signalValue) {
+      if (reducedMotion) {
+        signalValue.textContent = button.dataset.signalValue || '';
+      } else {
+        const { gsap } = await gsapReady;
+        gsap.to(signalValue, {
+          opacity: 0,
+          y: 6,
+          duration: 0.12,
+          ease: 'power2.out',
+          onComplete: () => {
+            signalValue.textContent = button.dataset.signalValue || '';
+            gsap.to(signalValue, { opacity: 1, y: 0, duration: 0.24, ease: 'power3.out' });
+          },
+        });
+      }
+    }
+    document.dispatchEvent(new CustomEvent('signal-theme-focus', { detail: { id: button.dataset.signalTheme } }));
+  };
+
+  themeButtons.forEach((button) => {
+    button.addEventListener('pointerenter', () => void setTheme(button));
+    button.addEventListener('focus', () => void setTheme(button));
+    button.addEventListener('click', () => void setTheme(button));
+  });
+
+  if (canvas) {
+    const [THREE, gsapModule] = await Promise.all([import('three'), gsapReady]);
+    const { gsap } = gsapModule;
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.6));
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 80);
+    camera.position.set(0, 0.1, 8.4);
+    const group = new THREE.Group();
+    scene.add(group);
+
+    const mint = new THREE.Color('#00e5a0');
+    const blue = new THREE.Color('#7c8bff');
+    const amber = new THREE.Color('#f4c84a');
+    const ivory = new THREE.Color('#f4f1e8');
+    const materials: THREE.Material[] = [];
+    const nodes: THREE.Mesh[] = [];
+    const rings: THREE.Mesh[] = [];
+    const focusState = { yaw: -0.12, pitch: -0.18, zoom: 8.4, particleOpacity: 0.66 };
+
+    const focusMap = {
+      leadership: { node: 0, yaw: -0.16, pitch: -0.08, zoom: 8.15, particleOpacity: 0.72 },
+      delivery: { node: 1, yaw: 0.18, pitch: -0.22, zoom: 8.05, particleOpacity: 0.82 },
+      governance: { node: 2, yaw: 0.02, pitch: -0.34, zoom: 7.95, particleOpacity: 0.9 },
+    } as const;
+
+    const nodePositions = [
+      [-1.95, 1.1, 0],
+      [2.02, 0.9, -0.1],
+      [0, -1.78, 0.12],
+      [0, 0, 0],
+    ] as Array<[number, number, number]>;
+
+    const makeMaterial = (color: THREE.Color, opacity: number) => {
+      const material = new THREE.MeshBasicMaterial({ color, transparent: true, opacity, depthWrite: false, side: THREE.DoubleSide });
+      materials.push(material);
+      return material;
+    };
+
+    nodePositions.forEach((position, index) => {
+      const color = index === 0 ? mint : index === 1 ? blue : index === 2 ? amber : ivory;
+      const node = new THREE.Mesh(new THREE.SphereGeometry(index === 3 ? 0.1 : 0.08, 24, 24), makeMaterial(color, index === 3 ? 0.9 : 0.78));
+      node.position.set(...position);
+      node.userData.focusScale = index === 0 ? 1.35 : 0.94;
+      group.add(node);
+      nodes.push(node);
+    });
+
+    [1.1, 2.05, 3].forEach((radius, index) => {
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.008, 12, 160), makeMaterial(index === 1 ? blue : mint, index === 1 ? 0.08 : 0.12));
+      ring.rotation.x = Math.PI / 2 + index * 0.2;
+      ring.rotation.y = index * 0.24;
+      group.add(ring);
+      rings.push(ring);
+    });
+
+    const particleCount = 760;
+    const particlePositions = new Float32Array(particleCount * 3);
+    const particleColors = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i += 1) {
+      const r = 0.6 + Math.random() * 3.5;
+      const a = Math.random() * Math.PI * 2;
+      particlePositions[i * 3] = Math.cos(a) * r;
+      particlePositions[i * 3 + 1] = Math.sin(a) * r * 0.64;
+      particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 1.1;
+      const color = i % 11 === 0 ? amber : i % 7 === 0 ? blue : i % 4 === 0 ? ivory : mint;
+      particleColors[i * 3] = color.r;
+      particleColors[i * 3 + 1] = color.g;
+      particleColors[i * 3 + 2] = color.b;
+    }
+    const particleGeometry = new THREE.BufferGeometry();
+    particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+    particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
+    const particles = new THREE.Points(
+      particleGeometry,
+      new THREE.PointsMaterial({ size: 0.022, vertexColors: true, transparent: true, opacity: 0.66, depthWrite: false })
+    );
+    group.add(particles);
+
+    const focusTheme = (id: keyof typeof focusMap | string) => {
+      const target = focusMap[id as keyof typeof focusMap] || focusMap.leadership;
+      gsap.to(focusState, {
+        yaw: target.yaw,
+        pitch: target.pitch,
+        zoom: target.zoom,
+        particleOpacity: target.particleOpacity,
+        duration: reducedMotion ? 0 : 0.72,
+        ease: 'power3.out',
+      });
+      nodes.forEach((node, index) => {
+        gsap.to(node.userData, {
+          focusScale: index === target.node ? 1.55 : index === 3 ? 1.12 : 0.9,
+          duration: reducedMotion ? 0 : 0.45,
+          ease: 'back.out(1.5)',
+        });
+      });
+    };
+
+    const onTheme = (event: Event) => {
+      const themeEvent = event as CustomEvent<{ id: keyof typeof focusMap }>;
+      focusTheme(themeEvent.detail.id);
+    };
+    document.addEventListener('signal-theme-focus', onTheme as EventListener);
+    focusTheme('leadership');
+
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      renderer.setSize(Math.max(rect.width, 1), Math.max(rect.height, 1), false);
+      camera.aspect = Math.max(rect.width, 1) / Math.max(rect.height, 1);
+      camera.updateProjectionMatrix();
+      group.scale.setScalar(window.innerWidth < 760 ? 0.76 : 1);
+    };
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+
+    if (!reducedMotion) {
+      gsap.from('[data-insights-reveal]', { opacity: 0, y: 24, duration: 0.84, ease: 'power3.out', stagger: 0.12 });
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            gsap.to(entry.target, { opacity: 1, y: 0, duration: 0.66, ease: 'power3.out' });
+            observer.unobserve(entry.target);
+          });
+        },
+        { threshold: 0.18 }
+      );
+      document.querySelectorAll('[data-insights-card]').forEach((element) => {
+        gsap.set(element, { opacity: 0, y: 24 });
+        observer.observe(element);
+      });
+    }
+
+    const start = window.performance.now();
+    let frame = 0;
+    const render = () => {
+      const t = (window.performance.now() - start) / 1000;
+      if (!reducedMotion) {
+        group.rotation.y += (focusState.yaw - group.rotation.y) * 0.025;
+        group.rotation.x += (focusState.pitch - group.rotation.x) * 0.024;
+        camera.position.z += (focusState.zoom - camera.position.z) * 0.035;
+        particles.rotation.z -= 0.0006;
+        (particles.material as THREE.PointsMaterial).opacity +=
+          (focusState.particleOpacity - (particles.material as THREE.PointsMaterial).opacity) * 0.04;
+        rings.forEach((ring, index) => {
+          ring.rotation.z = t * (0.04 + index * 0.02);
+        });
+        nodes.forEach((node, index) => {
+          node.scale.setScalar((node.userData.focusScale ?? 1) + Math.sin(t * 1.55 + index * 0.5) * 0.045);
+        });
+      }
+      renderer.render(scene, camera);
+      frame = window.requestAnimationFrame(render);
+    };
+    render();
+
+    document.addEventListener('astro:before-swap', () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener('resize', resize);
+      document.removeEventListener('signal-theme-focus', onTheme as EventListener);
+      renderer.dispose();
+      particleGeometry.dispose();
+      materials.forEach((material) => material.dispose());
+    });
+  }
+</script>
+
+<style>
+  .insights-page {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 16% 10%, rgba(0, 229, 160, 0.12), transparent 31rem),
+      radial-gradient(circle at 78% 18%, rgba(124, 139, 255, 0.1), transparent 30rem),
+      linear-gradient(135deg, #000 0%, #080812 56%, #000 100%);
+    color: var(--ma-text);
+  }
+
+  .insights-hero {
+    position: relative;
+    min-height: 90vh;
+    padding: 7.35rem 0 3.8rem;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(244, 241, 232, 0.1);
+  }
+
+  .insights-grid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.13;
+    background-image:
+      linear-gradient(rgba(244, 241, 232, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(244, 241, 232, 0.035) 1px, transparent 1px);
+    background-size: 70px 70px;
+    mask-image: radial-gradient(ellipse 78% 74% at 62% 46%, black, transparent 86%);
+  }
+
+  .insights-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(420px, 0.78fr);
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .insights-copy h1 {
+    max-width: 860px;
+    margin-bottom: 1.3rem;
+    color: #f4f1e8;
+    font-size: clamp(2.95rem, 5vw, 4.7rem);
+    line-height: 0.98;
+    letter-spacing: 0;
+  }
+
+  .insights-copy p {
+    max-width: 690px;
+    color: #d8d6ce;
+    font-size: 1.1rem;
+    line-height: 1.68;
+  }
+
+  .insights-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1.75rem;
+  }
+
+  .signal-console {
+    position: relative;
+    overflow: hidden;
+    padding: 1.25rem;
+    border: 1px solid rgba(244, 241, 232, 0.14);
+    border-radius: var(--ma-radius);
+    background:
+      radial-gradient(circle at 48% 42%, rgba(0, 229, 160, 0.13), transparent 22rem),
+      linear-gradient(145deg, rgba(17, 17, 34, 0.84), rgba(0, 0, 0, 0.5));
+    box-shadow: 0 34px 100px rgba(0, 0, 0, 0.32);
+  }
+
+  .signal-console-top,
+  .signal-readout {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    color: var(--ma-text-dim);
+    font-family: var(--ma-font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .signal-console-top strong {
+    color: var(--ma-mint);
+    font-weight: 500;
+  }
+
+  .signal-visual {
+    position: relative;
+    min-height: 430px;
+    margin: 0.45rem 0 0.9rem;
+    overflow: hidden;
+  }
+
+  .signal-visual canvas {
+    display: block;
+    width: 100%;
+    height: 430px;
+  }
+
+  .signal-label {
+    position: absolute;
+    z-index: 2;
+    font-family: var(--ma-font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+
+  .signal-label-leadership {
+    left: 12%;
+    top: 28%;
+    color: var(--ma-mint);
+  }
+
+  .signal-label-delivery {
+    right: 12%;
+    top: 30%;
+    color: #7c8bff;
+  }
+
+  .signal-label-risk {
+    left: 44%;
+    bottom: 16%;
+    color: #f4c84a;
+  }
+
+  .signal-readout {
+    display: block;
+    min-height: 56px;
+    padding: 0.82rem;
+    border: 1px solid rgba(244, 241, 232, 0.1);
+    border-radius: var(--ma-radius);
+    background: rgba(0, 0, 0, 0.36);
+    color: #d8d6ce;
+    line-height: 1.4;
+  }
+
+  .theme-section {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    background: rgba(17, 17, 34, 0.52);
+    border-bottom: 1px solid var(--ma-border);
+  }
+
+  .theme-strip,
+  .theme-map {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .theme-button,
+  .theme-map article {
+    display: grid;
+    gap: 0.45rem;
+    min-height: 118px;
+    padding: 1rem;
+    border: 1px solid rgba(244, 241, 232, 0.13);
+    border-radius: var(--ma-radius);
+    background: rgba(5, 5, 9, 0.52);
+    color: #d8d6ce;
+    text-align: left;
+  }
+
+  .theme-button {
+    cursor: pointer;
+    transition:
+      border-color 180ms ease,
+      background-color 180ms ease,
+      transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .theme-button span,
+  .theme-map article span {
+    color: #f4f1e8;
+    font-family: var(--ma-font-display);
+    font-size: 1.08rem;
+    font-weight: 700;
+  }
+
+  .theme-button strong,
+  .theme-map article p {
+    color: var(--ma-text-dim);
+    font-size: 0.9rem;
+    line-height: 1.42;
+  }
+
+  .theme-button:hover,
+  .theme-button:focus-visible,
+  .theme-button.active {
+    border-color: rgba(0, 229, 160, 0.62);
+    background: rgba(0, 229, 160, 0.1);
+    transform: translateY(-3px);
+    outline: none;
+  }
+
+  .editorial-section {
+    background: #050509;
+  }
+
+  .editorial-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.76fr) minmax(0, 1.24fr);
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .editorial-copy {
+    position: sticky;
+    top: 7rem;
+  }
+
+  .editorial-copy h2,
+  .theme-map-head h2 {
+    color: #f4f1e8;
+    letter-spacing: 0;
+  }
+
+  .editorial-feed {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .featured-article,
+  .article-list article {
+    padding: 1.25rem;
+    border: 1px solid rgba(244, 241, 232, 0.12);
+    border-radius: var(--ma-radius);
+    background:
+      linear-gradient(90deg, rgba(0, 229, 160, 0.055), transparent 46%),
+      rgba(17, 17, 34, 0.68);
+  }
+
+  .featured-article {
+    min-height: 280px;
+  }
+
+  .article-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    align-items: center;
+    color: var(--ma-mint);
+    font-family: var(--ma-font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .article-meta time {
+    color: var(--ma-text-dim);
+  }
+
+  .featured-article h3,
+  .article-list h3 {
+    margin: 1rem 0 0.65rem;
+    color: #f4f1e8;
+    font-size: clamp(1.25rem, 2.2vw, 1.8rem);
+    letter-spacing: 0;
+  }
+
+  .article-list h3 {
+    font-size: 1.12rem;
+  }
+
+  .featured-article a,
+  .article-list a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .featured-article a:hover,
+  .article-list a:hover {
+    color: var(--ma-mint);
+  }
+
+  .featured-article p,
+  .article-list p {
+    color: #d8d6ce;
+    line-height: 1.62;
+  }
+
+  .article-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.2rem;
+  }
+
+  .article-tags span {
+    padding: 0.35rem 0.55rem;
+    border: 1px solid rgba(0, 229, 160, 0.24);
+    border-radius: 999px;
+    color: var(--ma-mint);
+    font-size: 0.74rem;
+  }
+
+  .theme-map-section {
+    background:
+      linear-gradient(135deg, rgba(0, 229, 160, 0.08), rgba(124, 139, 255, 0.05)),
+      var(--ma-bg);
+    border-top: 1px solid var(--ma-border);
+  }
+
+  .theme-map-head {
+    max-width: 780px;
+    margin-bottom: 2.5rem;
+  }
+
+  @media (max-width: 1120px) {
+    .insights-hero-inner,
+    .editorial-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .editorial-copy {
+      position: static;
+    }
+
+    .theme-strip,
+    .theme-map,
+    .article-list {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .insights-hero {
+      min-height: auto;
+      padding: 7rem 0 3.5rem;
+    }
+
+    .insights-copy h1 {
+      font-size: 2.42rem;
+      line-height: 1.04;
+    }
+
+    .insights-copy p {
+      font-size: 1rem;
+    }
+
+    .insights-actions {
+      display: grid;
+    }
+
+    .insights-actions .ma-btn {
+      justify-content: center;
+      width: 100%;
+    }
+
+    .signal-console {
+      padding: 1rem;
+    }
+
+    .signal-console-top {
+      display: grid;
+      gap: 0.25rem;
+    }
+
+    .signal-visual {
+      min-height: 330px;
+    }
+
+    .signal-visual canvas {
+      height: 330px;
+    }
+  }
+</style>

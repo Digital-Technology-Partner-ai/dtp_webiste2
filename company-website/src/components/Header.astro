@@ -1,5 +1,17 @@
 ---
 // V2: Midnight Authority Navigation
+
+const currentPath = Astro.url.pathname;
+const navItems = [
+  { href: '/why-dtp', label: 'Why DTP' },
+  { href: '/programmes', label: 'Programmes' },
+  { href: '/solutions', label: 'Solutions' },
+  { href: '/case-studies', label: 'Case Studies' },
+  { href: '/insights', label: 'Insights' },
+  { href: '/contact', label: 'Contact' },
+];
+
+const isActive = (href: string) => currentPath === href || currentPath.startsWith(`${href}/`);
 ---
 
 <header class="ma-header">
@@ -9,12 +21,13 @@
     </a>
 
     <ul class="ma-nav-links" id="desktop-nav">
-      <li><a href="/">Home</a></li>
-      <li><a href="/services">Our Approach</a></li>
-      <li><a href="/case-studies">Case Studies</a></li>
-      <li><a href="/faq">FAQ</a></li>
-      <li><a href="/news">News</a></li>
-      <li><a href="/contact">Contact</a></li>
+      {navItems.map((item) => (
+        <li>
+          <a href={item.href} class:list={{ active: isActive(item.href) }} aria-current={isActive(item.href) ? 'page' : undefined}>
+            {item.label}
+          </a>
+        </li>
+      ))}
     </ul>
 
     <a href="https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous" target="_blank" rel="noopener noreferrer" class="ma-btn ma-btn-mint ma-nav-cta">Book a Call</a>
@@ -29,12 +42,13 @@
   <!-- Mobile Menu Panel -->
   <div id="mobile-menu" class="ma-mobile-menu hidden">
     <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="/services">Our Approach</a></li>
-      <li><a href="/case-studies">Case Studies</a></li>
-      <li><a href="/faq">FAQ</a></li>
-      <li><a href="/news">News</a></li>
-      <li><a href="/contact">Contact</a></li>
+      {navItems.map((item) => (
+        <li>
+          <a href={item.href} class:list={{ active: isActive(item.href) }} aria-current={isActive(item.href) ? 'page' : undefined}>
+            {item.label}
+          </a>
+        </li>
+      ))}
     </ul>
     <div class="ma-mobile-cta">
       <a href="https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous" target="_blank" rel="noopener noreferrer" class="ma-btn ma-btn-mint" style="width:100%;justify-content:center;">Book a Discovery Call</a>
@@ -86,7 +100,25 @@
     transition: color 200ms ease;
   }
 
-  .ma-nav-links a:hover { color: var(--ma-mint); }
+  .ma-nav-links a:hover,
+  .ma-nav-links a.active {
+    color: var(--ma-mint);
+  }
+
+  .ma-nav-links a.active {
+    position: relative;
+  }
+
+  .ma-nav-links a.active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.72rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--ma-mint), transparent);
+    box-shadow: 0 0 16px rgba(0, 229, 160, 0.42);
+  }
 
   .ma-nav-cta {
     font-size: 0.82rem !important;
@@ -136,7 +168,16 @@
     transition: color 200ms ease;
   }
 
-  .ma-mobile-menu a:hover { color: var(--ma-mint); }
+  .ma-mobile-menu a:hover,
+  .ma-mobile-menu a.active {
+    color: var(--ma-mint);
+  }
+
+  .ma-mobile-menu a.active {
+    padding-left: 0.75rem;
+    border-left: 2px solid var(--ma-mint);
+    background: rgba(0, 229, 160, 0.06);
+  }
 
   .ma-mobile-cta { margin-top: 1rem; }
 

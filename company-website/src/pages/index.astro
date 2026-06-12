@@ -1,1343 +1,246 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
-import HeroTypewriter from '../components/HeroTypewriter.astro';
+const destinations = [
+  {
+    id: 'home',
+    title: 'HOME',
+    route: '/home/',
+    band: 'upper',
+    desc: 'The landing narrative for AI that works.',
+    intro: 'Digital Technology Partner helps leadership teams move from AI uncertainty to practical, governed systems that create measurable operational value.',
+    blocks: [
+      ['Connected ecosystem', 'Readiness, leadership confidence, practical solutions, delivery control and proof, mapped into one navigable experience.'],
+      ['Practical AI', 'No theatre, no hype loop. We focus on systems that improve the work your organisation already needs to do.'],
+      ['Clear next step', 'Start with the part of the ecosystem that matches your decision: assess, build, prove or talk.'],
+    ],
+  },
+  {
+    id: 'why-dtp',
+    title: 'WHY DTP',
+    route: '/why-dtp/',
+    band: 'upper',
+    desc: 'Risk, governance and delivery confidence.',
+    intro: 'Why DTP exists, how we work, and why leaders use us as a practical partner for AI and digital systems.',
+    blocks: [
+      ['Trusted delivery', 'Clear ownership, senior involvement and practical governance from the first conversation.'],
+      ['Business-first technology', 'We start with operational value and work backwards into the systems, data and adoption needed.'],
+      ['Human-approved AI', 'AI systems are designed with controls, escalation and accountability built in.'],
+    ],
+  },
+  {
+    id: 'programmes',
+    title: 'PROGRAMMES',
+    route: '/programmes/',
+    band: 'upper',
+    desc: 'Assessment, foundry work and leadership coaching.',
+    intro: 'Focused programmes for leaders who need to understand, prioritise and safely move AI from interest to action.',
+    blocks: [
+      ['AI Readiness', 'A fast, evidence-led view of where AI is helping, risky or blocked today.'],
+      ['AI Foundry', 'A working group format for shaping high-value opportunities before build spend.'],
+      ['Leadership AI', 'Private coaching for senior decision-makers navigating AI and technology change.'],
+    ],
+  },
+  {
+    id: 'solutions',
+    title: 'SOLUTIONS',
+    route: '/solutions/',
+    band: 'upper',
+    desc: 'Business systems, agents and automation.',
+    intro: 'The practical systems DTP designs and builds: workflow automation, reporting, AI agents, bespoke AI and business applications.',
+    blocks: [
+      ['Operations automation', 'Remove manual steps, reduce errors and turn repeat work into controlled workflows.'],
+      ['AI agents', 'Design human-approved agents that handle useful tasks inside real business constraints.'],
+      ['Bespoke systems', 'Build the right digital layer around your processes, data and decision points.'],
+    ],
+  },
+  {
+    id: 'process',
+    title: 'PROCESS',
+    route: '/process/',
+    band: 'upper',
+    desc: 'How delivery stays controlled.',
+    intro: 'A staged path from discovery to launch, with decision points that keep risk visible and investment controlled.',
+    blocks: [
+      ['Discovery', 'Understand the work, constraints, systems and value case before anything is built.'],
+      ['PoC to pilot', 'Prove the risky assumptions early, then test in a controlled real-world environment.'],
+      ['Launch', 'Move into production with support, monitoring and improvement rhythms.'],
+    ],
+  },
+  {
+    id: 'case-studies',
+    title: 'CASE STUDIES',
+    route: '/case-studies/',
+    band: 'lower',
+    desc: 'Evidence from real client outcomes.',
+    intro: 'Proof from operations, manufacturing and technical systems where AI and digital delivery created practical value.',
+    blocks: [
+      ['Manufacturing', 'AI-assisted document and calculation workflows reduced quotation preparation time.'],
+      ['Operations', 'Messaging-native maintenance coordination prevented missed production floor tasks.'],
+      ['Infrastructure', 'Technical AI/ML delivery supported analytics, search and conversational interfaces.'],
+    ],
+  },
+  {
+    id: 'insights',
+    title: 'INSIGHTS',
+    route: '/insights/',
+    band: 'lower',
+    desc: 'Signal on AI adoption and implementation.',
+    intro: 'Practical thinking on AI adoption, agents, governance and the conditions that make implementation work.',
+    blocks: [
+      ['Signal over noise', 'What matters in the current AI wave, and what is mostly distraction.'],
+      ['Implementation lessons', 'Patterns from live work: where pilots fail, where governance helps, and how teams adopt.'],
+      ['Leadership context', 'A sharper view for decision-makers shaping technology investment.'],
+    ],
+  },
+  {
+    id: 'news',
+    title: 'NEWS',
+    route: '/news/',
+    band: 'upper',
+    desc: 'Updates from DTP and the AI landscape.',
+    intro: 'News from Digital Technology Partner: company updates, AI market movement and practical signals for leaders tracking what is changing now.',
+    blocks: [
+      ['Company updates', 'Announcements, launches and useful changes from inside DTP.'],
+      ['Market signals', 'Relevant movement across AI, automation, data and digital transformation.'],
+      ['Leader context', 'Short updates framed around what decision-makers need to know next.'],
+    ],
+  },
+  {
+    id: 'ai-readiness',
+    title: 'AI READINESS',
+    route: '/programmes/ai-adoption-readiness/',
+    band: 'lower',
+    desc: 'A one-week adoption and risk view.',
+    intro: 'A focused sprint to understand current AI use, adoption risk, opportunity and the next sensible leadership decisions.',
+    blocks: [
+      ['Current state', 'Map how AI is already being used across the organisation.'],
+      ['Risk and readiness', 'Separate unmanaged risk from genuine opportunity.'],
+      ['Action plan', 'Leave with a practical decision path rather than another generic AI deck.'],
+    ],
+  },
+  {
+    id: 'ai-foundry',
+    title: 'AI FOUNDRY',
+    route: '/programmes/ai-foundry/',
+    band: 'lower',
+    desc: 'Opportunity discovery with working groups.',
+    intro: 'A practical format for teams that need to turn scattered AI ideas into evidence-led, prioritised work.',
+    blocks: [
+      ['Discover', 'Surface useful opportunities from real operational pain points.'],
+      ['Shape', 'Clarify data, workflow, adoption and governance requirements.'],
+      ['Prioritise', 'Decide what has earned a prototype, pilot or stop decision.'],
+    ],
+  },
+  {
+    id: 'leadership-ai',
+    title: 'LEADERSHIP AI',
+    route: '/programmes/leadership-ai-coaching/',
+    band: 'lower',
+    desc: 'Private AI support for senior leaders.',
+    intro: 'Discreet coaching for decision-makers who need confidence, language and judgement around AI and digital change.',
+    blocks: [
+      ['Fluency', 'Understand the concepts without being buried in vendor noise.'],
+      ['Judgement', 'Know what questions to ask before approving AI investment.'],
+      ['Confidence', 'Use AI personally and strategically with more control.'],
+    ],
+  },
+  {
+    id: 'contact',
+    title: 'CONTACT',
+    route: '/contact/',
+    band: 'lower',
+    desc: 'Start the conversation.',
+    intro: 'Book a call or route your enquiry by the decision you need to make.',
+    blocks: [
+      ['Discovery call', 'Bring a problem, an ambition or a half-formed idea.'],
+      ['Fit check', 'We will be direct about whether DTP is the right partner.'],
+      ['Next route', 'Leave with a clear suggested path through the ecosystem.'],
+    ],
+  },
+];
+
+const ringItems = [
+  { label: 'HOME', id: 'home' },
+  { label: 'WHY DTP', id: 'why-dtp' },
+  { label: 'PROGRAMMES', id: 'programmes' },
+  { label: 'SOLUTIONS', id: 'solutions' },
+  { label: 'PROCESS', id: 'process' },
+  { label: 'NEWS', id: 'news' },
+  { label: 'CASE STUDIES', id: 'case-studies' },
+  { label: 'INSIGHTS', id: 'insights' },
+  { label: 'AI READINESS', id: 'ai-readiness' },
+  { label: 'AI FOUNDRY', id: 'ai-foundry' },
+  { label: 'LEADERSHIP AI', id: 'leadership-ai' },
+  { label: 'CONTACT', id: 'contact' },
+];
+
+const ecosystemAssetVersion = '20260612-dtp-ecosystem-restore-33';
 ---
 
-<Layout title="DTP — AI that works, simplified.">
-  <Header />
-  <main>
-    <!-- Gradient Mesh Hero -->
-    <section class="ma-hero mesh-hero">
-      <div class="gradient-mesh-bg mesh-hero-bg"></div>
-      <div class="ma-hero-grid-bg"></div>
-      <div class="ma-hero-scan"></div>
-      <div class="ma-container ma-hero-content">
-        <HeroTypewriter 
-          tagText="> digital_technology_partner.init()" 
-          headlineText="AI that works."
-          typingSpeed={36}
-        />
-        <p class="ma-hero-sub">We cut through the hype, build AI that delivers, and prove value through real results — fast, focused, and tailored to you.</p>
-        <div class="ma-hero-actions">
-          <a href="https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous" target="_blank" rel="noopener noreferrer" class="ma-btn ma-btn-mint">Book a Discovery Call</a>
-          <a href="#process" class="ma-btn ma-btn-outline">View Process Demo →</a>
-        </div>
-        <div class="ma-hero-stats" id="hero-stats">
-          <div class="ma-stat">
-            <span class="ma-stat-val" data-start="50" data-target="1" data-suffix="" data-direction="down">50</span>
-            <span class="ma-stat-label">Call To Start</span>
-          </div>
-          <div class="ma-stat-divider"></div>
-          <div class="ma-stat">
-            <span class="ma-stat-val" data-start="0" data-target="100" data-suffix="%" data-direction="up">0%</span>
-            <span class="ma-stat-label">Value Delivered</span>
-          </div>
-          <div class="ma-stat-divider"></div>
-          <div class="ma-stat">
-            <span class="ma-stat-val" data-start="20" data-target="0" data-suffix="" data-direction="down">20</span>
-            <span class="ma-stat-label">Opportunities Missed</span>
-          </div>
-        </div>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Explore Digital Technology Partner inside the original DTP Phantom Gallery ecosystem." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <title>Digital Technology Partner - Ecosystem</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href={`/ecosystem/css/style.css?v=${ecosystemAssetVersion}`} />
+    <script type="importmap">
+      { "imports": { "three": "/ecosystem/libs/three.module.js" } }
+    </script>
+  </head>
+  <body>
+    <canvas id="scene"></canvas>
+
+    <div class="vignette"></div>
+    <div class="scanlines"></div>
+
+    <header class="ui-header">
+      <a class="brand" href="/">
+        <img src="/ecosystem/img/dtp-logo-white.png" alt="Digital Technology Partner" />
+      </a>
+      <div class="header-right">
+        <span class="status-line"><i class="status-dot"></i>ECOSYSTEM&nbsp;ONLINE</span>
+        <button class="menu-btn" id="menuBtn" aria-label="menu">
+          <span>INDEX</span><i></i><i></i>
+        </button>
       </div>
-    </section>
+    </header>
 
-    <!-- Benefits -->
-    <section class="ma-section" id="benefits">
-      <div class="ma-container">
-        <div class="ma-section-header">
-          <span class="ma-section-tag">// capabilities</span>
-          <h2>Why organisations work with us</h2>
-        </div>
-        <div class="ma-benefits-grid">
-          <div class="ma-benefit-card primary"><div class="ma-card-line"></div><h3>Reduced Risk</h3><p>We deliver in stages. You see progress early and avoid big-bang surprises. Each phase has clear deliverables and validation gates.</p></div>
-          <div class="ma-benefit-card"><div class="ma-card-line"></div><h3>Security by Design</h3><p>Data protection and access controls are built in from day one, not bolted on later.</p></div>
-          <div class="ma-benefit-card"><div class="ma-card-line"></div><h3>Reliable Delivery</h3><p>Clear scope, fixed steps, and regular check-ins keep work on track.</p></div>
-          <div class="ma-benefit-card"><div class="ma-card-line"></div><h3>Scales with You</h3><p>Start small, prove value, then roll out without rework.</p></div>
-          <div class="ma-benefit-card"><div class="ma-card-line"></div><h3>Flexible Engagement</h3><p>On your stack, in our cloud, or a hybrid — whatever fits policy and cost.</p></div>
-          <div class="ma-benefit-card"><div class="ma-card-line"></div><h3>Works With Your Tools</h3><p>We integrate with common meeting, messaging, and project platforms.</p></div>
-        </div>
+    <div class="ui-footer">
+      <p class="tagline">PEOPLE&nbsp;&middot;&nbsp;TECHNOLOGY&nbsp;&middot;&nbsp;DATA&nbsp;&middot;&nbsp;AI&nbsp;&middot;&nbsp;LEARNING<br />ONE&nbsp;CONNECTED&nbsp;ECOSYSTEM</p>
+      <p class="hint"><span class="hint-dot"></span>DRAG TO EXPLORE</p>
+    </div>
+
+    <nav class="ring-nav" id="ringNav" aria-label="ecosystem navigation"></nav>
+
+    <div class="node-panel" id="nodePanel">
+      <span class="np-index"></span>
+      <span class="np-title"></span>
+      <span class="np-desc"></span>
+      <span class="np-enter">ENTER &rsaquo;</span>
+    </div>
+
+    <div class="menu-overlay" id="menuOverlay">
+      <div class="menu-head">
+        <span class="menu-title">ECOSYSTEM INDEX</span>
+        <button class="menu-close" id="menuClose">CLOSE &times;</button>
       </div>
-    </section>
-
-    <!-- Testimonials -->
-    <section class="ma-section mesh-testimonials">
-      <!-- Scroll trigger points positioned in this section -->
-      <div class="scroll-trigger-point" data-trigger="1"></div>
-      <div class="scroll-trigger-point" data-trigger="2"></div>
-      <div class="scroll-trigger-point" data-trigger="3"></div>
-      <div class="scroll-trigger-point" data-trigger="4"></div>
-      <div class="scroll-trigger-point" data-trigger="5"></div>
-      
-      <div class="gradient-mesh-bg mesh-testimonials-bg"></div>
-      <div class="ma-container">
-        <div class="ma-section-header">
-          <span class="ma-section-tag">// testimonials</span>
-          <h2>What clients say</h2>
-        </div>
-        <div class="ma-testimonials-grid">
-          <div class="ma-testimonial-card">
-            <div class="ma-quote-mark">"</div>
-            <blockquote>Digital Technology Partner completely transformed our quotation process. Their tailored AI solution helped us cut preparation time by 40% and eliminate errors. It's been a game-changer for our operations.</blockquote>
-            <cite>— Managing Director</cite>
-          </div>
-          <div class="ma-testimonial-card">
-            <div class="ma-quote-mark">"</div>
-            <blockquote>DTP revolutionised our workshop maintenance operations. Their WhatsApp-integrated solution automated our entire servicing schedule, ensuring every machine gets maintained on time.</blockquote>
-            <cite>— COO</cite>
-          </div>
-          <div class="ma-testimonial-card">
-            <div class="ma-quote-mark">"</div>
-            <blockquote>DTP transformed how I manage tasks across my two companies. Their AI solution captures every action item from our leadership meetings and distributes them to the right people via WhatsApp.</blockquote>
-            <cite>— CEO</cite>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Use Cases -->
-    <section class="ma-section mesh-use-cases" id="use-cases">
-      <div class="gradient-mesh-bg mesh-use-cases-bg"></div>
-      <div class="ma-container">
-        <div class="ma-section-header">
-          <span class="ma-section-tag">// use_cases</span>
-          <h2>What we're asked to fix most often</h2>
-        </div>
-        <div class="ma-use-grid">
-          <!-- Business Systems Strategy Card (01) -->
-          <div class="ma-use-card">
-            <div class="ma-use-accent"></div>
-            <div class="ma-use-idx">01</div>
-            <h3>Business Systems Strategy</h3>
-            <p>Create a board-ready view of the current estate, future-state architecture, strategic options, phased roadmap, and funding case for transformation.</p>
-            <div class="ma-use-tags"><span class="ma-tag">Review</span><span class="ma-tag">Target State</span><span class="ma-tag">Investment Case</span></div>
-          </div>
-          <!-- Data & Reporting Card (02) -->
-          <div class="ma-use-card">
-            <div class="ma-use-accent"></div>
-            <div class="ma-use-idx">02</div>
-            <h3>Data &amp; Reporting</h3>
-            <p>Bring data together and give teams clear dashboards, alerts, and actionable insights.</p>
-            <div class="ma-use-tags"><span class="ma-tag">Analytics</span><span class="ma-tag">Dashboards</span><span class="ma-tag">APIs</span></div>
-          </div>
-          <!-- Operations Automation Card (03) -->
-          <div class="ma-use-card">
-            <div class="ma-use-accent"></div>
-            <div class="ma-use-idx">03</div>
-            <h3>Operations Automation</h3>
-            <p>Remove manual steps, reduce errors, and speed up routine work with intelligent process automation.</p>
-            <div class="ma-use-tags"><span class="ma-tag">Python</span><span class="ma-tag">OCR</span><span class="ma-tag">Workflows</span></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Three-Column Scroll-Triggered Process Section -->
-    <section class="ma-section three-col-process-section" id="process">
-      <div class="ma-container">
-        <div class="three-col-wrapper">
-          
-          <!-- Left: Static Content -->
-          <div class="left-content">
-            <span class="ma-section-tag">// our_process</span>
-            <h2>How We Deliver</h2>
-            <p>Our proven five-stage methodology ensures every project starts with understanding and ends with measurable results. Each phase builds on the last, with validation gates that keep you in control.</p>
-            <div class="process-highlight">
-              <span class="highlight-num">5</span>
-              <span class="highlight-label">Stages to Success</span>
-            </div>
-          </div>
-          
-          <!-- Middle: Compact Horizontal Step Visualization -->
-          <div class="middle-visualization">
-            <div class="compact-flow">
-              <div class="compact-node active" data-step="1">01</div>
-              <div class="compact-line" data-line="1"></div>
-              <div class="compact-node" data-step="2">02</div>
-              <div class="compact-line" data-line="2"></div>
-              <div class="compact-node" data-step="3">03</div>
-              <div class="compact-line" data-line="3"></div>
-              <div class="compact-node" data-step="4">04</div>
-              <div class="compact-line" data-line="4"></div>
-              <div class="compact-node" data-step="5">05</div>
-            </div>
-            <div class="compact-labels">
-              <span class="active" data-label="1">Discovery</span>
-              <span data-label="2">PoC</span>
-              <span data-label="3">MVP</span>
-              <span data-label="4">Pilot</span>
-              <span data-label="5">Launch</span>
-            </div>
-          </div>
-          
-          <!-- Right: Sticky Content Box -->
-          <div class="right-content-wrapper">
-            <div class="right-content-box">
-              <div class="step-description active" data-desc="1">
-                <span class="desc-tag">Step 01</span>
-                <h3>Discovery</h3>
-                <p>We begin by understanding your unique challenges. Through workshops and analysis, we map your processes and identify the highest-value opportunities for AI implementation.</p>
-                <div class="desc-accent"></div>
-              </div>
-              <div class="step-description" data-desc="2">
-                <span class="desc-tag">Step 02</span>
-                <h3>Proof of Concept</h3>
-                <p>A focused prototype validates our approach. We demonstrate feasibility with real data, proving the solution works before committing to full development.</p>
-                <div class="desc-accent"></div>
-              </div>
-              <div class="step-description" data-desc="3">
-                <span class="desc-tag">Step 03</span>
-                <h3>MVP</h3>
-                <p>We build a working product with core features ready for real-world testing. This is where theory meets practice in your actual environment.</p>
-                <div class="desc-accent"></div>
-              </div>
-              <div class="step-description" data-desc="4">
-                <span class="desc-tag">Step 04</span>
-                <h3>Pilot</h3>
-                <p>Controlled deployment with a select group gathers critical feedback. We refine the solution based on real usage patterns before wider rollout.</p>
-                <div class="desc-accent"></div>
-              </div>
-              <div class="step-description" data-desc="5">
-                <span class="desc-tag">Step 05</span>
-                <h3>Full Launch</h3>
-                <p>Scale to production with comprehensive monitoring, support, and continuous improvement. Your AI solution is now a core part of your operations.</p>
-                <div class="desc-accent"></div>
-              </div>
-            </div>
-          </div>
-          
-        </div>
-      </div>
-    </section>
-
-    <!-- Case Studies -->
-    <section class="ma-section" id="work">
-      <div class="ma-container">
-        <div class="ma-section-header">
-          <span class="ma-section-tag">// case_studies</span>
-          <h2>Recent work</h2>
-        </div>
-        <div class="ma-cases">
-          <div class="ma-case">
-            <div class="ma-case-header">
-              <span class="ma-case-badge">Manufacturing</span>
-              <span class="ma-case-result">Hours → Minutes</span>
-            </div>
-            <h3>Automating Surface Area Calculations for Protective Coatings</h3>
-            <p>Transformed hours of manual PDF analysis into minutes with 100% calculation accuracy. OCR-enabled tagging interface with automated Excel report generation.</p>
-            <div class="ma-case-stack">
-              <span>Python</span><span>Flask/FastAPI</span><span>React</span><span>MongoDB</span><span>OCR</span>
-            </div>
-          </div>
-          <div class="ma-case">
-            <div class="ma-case-header">
-              <span class="ma-case-badge">Manufacturing</span>
-              <span class="ma-case-result">Zero Missed Tasks</span>
-            </div>
-            <h3>Intelligent Maintenance Management via Mobile Messaging</h3>
-            <p>Messaging-native AI agent for production floor engineers. Natural language processing, voice notes, and photo capture — no training required.</p>
-            <div class="ma-case-stack">
-              <span>AI Agent</span><span>NLP</span><span>Cloud APIs</span><span>Mobile</span><span>Voice</span>
-            </div>
-          </div>
-          <div class="ma-case">
-            <div class="ma-case-header">
-              <span class="ma-case-badge">Infrastructure</span>
-              <span class="ma-case-result">Accelerated Delivery</span>
-            </div>
-            <h3>AI/ML Expertise as Technical Subcontractor</h3>
-            <p>Delivered vector database architecture, ML pipelines, and conversational AI within a consultancy's infrastructure monitoring project.</p>
-            <div class="ma-case-stack">
-              <span>Vector DB</span><span>ML</span><span>Gen AI</span><span>NLP</span><span>APIs</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FAQ Mini -->
-    <section class="ma-section">
-      <div class="ma-container" style="max-width:720px;">
-        <div class="ma-section-header">
-          <span class="ma-section-tag">// faq</span>
-          <h2>Common questions</h2>
-        </div>
-        <div>
-          <details class="ma-faq-item"><summary>How long does a typical engagement take?</summary><p>Discovery takes 1–2 weeks. A Proof of Concept typically follows in 4–6 weeks. The full timeline depends on scope, but our staged approach means you see results early.</p></details>
-          <details class="ma-faq-item"><summary>Do you work with existing systems?</summary><p>Yes. We integrate with your current tools, platforms, and data sources. We're stack-agnostic and work with whatever fits your infrastructure and policies.</p></details>
-          <details class="ma-faq-item"><summary>How is pricing structured?</summary><p>Each stage is priced independently so you can validate value before committing to the next. No big-bang contracts — you stay in control throughout.</p></details>
-        </div>
-        <div style="text-align:center;margin-top:2rem;">
-          <a href="/faq" class="ma-btn ma-btn-outline">View All FAQ →</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="ma-cta">
-      <div class="ma-container ma-cta-inner">
-        <h2>Ready to see what AI can do<br/>for your business?</h2>
-        <p>Book a free discovery call. No obligation, no sales pitch.</p>
-        <a href="https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous" target="_blank" rel="noopener noreferrer" class="ma-btn ma-btn-mint ma-btn-lg">Book a Discovery Call</a>
-      </div>
-    </section>
-  </main>
-
-<!-- Animation Scripts -->
-<script>
-  // Typewriter effect for hero h1
-  const text = "AI that works.";
-  const typewriterElement = document.querySelector('.typewriter-text');
-  let i = 0;
-
-  function typeWriter() {
-    if (typewriterElement && i < text.length) {
-      typewriterElement.textContent += text.charAt(i);
-      i++;
-      setTimeout(typeWriter, 120);
-    }
-  }
-
-  // Start typing after a brief delay
-  setTimeout(typeWriter, 500);
-</script>
-
-<script>
-  // Initialize all animations when DOM is ready
-  document.addEventListener('DOMContentLoaded', async () => {
-    try {
-      // Dynamic import for GSAP animations
-      const { initAnimations } = await import('../scripts/animations/index.ts');
-      initAnimations();
-    } catch (error) {
-      console.error('Failed to initialize animations:', error);
-    }
-  });
-</script>
-
-<script>
-  // S11: Results Ticker - Count up/down animation for hero stats (simultaneous)
-  document.addEventListener('DOMContentLoaded', () => {
-    const statsSection = document.getElementById('hero-stats');
-    if (!statsSection) return;
-    
-    const statValues = Array.from(statsSection.querySelectorAll('.ma-stat-val'));
-    let hasAnimated = false;
-    
-    const animateStat = (el: HTMLElement) => {
-      const start = parseInt(el.dataset['start'] || '0');
-      const target = parseInt(el.dataset['target'] || '0');
-      const suffix = el.dataset['suffix'] || '';
-      const direction = el.dataset['direction'] || 'up';
-      const duration = 1500; // ms
-      const startTime = performance.now();
-      
-      const updateCount = (currentTime: number) => {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        
-        // Ease out cubic
-        const easeOut = 1 - Math.pow(1 - progress, 3);
-        
-        let current: number;
-        if (direction === 'down') {
-          // Count down from start to target
-          current = Math.floor(start - (easeOut * (start - target)));
-        } else {
-          // Count up from start to target
-          current = Math.floor(start + (easeOut * (target - start)));
-        }
-        
-        el.textContent = current + suffix;
-        
-        if (progress < 1) {
-          requestAnimationFrame(updateCount);
-        } else {
-          el.textContent = target + suffix;
-        }
-      };
-      
-      requestAnimationFrame(updateCount);
-    };
-    
-    // Trigger on scroll into view - all animate simultaneously
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting && !hasAnimated) {
-          hasAnimated = true;
-          statValues.forEach(stat => {
-            animateStat(stat as HTMLElement);
-          });
-          observer.disconnect();
-        }
-      });
-    }, { threshold: 0.5 });
-    
-    observer.observe(statsSection);
-  });
-</script>
-
-<style>
-  /* Typewriter effect styles */
-  .typewriter-text {
-    display: inline;
-  }
-
-  .ma-cursor {
-    display: inline;
-    color: #22c55e;
-    font-weight: 400;
-    animation: blink 1s step-end infinite;
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-
-  /* S11: Results ticker animation enhancement */
-  .ma-stat-val {
-    display: block;
-    font-family: var(--ma-font-display);
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--ma-mint);
-    transition: transform 0.3s ease;
-  }
-  
-  .ma-stat-val.counting {
-    transform: scale(1.05);
-  }
-</style>
-
-<style>
-  /* --- Hero --- */
-  .ma-hero {
-    position: relative;
-    padding: 11rem 0 6rem;
-    overflow: hidden;
-  }
-
-  /* --- HERO GRID BACKGROUND --- */
-  .ma-hero-grid-bg {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(var(--ma-border) 1px, transparent 1px),
-      linear-gradient(90deg, var(--ma-border) 1px, transparent 1px);
-    background-size: 60px 60px;
-    opacity: 0.15;
-    mask-image: radial-gradient(ellipse 70% 70% at 50% 40%, black, transparent);
-  }
-
-  .ma-hero-scan {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--ma-mint), transparent);
-    opacity: 0.5;
-    animation: ma-scan 9s ease-in-out infinite;
-  }
-
-  @keyframes ma-scan {
-    0% { top: 10%; opacity: 0; }
-    10% { opacity: 0.5; }
-    44% { opacity: 0.5; }
-    45% { top: 95%; opacity: 0; }
-    100% { top: 95%; opacity: 0; }
-  }
-  .mesh-hero-bg {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    background: 
-      radial-gradient(ellipse 80% 50% at 20% 40%, rgba(0, 229, 160, 0.15) 0%, transparent 50%),
-      radial-gradient(ellipse 60% 40% at 80% 60%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-      radial-gradient(ellipse 70% 60% at 60% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
-    animation: meshMoveHero 25s ease-in-out infinite;
-    filter: blur(80px);
-  }
-
-  @keyframes meshMoveHero {
-    0%, 100% {
-      background-position: 0% 0%, 100% 100%, 50% 0%;
-      transform: scale(1);
-    }
-    33% {
-      background-position: 50% 50%, 50% 0%, 0% 100%;
-      transform: scale(1.08);
-    }
-    66% {
-      background-position: 100% 50%, 0% 50%, 50% 100%;
-      transform: scale(1.15);
-    }
-  }
-
-  .gradient-mesh-bg {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    background: 
-      radial-gradient(ellipse 80% 50% at 20% 40%, rgba(0, 229, 160, 0.12) 0%, transparent 50%),
-      radial-gradient(ellipse 60% 40% at 80% 60%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-      radial-gradient(ellipse 70% 60% at 60% 20%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
-    animation: meshMove 20s ease-in-out infinite;
-    filter: blur(60px);
-  }
-
-  @keyframes meshMove {
-    0%, 100% {
-      background-position: 0% 0%, 100% 100%, 50% 0%;
-      transform: scale(1);
-    }
-    33% {
-      background-position: 50% 50%, 50% 0%, 0% 100%;
-      transform: scale(1.05);
-    }
-    66% {
-      background-position: 100% 50%, 0% 50%, 50% 100%;
-      transform: scale(1.1);
-    }
-  }
-
-  /* Testimonials Gradient Mesh */
-  .mesh-testimonials {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .mesh-testimonials-bg {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    background: 
-      radial-gradient(ellipse 70% 50% at 30% 30%, rgba(0, 229, 160, 0.06) 0%, transparent 50%),
-      radial-gradient(ellipse 60% 40% at 70% 70%, rgba(20, 184, 166, 0.04) 0%, transparent 50%);
-    animation: meshMoveTestimonials 30s ease-in-out infinite;
-    filter: blur(80px);
-  }
-
-  @keyframes meshMoveTestimonials {
-    0%, 100% {
-      background-position: 30% 30%, 70% 70%, 50% 50%;
-      transform: scale(1);
-    }
-    25% {
-      background-position: 60% 40%, 40% 80%, 30% 60%;
-      transform: scale(1.08);
-    }
-    50% {
-      background-position: 80% 60%, 20% 40%, 70% 30%;
-      transform: scale(1.12);
-    }
-    75% {
-      background-position: 40% 80%, 80% 20%, 20% 70%;
-      transform: scale(1.06);
-    }
-  }
-
-  .mesh-testimonials .ma-container {
-    position: relative;
-    z-index: 1;
-  }
-  .ma-hero-content { position: relative; z-index: 2; max-width: 720px; }
-  .ma-hero-tag {
-    font-family: var(--ma-font-mono);
-    font-size: 0.85rem;
-    color: var(--ma-mint);
-    margin-bottom: 1.5rem;
-    opacity: 0.8;
-  }
-  .ma-hero h1 { line-height: 1.05; margin-bottom: 1.5rem; letter-spacing: -0.03em; }
-  .ma-hero-sub {
-    font-size: 1.1rem;
-    color: var(--ma-text-dim);
-    max-width: 560px;
-    line-height: 1.7;
-    margin-bottom: 2.5rem;
-  }
-  .ma-hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 4rem; }
-  .ma-hero-stats {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--ma-border);
-  }
-  .ma-stat-val {
-    display: block;
-    font-family: var(--ma-font-display);
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--ma-mint);
-  }
-  .ma-stat-label {
-    font-size: 0.8rem;
-    color: var(--ma-text-dim);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  .ma-stat-divider {
-    width: 1px;
-    height: 40px;
-    background: var(--ma-border);
-  }
-
-  /* --- Benefits Grid (Simplified for Cognitive Fluency) --- */
-  .ma-benefits-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-    max-width: 1000px;
-    margin: 0 auto;
-  }
-
-  .ma-benefit-card {
-    background: var(--ma-surface);
-    border: 1px solid var(--ma-border);
-    border-radius: var(--ma-radius);
-    padding: 2rem;
-    position: relative;
-    transition: all 250ms ease;
-    overflow: hidden;
-  }
-
-  .ma-benefit-card:hover {
-    border-color: rgba(0, 229, 160, 0.3);
-    transform: translateY(-2px);
-  }
-
-  .ma-benefit-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 3px;
-    height: 100%;
-    background: linear-gradient(180deg, var(--ma-mint) 0%, rgba(0, 229, 160, 0.2) 100%);
-    opacity: 0;
-    transition: opacity 300ms ease;
-  }
-
-  .ma-benefit-card:hover::before {
-    opacity: 1;
-  }
-
-  /* Primary card - subtle emphasis without breaking grid */
-  .ma-benefit-card.primary {
-    background: linear-gradient(135deg, var(--ma-surface) 0%, rgba(0, 229, 160, 0.03) 100%);
-    border-color: rgba(0, 229, 160, 0.2);
-  }
-
-  .ma-benefit-card.primary::before {
-    opacity: 1;
-  }
-
-  .ma-benefit-card h3 { 
-    margin-bottom: 0.75rem; 
-    font-size: 1.1rem;
-  }
-  
-  .ma-benefit-card p { 
-    font-size: 0.9rem; 
-    line-height: 1.6;
-    color: var(--ma-text-dim);
-  }
-
-  /* --- Testimonials --- */
-  .ma-testimonials-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-  }
-  .ma-testimonial-card {
-    background: var(--ma-surface);
-    border: 1px solid var(--ma-border);
-    border-radius: var(--ma-radius);
-    padding: 2rem;
-    position: relative;
-    transition: all 250ms ease;
-    overflow: hidden;
-  }
-  .ma-testimonial-card:hover {
-    border-color: rgba(0, 229, 160, 0.3);
-    transform: translateY(-3px);
-  }
-  .ma-testimonial-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 3px;
-    height: 100%;
-    background: linear-gradient(180deg, var(--ma-mint) 0%, rgba(0, 229, 160, 0.2) 100%);
-    opacity: 0;
-    transition: opacity 300ms ease;
-  }
-  .ma-testimonial-card:hover::before {
-    opacity: 1;
-  }
-  .ma-quote-mark {
-    font-family: var(--ma-font-display);
-    font-size: 4rem;
-    color: var(--ma-mint);
-    opacity: 0.15;
-    line-height: 1;
-    margin-bottom: -1rem;
-  }
-  .ma-testimonial-card blockquote {
-    font-size: 0.92rem;
-    line-height: 1.65;
-    color: var(--ma-text);
-    margin-bottom: 1rem;
-  }
-  .ma-testimonial-card cite {
-    font-style: normal;
-    color: var(--ma-text-dim);
-    font-size: 0.85rem;
-  }
-
-  /* --- Use Cases --- */
-  .ma-use-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-  }
-
-  .mesh-use-cases {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .mesh-use-cases-bg {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    background: 
-      radial-gradient(ellipse 80% 50% at 80% 40%, rgba(0, 229, 160, 0.12) 0%, transparent 50%),
-      radial-gradient(ellipse 60% 40% at 70% 70%, rgba(0, 229, 160, 0.08) 0%, transparent 50%);
-    filter: blur(60px);
-  }
-
-  @keyframes meshMoveUseCases {
-    0%, 100% {
-      background-position: 85% 40%, 75% 70%;
-      transform: scale(1);
-    }
-    33% {
-      background-position: 70% 30%, 80% 60%;
-      transform: scale(1.05);
-    }
-    66% {
-      background-position: 90% 50%, 70% 80%;
-      transform: scale(1.08);
-    }
-  }
-
-  .mesh-use-cases .ma-container {
-    position: relative;
-    z-index: 1;
-  }
-
-  .ma-use-card {
-    background: var(--ma-surface);
-    border: 1px solid var(--ma-border);
-    border-radius: var(--ma-radius);
-    padding: 2rem;
-    transition: all 250ms ease;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .ma-use-card:hover {
-    border-color: rgba(0, 229, 160, 0.4);
-    transform: translateY(-3px);
-  }
-
-  .ma-use-accent {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 3px;
-    height: 100%;
-    background: linear-gradient(180deg, var(--ma-mint) 0%, rgba(0, 229, 160, 0.2) 100%);
-    opacity: 0;
-    transition: opacity 300ms ease;
-  }
-
-  .ma-use-card:hover .ma-use-accent {
-    opacity: 1;
-  }
-
-  .ma-use-idx {
-    font-family: var(--ma-font-display);
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: var(--ma-mint);
-    opacity: 0.2;
-    margin-bottom: 1rem;
-  }
-
-  .ma-use-card h3 { margin-bottom: 0.6rem; }
-
-  .ma-use-card p { font-size: 0.9rem; margin-bottom: 1.25rem; }
-
-  .ma-use-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-
-  /* --- Case Studies --- */
-  .ma-cases {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-  }
-
-  .ma-case {
-    background: var(--ma-surface);
-    border: 1px solid var(--ma-border);
-    border-radius: var(--ma-radius);
-    padding: 2rem;
-    transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .ma-case:hover {
-    border-color: rgba(0, 229, 160, 0.3);
-    transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
-  }
-
-  .ma-case-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .ma-case-badge {
-    font-size: 0.72rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--ma-mint);
-    background: var(--ma-mint-dim);
-    padding: 0.25rem 0.6rem;
-    border-radius: 4px;
-  }
-
-  .ma-case-result {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--ma-white);
-  }
-
-  .ma-case h3 {
-    font-family: var(--ma-font-display);
-    font-size: 1.1rem;
-    color: var(--ma-white);
-    margin-bottom: 0.6rem;
-    line-height: 1.35;
-  }
-
-  .ma-case p { color: var(--ma-text-dim); font-size: 0.88rem; margin-bottom: 1.25rem; }
-
-  .ma-case-stack { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-
-  .ma-case-stack span {
-    font-size: 0.68rem;
-    padding: 0.2rem 0.5rem;
-    border: 1px solid var(--ma-border);
-    border-radius: 4px;
-    color: var(--ma-text-dim);
-  }
-
-  /* --- Process --- */
-  .ma-process {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    border-left: 2px solid var(--ma-border);
-    margin-left: 1.5rem;
-  }
-  .ma-process-step {
-    display: flex;
-    align-items: flex-start;
-    gap: 1.5rem;
-    padding: 1.5rem 0 1.5rem 2rem;
-    position: relative;
-    transition: all 250ms ease;
-  }
-  .ma-process-step:hover { background: rgba(0, 229, 160, 0.03); }
-  .ma-process-step::before {
-    content: '';
-    position: absolute;
-    left: -7px;
-    top: 2rem;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--ma-bg);
-    border: 2px solid var(--ma-border);
-    transition: all 250ms ease;
-  }
-  .ma-process-step:hover::before {
-    border-color: var(--ma-mint);
-    background: var(--ma-mint);
-    box-shadow: 0 0 12px rgba(0, 229, 160, 0.4);
-  }
-  .ma-process-num {
-    font-family: var(--ma-font-display);
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--ma-mint);
-    opacity: 0.25;
-    min-width: 40px;
-  }
-  .ma-process-content h3 { margin-bottom: 0.3rem; }
-  .ma-process-content p { font-size: 0.9rem; }
-
-  /* --- CTA --- */
-  .ma-cta {
-    padding: 6rem 0;
-    background: linear-gradient(135deg, var(--ma-surface) 0%, var(--ma-bg) 100%);
-    border-top: 1px solid var(--ma-border);
-  }
-  .ma-cta-inner { text-align: center; max-width: 600px; }
-  .ma-cta-inner h2 { margin-bottom: 1rem; }
-  .ma-cta-inner p { color: var(--ma-text-dim); margin-bottom: 2rem; font-size: 1.05rem; }
-
-  /* === Three-Column Process Section === */
-  .three-col-process-section {
-    min-height: 60vh;
-    padding-top: 3rem;
-    padding-bottom: 3rem;
-    position: relative;
-    background: linear-gradient(180deg, 
-      var(--ma-bg) 0%, 
-      rgba(0, 229, 160, 0.02) 50%, 
-      var(--ma-bg) 100%
-    );
-  }
-
-  .scroll-trigger-point {
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .scroll-trigger-point:nth-of-type(1) { top: 40vh; }
-  .scroll-trigger-point:nth-of-type(2) { top: 50vh; }
-  .scroll-trigger-point:nth-of-type(3) { top: 60vh; }
-  .scroll-trigger-point:nth-of-type(4) { top: 70vh; }
-  .scroll-trigger-point:nth-of-type(5) { top: 80vh; }
-
-  .three-col-wrapper {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr 1.2fr;
-    gap: 3rem;
-    position: sticky;
-    top: 15vh;
-    height: fit-content;
-  }
-
-  /* Left: Static Content */
-  .left-content {
-    padding-right: 1rem;
-  }
-
-  .left-content h2 {
-    font-size: 2.2rem;
-    margin-bottom: 1.5rem;
-    line-height: 1.2;
-  }
-
-  .left-content p {
-    color: var(--ma-text-dim);
-    line-height: 1.7;
-    margin-bottom: 2rem;
-  }
-
-  .process-highlight {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1.5rem;
-    background: rgba(0, 229, 160, 0.05);
-    border: 1px solid rgba(0, 229, 160, 0.2);
-    border-radius: var(--ma-radius);
-  }
-
-  .highlight-num {
-    font-family: var(--ma-font-display);
-    font-size: 3rem;
-    font-weight: 700;
-    color: var(--ma-mint);
-    line-height: 1;
-  }
-
-  .highlight-label {
-    font-size: 0.9rem;
-    color: var(--ma-text-dim);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  /* Middle: Compact Horizontal Visualization */
-  .middle-visualization {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 0;
-  }
-
-  .compact-flow {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .compact-node {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: var(--ma-surface);
-    border: 2px solid var(--ma-border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--ma-font-display);
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: var(--ma-text-dim);
-    transition: all 350ms cubic-bezier(0.34, 1.56, 0.64, 1);
-    position: relative;
-    z-index: 1;
-  }
-
-  .compact-node.active {
-    border-color: var(--ma-mint);
-    background: rgba(0, 229, 160, 0.15);
-    color: var(--ma-mint);
-    box-shadow: 
-      0 0 0 4px rgba(0, 229, 160, 0.1),
-      0 0 30px rgba(0, 229, 160, 0.4),
-      0 4px 12px rgba(0, 0, 0, 0.3);
-    transform: scale(1.15);
-  }
-
-  .compact-line {
-    width: 28px;
-    height: 3px;
-    background: var(--ma-border);
-    position: relative;
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .compact-line::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, 
-      var(--ma-mint) 0%, 
-      rgba(0, 229, 160, 0.8) 100%
-    );
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: 0 0 8px rgba(0, 229, 160, 0.6);
-  }
-
-  .compact-line.active::after {
-    transform: scaleX(1);
-  }
-
-  .compact-labels {
-    display: grid;
-    grid-template-columns: 48px 28px 48px 28px 48px 28px 48px 28px 48px;
-    gap: 0.5rem;
-    font-size: 0.65rem;
-    color: var(--ma-text-dim);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-  }
-
-  .compact-labels span {
-    text-align: center;
-    transition: all 300ms ease;
-    opacity: 0.5;
-  }
-  
-  .compact-labels span:nth-child(1) { grid-column: 1; }
-  .compact-labels span:nth-child(2) { grid-column: 3; }
-  .compact-labels span:nth-child(3) { grid-column: 5; }
-  .compact-labels span:nth-child(4) { grid-column: 7; }
-  .compact-labels span:nth-child(5) { grid-column: 9; }
-
-  .compact-labels span.active {
-    color: var(--ma-mint);
-    opacity: 1;
-    font-weight: 600;
-  }
-
-  /* Right: Content Box */
-  .right-content-box {
-    padding: 2.5rem;
-    min-height: 360px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .step-description {
-    display: none;
-    opacity: 0;
-    transform: translateY(30px) scale(0.98);
-    transition: opacity 450ms cubic-bezier(0.34, 1.56, 0.64, 1), transform 450ms cubic-bezier(0.34, 1.56, 0.64, 1);
-    flex-direction: column;
-    pointer-events: none;
-  }
-
-  .step-description.active {
-    display: flex;
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    pointer-events: auto;
-  }
-
-  .desc-tag {
-    font-family: var(--ma-font-mono);
-    font-size: 0.75rem;
-    color: var(--ma-mint);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 1rem;
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    background: rgba(0, 229, 160, 0.1);
-    border-radius: 4px;
-    width: fit-content;
-  }
-
-  .step-description h3 {
-    font-size: 1.75rem;
-    margin-bottom: 1.25rem;
-    font-weight: 600;
-    line-height: 1.2;
-    background: linear-gradient(135deg, var(--ma-text), var(--ma-mint));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .step-description p {
-    color: var(--ma-text-dim);
-    line-height: 1.8;
-    font-size: 0.95rem;
-  }
-
-  .desc-accent {
-    position: absolute;
-    top: 0;
-    left: -2.5rem;
-    width: 4px;
-    height: 100%;
-    background: linear-gradient(180deg, var(--ma-mint) 0%, rgba(0, 229, 160, 0.3) 100%);
-    border-radius: 2px;
-    opacity: 0;
-    transition: opacity 400ms ease;
-  }
-
-  .step-description.active .desc-accent {
-    opacity: 1;
-  }
-
-  /* --- Responsive --- */
-  @media (max-width: 768px) {
-    .ma-hero { padding: 8rem 0 4rem; }
-    .ma-grid-6,
-    .ma-use-grid,
-    .ma-cases,
-    .ma-benefits-grid,
-    .ma-testimonials-grid { grid-template-columns: 1fr; }
-    .ma-hero-stats { flex-direction: column; align-items: flex-start; }
-    .ma-stat-divider { width: 40px; height: 1px; }
-    .ma-process { margin-left: 0.5rem; }
-    
-    .ma-benefit-card {
-      padding: 1.75rem;
-    }
-    
-    .ma-benefit-card h3 {
-      font-size: 1.15rem;
-      margin-bottom: 0.85rem;
-    }
-    
-    .ma-benefit-card p {
-      font-size: 0.95rem;
-      line-height: 1.7;
-    }
-    
-    .three-col-wrapper {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-      position: relative;
-      top: auto;
-    }
-
-    .left-content {
-      text-align: center;
-    }
-
-    .left-content p {
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .process-highlight {
-      justify-content: center;
-    }
-
-    .middle-visualization {
-      padding: 1rem 0;
-    }
-
-    .scroll-trigger-point {
-      height: 40vh;
-    }
-  }
-</style>
-
-<script>
-  // Three-column scroll-triggered interaction with scroll position calculation
-  document.addEventListener('DOMContentLoaded', () => {
-    const section = document.querySelector('.three-col-process-section');
-    const compactNodes = document.querySelectorAll('.compact-node');
-    const compactLines = document.querySelectorAll('.compact-line');
-    const stepDescriptions = document.querySelectorAll('.step-description');
-    const compactLabels = document.querySelectorAll('.compact-labels span');
-    
-    if (!section) {
-      console.warn('❌ Process section not found');
-      return;
-    }
-    
-    console.log('🎯 Scroll Process Init:', {
-      nodes: compactNodes.length,
-      lines: compactLines.length,
-      descriptions: stepDescriptions.length,
-      labels: compactLabels.length
-    });
-    
-    let currentStep = 0;
-    
-    const activateStep = (stepNum: number) => {
-      console.log('✅ Activating step:', stepNum, '(was:', currentStep, ')');
-      currentStep = stepNum;
-      const stepIndex = stepNum - 1;
-      
-      // Update nodes - only highlight current step
-      compactNodes.forEach((node, index) => {
-        if (index === stepIndex) {
-          node.classList.add('active');
-        } else {
-          node.classList.remove('active');
-        }
-      });
-      
-      // Update lines progressively
-      compactLines.forEach((line, index) => {
-        if (index < stepIndex) {
-          line.classList.add('active');
-        } else {
-          line.classList.remove('active');
-        }
-      });
-      
-      // Update labels
-      compactLabels.forEach((label, index) => {
-        if (index === stepIndex) {
-          label.classList.add('active');
-        } else {
-          label.classList.remove('active');
-        }
-      });
-      
-      // Update right content box
-      stepDescriptions.forEach(desc => {
-        const descStep = parseInt(desc.getAttribute('data-desc') || '1', 10);
-        if (descStep === stepNum) {
-          desc.classList.add('active');
-        } else {
-          desc.classList.remove('active');
-        }
-      });
-    };
-    
-    const handleScroll = () => {
-      const rect = section.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      const sectionTop = rect.top;
-      const sectionHeight = rect.height;
-      
-      // Calculate scroll progress through the section
-      // Start activating when section enters viewport (60% from top)
-      const scrollStart = windowHeight * 0.6;
-      // End when section center is at viewport center (50% from top)
-      const scrollEnd = windowHeight * 0.5;
-      
-      // Before section enters trigger zone, show step 1
-      if (sectionTop > scrollStart) {
-        activateStep(1);
-        return;
-      }
-      
-      // After section exits trigger zone, show step 5
-      if (sectionTop < -sectionHeight + scrollEnd) {
-        activateStep(5);
-        return;
-      }
-      
-      // Calculate progress through the section (0 to 1)
-      const scrollProgress = (scrollStart - sectionTop) / (sectionHeight + scrollStart - scrollEnd);
-      
-      // Map progress to steps 1-5
-      // Each step gets 20% of the scroll range
-      const stepFloat = 1 + (scrollProgress * 4); // 1.0 to 5.0
-      const newActiveStep = Math.min(Math.max(1, Math.ceil(stepFloat)), 5);
-      
-      if (newActiveStep !== currentStep) {
-        activateStep(newActiveStep);
-      }
-    };
-    
-    // Initial check
-    handleScroll();
-    
-    // Listen to scroll events with throttling
-    let ticking = false;
-    window.addEventListener('scroll', () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          handleScroll();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    });
-  });
-
-  // Scroll-based gradient mesh animation for Use Cases section - DISABLED for now
-  // Static gradient only - animation to be revisited later
-  console.log('ℹ️ Use Cases gradient mesh is static (animation disabled)');
-</script>
+      <ul class="menu-list" id="menuList"></ul>
+    </div>
+
+    <div class="loader" id="loader">
+      <img class="loader-logo" src="/ecosystem/img/dtp-logo-white.png" alt="Digital Technology Partner" />
+      <div class="loader-bar"><i id="loaderBar"></i></div>
+      <span class="loader-status">INITIALISING ECOSYSTEM</span>
+    </div>
+
+    <script type="application/json" id="ecosystem-destinations" set:html={JSON.stringify(destinations)}></script>
+    <script type="application/json" id="ecosystem-ring-items" set:html={JSON.stringify(ringItems)}></script>
+    <script is:inline src="/ecosystem/libs/gsap.min.js"></script>
+    <script is:inline type="module" src={`/ecosystem/js/main.js?v=${ecosystemAssetVersion}`}></script>
+  </body>
+</html>

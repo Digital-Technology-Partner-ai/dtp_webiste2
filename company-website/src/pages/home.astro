@@ -1,0 +1,448 @@
+---
+import Header from '../components/Header.astro';
+import Layout from '../layouts/Layout.astro';
+
+const bookingUrl =
+  'https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous';
+
+const destinations = [
+  {
+    name: 'AI Adoption Readiness',
+    route: '/programmes/ai-adoption-readiness/',
+    question: 'Where are we with AI?',
+    copy: 'A one-week view of current AI use, adoption risk and next leadership decisions.',
+    featured: true,
+  },
+  {
+    name: 'AI Foundry',
+    route: '/programmes/ai-foundry/',
+    question: 'How do we build confidence?',
+    copy: 'A practical working group for evidence-led AI opportunity discovery.',
+  },
+  {
+    name: 'Leadership AI Coaching',
+    route: '/programmes/leadership-ai-coaching/',
+    question: 'Can leaders get private support?',
+    copy: 'Discreet AI and technology coaching for senior decision-makers.',
+  },
+  {
+    name: 'Solutions',
+    route: '/solutions/',
+    question: 'What can we build?',
+    copy: 'Business systems, reporting, automation, AI agents and bespoke AI systems.',
+  },
+  {
+    name: 'Process',
+    route: '/process/',
+    question: 'How does delivery stay controlled?',
+    copy: 'Discovery, PoC, MVP, Pilot and Launch with stage-gated decisions.',
+  },
+  {
+    name: 'Case Studies',
+    route: '/case-studies/',
+    question: 'Has this worked before?',
+    copy: 'Real client outcomes across operations, manufacturing and technical systems.',
+  },
+];
+
+const pathSteps = [
+  {
+    label: 'Assess',
+    title: 'Start with the Adoption Radar',
+    copy: 'Find out where AI is helping, risky or just noise before committing to a bigger programme.',
+    href: '/programmes/ai-adoption-readiness/',
+  },
+  {
+    label: 'Focus',
+    title: 'Use Foundry to surface the right work',
+    copy: 'Turn scattered ideas into evidence, opportunity priorities and leadership confidence.',
+    href: '/programmes/ai-foundry/',
+  },
+  {
+    label: 'Deliver',
+    title: 'Move into controlled solution delivery',
+    copy: 'Build the right system through staged Discovery, PoC, MVP, Pilot and Launch.',
+    href: '/solutions/',
+  },
+];
+---
+
+<Layout
+  title="Home - Digital Technology Partner"
+  description="Digital Technology Partner helps leaders map AI adoption, reduce risk and build practical AI and digital systems that deliver measurable value."
+>
+  <Header />
+  <main class="home-page">
+    <section class="home-hero" aria-labelledby="home-title">
+      <div class="home-grid-bg"></div>
+      <div class="ma-container home-layout">
+        <div class="home-copy">
+          <span class="ma-section-tag">// digital_technology_partner.home</span>
+          <h1 id="home-title">AI that works, mapped into one practical system.</h1>
+          <p>
+            Digital Technology Partner helps leadership teams move from AI uncertainty to practical,
+            governed systems that create measurable operational value.
+          </p>
+          <div class="home-actions">
+            <a class="ma-btn ma-btn-mint" href="/programmes/ai-adoption-readiness/">Start with AI Readiness</a>
+            <a class="ma-btn ma-btn-outline" href={bookingUrl} target="_blank" rel="noopener noreferrer">Book a Discovery Call</a>
+          </div>
+        </div>
+
+        <aside class="home-console" aria-label="DTP route overview">
+          <span class="console-kicker">Current operating map</span>
+          <strong>Readiness → confidence → delivery</strong>
+          <p>
+            Most teams need a controlled route through assessment, opportunity design and build.
+            The Gallery Sphere is the main cockpit for choosing where to enter.
+          </p>
+          <a href="/" class="console-link">Return to Gallery Sphere</a>
+        </aside>
+      </div>
+    </section>
+
+    <section class="ma-section destination-section" aria-label="DTP destination list">
+      <div class="ma-container">
+        <div class="ma-section-header">
+          <span class="ma-section-tag">// destination_index</span>
+          <h2>Choose the part of the ecosystem you need.</h2>
+        </div>
+        <div class="destination-list">
+          {destinations.map((destination) => (
+            <a class:list={['destination-card', { featured: destination.featured }]} href={destination.route}>
+              <span>{destination.question}</span>
+              <strong>{destination.name}</strong>
+              <p>{destination.copy}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="ma-section pathway-section">
+      <div class="ma-container">
+        <div class="pathway-head">
+          <div>
+            <span class="ma-section-tag">// recommended_pathway</span>
+            <h2>Most leaders should start by separating signal from noise.</h2>
+          </div>
+          <p>
+            The ecosystem is open, but the strongest route for uncertain teams is simple:
+            assess what is happening, focus the organisation, then build only what has earned a next step.
+          </p>
+        </div>
+        <div class="pathway-grid">
+          {pathSteps.map((step) => (
+            <a class="path-card" href={step.href}>
+              <span>{step.label}</span>
+              <h3>{step.title}</h3>
+              <p>{step.copy}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="ma-section proof-section">
+      <div class="ma-container proof-grid">
+        <div>
+          <span class="ma-section-tag">// proof_layer</span>
+          <h2>Built for practical outcomes, not AI theatre.</h2>
+        </div>
+        <div class="proof-points">
+          <article>
+            <strong>40% faster quotation preparation</strong>
+            <p>AI-assisted document and calculation workflows for manufacturing operations.</p>
+          </article>
+          <article>
+            <strong>Zero missed maintenance tasks</strong>
+            <p>Messaging-native operational agent for production floor maintenance coordination.</p>
+          </article>
+          <article>
+            <strong>Controlled technical delivery</strong>
+            <p>AI/ML architecture, vector search and conversational interfaces for infrastructure analytics.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-cta">
+      <div class="ma-container home-cta-inner">
+        <span class="ma-section-tag">// start_here</span>
+        <h2>Need a clear first step?</h2>
+        <p>
+          If your organisation is experimenting, blocked, overwhelmed or unsure where value sits,
+          start with AI Adoption Readiness.
+        </p>
+        <a class="ma-btn ma-btn-mint ma-btn-lg" href="/programmes/ai-adoption-readiness/">Explore AI Adoption Readiness</a>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .home-page {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 24% 20%, rgba(0, 229, 160, 0.11), transparent 30rem),
+      radial-gradient(circle at 74% 28%, rgba(124, 139, 255, 0.09), transparent 28rem),
+      #000;
+  }
+
+  .home-hero {
+    position: relative;
+    min-height: 86vh;
+    padding: 8.25rem 0 4rem;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    border-bottom: 1px solid var(--ma-border);
+  }
+
+  .home-grid-bg {
+    position: absolute;
+    inset: 0;
+    opacity: 0.14;
+    background-image:
+      linear-gradient(rgba(244, 241, 232, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(244, 241, 232, 0.04) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: radial-gradient(ellipse 80% 72% at 58% 42%, black, transparent 86%);
+  }
+
+  .home-layout {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 0.98fr) minmax(320px, 0.72fr);
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .home-copy {
+    max-width: 720px;
+  }
+
+  .home-copy h1 {
+    margin-bottom: 1.35rem;
+    color: #f4f1e8;
+    font-size: clamp(3rem, 7vw, 5.8rem);
+    line-height: 0.96;
+    letter-spacing: 0;
+  }
+
+  .home-copy p {
+    max-width: 590px;
+    color: #d8d6ce;
+    font-size: 1.08rem;
+    line-height: 1.72;
+  }
+
+  .home-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .home-console {
+    padding: 1.5rem;
+    border: 1px solid rgba(244, 241, 232, 0.13);
+    border-radius: var(--ma-radius);
+    background:
+      radial-gradient(circle at 24% 20%, rgba(0, 229, 160, 0.14), transparent 14rem),
+      rgba(5, 5, 9, 0.7);
+    box-shadow: 0 34px 100px rgba(0, 0, 0, 0.34);
+  }
+
+  .console-kicker,
+  .destination-card span,
+  .path-card span {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--ma-mint);
+    font-family: var(--ma-font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .home-console strong {
+    display: block;
+    color: #f4f1e8;
+    font-family: var(--ma-font-display);
+    font-size: 1.55rem;
+    line-height: 1.1;
+  }
+
+  .home-console p {
+    margin: 1rem 0 1.25rem;
+    line-height: 1.62;
+  }
+
+  .console-link {
+    color: var(--ma-mint);
+    font-family: var(--ma-font-display);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .destination-section,
+  .pathway-section {
+    background: var(--ma-bg);
+  }
+
+  .destination-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .destination-card,
+  .path-card {
+    display: block;
+    min-height: 178px;
+    padding: 1.25rem;
+    border: 1px solid rgba(244, 241, 232, 0.13);
+    border-radius: var(--ma-radius);
+    background: var(--ma-surface);
+    text-decoration: none;
+    transition: border-color var(--ma-transition), transform var(--ma-transition), box-shadow var(--ma-transition);
+  }
+
+  .destination-card.featured,
+  .path-card:first-child {
+    border-color: rgba(0, 229, 160, 0.42);
+    background: linear-gradient(145deg, rgba(0, 229, 160, 0.1), rgba(17, 17, 34, 0.86));
+  }
+
+  .destination-card:hover,
+  .destination-card:focus-visible,
+  .path-card:hover,
+  .path-card:focus-visible {
+    border-color: var(--ma-mint);
+    transform: translateY(-2px);
+    box-shadow: 0 16px 40px rgba(0, 229, 160, 0.08);
+    outline: none;
+  }
+
+  .destination-card strong {
+    display: block;
+    color: #f4f1e8;
+    font-family: var(--ma-font-display);
+    font-size: 1.08rem;
+    line-height: 1.16;
+  }
+
+  .destination-card p,
+  .path-card p {
+    margin-top: 0.7rem;
+    line-height: 1.56;
+  }
+
+  .pathway-head {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: 3rem;
+    align-items: end;
+    margin-bottom: 2rem;
+  }
+
+  .pathway-head p {
+    color: #d8d6ce;
+    font-size: 1.05rem;
+    line-height: 1.68;
+  }
+
+  .pathway-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  .path-card h3 {
+    margin-bottom: 0.7rem;
+    font-size: 1.25rem;
+  }
+
+  .proof-section {
+    border-top: 1px solid var(--ma-border);
+    border-bottom: 1px solid var(--ma-border);
+    background:
+      linear-gradient(135deg, rgba(0, 229, 160, 0.08), rgba(124, 139, 255, 0.06)),
+      #07070c;
+  }
+
+  .proof-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+    gap: 3rem;
+  }
+
+  .proof-points {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .proof-points article {
+    padding: 1.2rem;
+    border: 1px solid rgba(244, 241, 232, 0.12);
+    border-radius: var(--ma-radius);
+    background: rgba(5, 5, 9, 0.58);
+  }
+
+  .proof-points strong {
+    display: block;
+    margin-bottom: 0.45rem;
+    color: #f4f1e8;
+    font-family: var(--ma-font-display);
+    font-size: 1.08rem;
+  }
+
+  .home-cta {
+    padding: 6rem 0;
+    text-align: center;
+    background:
+      radial-gradient(circle at 50% 14%, rgba(0, 229, 160, 0.12), transparent 26rem),
+      #050509;
+  }
+
+  .home-cta-inner {
+    max-width: 760px;
+  }
+
+  .home-cta p {
+    max-width: 650px;
+    margin: 1rem auto 2rem;
+    color: #d8d6ce;
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 900px) {
+    .home-layout,
+    .destination-list,
+    .pathway-head,
+    .pathway-grid,
+    .proof-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .home-hero {
+      min-height: auto;
+      padding: 7rem 0 3.5rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .home-actions {
+      display: grid;
+    }
+
+    .home-actions .ma-btn,
+    .home-cta .ma-btn {
+      justify-content: center;
+      width: 100%;
+    }
+  }
+</style>
