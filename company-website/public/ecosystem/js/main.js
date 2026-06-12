@@ -318,10 +318,22 @@ const nodes = [];
 function buildNodes() {
   const upper = DESTINATIONS.filter(d => d.band === 'upper');
   const lower = DESTINATIONS.filter(d => d.band === 'lower');
+  const densifyWithRepeats = (list) => {
+    if (!list.length) return [];
+    const doubled = [];
+    for (let i = 0; i < list.length - 1; i++) {
+      doubled.push(list[i]);
+      doubled.push(list[i]);
+    }
+    doubled.push(list[list.length - 1]);
+    return doubled;
+  };
   const place = (list, lat, offset) => {
-    const slot = (Math.PI * 2) / list.length;
-    list.forEach((dest, i) => {
-      const theta = Math.PI + offset + i * slot;
+    const denseList = densifyWithRepeats(list);
+    const slot = (Math.PI * 2) / denseList.length;
+    const center = Math.PI + offset;
+    denseList.forEach((dest, i) => {
+      const theta = center + i * slot;
       const index = DESTINATIONS.indexOf(dest);
       const effW = NODE_W / Math.cos(lat);
       const geo = curvedPanelGeometry(theta, lat, effW, NODE_H, RADIUS);
@@ -528,6 +540,9 @@ const raycaster = new THREE.Raycaster();
 
 let lastInteract = performance.now();
 let hovered = null;
+let infoNode = null;
+let hoveredRingItem = null;
+let pointerRingItem = null;
 let currentNode = null;
 let moved = 0;
 let lastDx = 0, lastDy = 0;
@@ -535,6 +550,7 @@ let lastDx = 0, lastDy = 0;
 window.DTP = {
   state, camera, nodes, universeGroup, openSection, closeSection,
   get hovered() { return hovered; },
+  get infoNode() { return infoNode; },
   get currentNode() { return currentNode; },
 };
 
@@ -558,6 +574,9 @@ window.addEventListener('pointermove', (e) => {
   tilt.ty = -mouseNdc.y;
   panelX(Math.min(e.clientX, window.innerWidth - 300));
   panelY(e.clientY);
+  const ringItemAtPointer = findRingItemAt(e.clientX, e.clientY);
+  pointerRingItem = ringItemAtPointer;
+  setRingHovered(ringItemAtPointer);
 
   if (!state.dragging || state.locked) return;
   const dx = e.movementX ?? 0;
@@ -604,9 +623,9 @@ const npDesc = nodePanel.querySelector('.np-desc');
 const panelX = gsap.quickTo(nodePanel, 'x', { duration: 0.45, ease: 'power3' });
 const panelY = gsap.quickTo(nodePanel, 'y', { duration: 0.45, ease: 'power3' });
 
-function setHovered(node) {
-  if (hovered === node) return;
-  hovered = node;
+function setInfoNode(node) {
+  if (infoNode === node) return;
+  infoNode = node;
   if (node) {
     npIndex.textContent = `DESTINATION 0${node.index + 1}`;
     npTitle.textContent = node.dest.title;
@@ -619,10 +638,34 @@ function setHovered(node) {
   }
 }
 
+function setRingHovered(item) {
+  if (hoveredRingItem === item) return;
+  hoveredRingItem = item;
+  setInfoNode(hoveredRingItem?.node || null);
+}
+
 /* ---------------- equator ring nav (HTML projected into 3D) ---------------- */
 
 const ringNav = document.getElementById('ringNav');
 const ringEls = [];
+const ringPickMeshes = [];
+const ringPickGeo = new THREE.SphereGeometry(0.28, 12, 8);
+const ringPickMat = new THREE.MeshBasicMaterial({
+  color: 0xffffff,
+  transparent: true,
+  opacity: 0,
+  depthTest: false,
+  depthWrite: false,
+});
+
+function findRingItemAt(x, y) {
+  if (state.locked || menuOpen) return null;
+  return ringEls.find(item => {
+    if (!item.visible) return false;
+    const r = item.el.getBoundingClientRect();
+    return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+  }) || null;
+}
 
 function buildRingNav() {
   const slot = (Math.PI * 2) / RING_ITEMS.length;
@@ -644,7 +687,29 @@ function buildRingNav() {
       }
     });
     ringNav.appendChild(el);
-    ringEls.push({ el, anchor: sph(1, Math.PI + i * slot, 0.05), visible: false });
+    const pick = new THREE.Mesh(ringPickGeo, ringPickMat);
+    pick.userData.ringIndex = i;
+    pick.visible = false;
+    pick.position.copy(sph(1, Math.PI + i * slot, 0.05)).multiplyScalar(29.8);
+    sphereGroup.add(pick);
+    ringPickMeshes.push(pick);
+    const ringItem = {
+      el,
+      anchor: sph(1, Math.PI + i * slot, 0.05),
+      pick,
+      node: item.id ? nodes.find(n => n.dest.id === item.id) : null,
+      visible: false,
+    };
+    el.addEventListener('pointerenter', () => {
+      if (state.locked || menuOpen || !ringItem.visible) return;
+      pointerRingItem = ringItem;
+      setRingHovered(ringItem);
+    });
+    el.addEventListener('pointerleave', () => {
+      if (pointerRingItem === ringItem) pointerRingItem = null;
+      if (hoveredRingItem === ringItem) setRingHovered(null);
+    });
+    ringEls.push(ringItem);
   });
 }
 
@@ -662,8 +727,11 @@ function updateRingNav() {
     const ndc = _v.project(camera);
     const behind = facing < 0.3 || ndc.z > 1;
     const alpha = behind ? 0 : clamp((facing - 0.3) / 0.3, 0, 1) * ambientFade.v;
+    const isInteractive = alpha > 0.4;
     item.el.style.opacity = alpha.toFixed(3);
-    item.el.style.pointerEvents = alpha > 0.4 ? 'auto' : 'none';
+    item.el.style.pointerEvents = isInteractive ? 'auto' : 'none';
+    item.visible = isInteractive;
+    item.pick.visible = isInteractive;
     if (!behind) {
       const x = (ndc.x + 1) / 2 * window.innerWidth;
       const y = (-ndc.y + 1) / 2 * window.innerHeight;
@@ -714,7 +782,7 @@ function openSection(node) {
   state.locked = true;
   currentNode = node;
   state.velY = 0; state.velX = 0;
-  setHovered(null);
+  setInfoNode(null);
   canvas.classList.remove('hovering');
 
   const tY = nearestAngle(Math.PI - node.theta, state.curY);
@@ -860,8 +928,13 @@ function tick(t) {
   // hover raycast
   if (!state.locked) {
     raycaster.setFromCamera(mouseNdc, camera);
+    const ringHits = raycaster.intersectObjects(ringPickMeshes, false);
+    setRingHovered(pointerRingItem || (ringHits.length ? ringEls[ringHits[0].object.userData.ringIndex] : null));
+
     const hits = raycaster.intersectObjects(nodesGroup.children);
-    setHovered(hits.length ? hits[0].object.userData.node : null);
+    hovered = hits.length ? hits[0].object.userData.node : null;
+    if (hovered) canvas.classList.add('hovering');
+    else if (!infoNode) canvas.classList.remove('hovering');
     for (const n of nodes) {
       n.hoverT = (n === hovered) ? 1 : 0;
       n.hover += (n.hoverT - n.hover) * 0.09 * dt;
