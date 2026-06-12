@@ -1,0 +1,350 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from './Header.astro';
+import type { PhantomPage } from '../data/phantomPages';
+
+interface Props {
+  page: PhantomPage;
+}
+
+const { page } = Astro.props;
+---
+
+<Layout title={`${page.title} - Digital Technology Partner`} description={page.description}>
+  <Header />
+  <main class="phantom-page">
+    <section class="phantom-hero">
+      <div class="phantom-bg-grid"></div>
+      <div class="ma-container phantom-hero-grid">
+        <div class="phantom-hero-copy">
+          <span class="ma-section-tag">{page.eyebrow}</span>
+          <h1>{page.heroTitle}</h1>
+          <p>{page.heroText}</p>
+          <div class="phantom-actions">
+            <a
+              class="ma-btn ma-btn-mint"
+              href={page.primaryCta.href}
+              target={page.primaryCta.external ? '_blank' : undefined}
+              rel={page.primaryCta.external ? 'noopener noreferrer' : undefined}
+            >
+              {page.primaryCta.label}
+            </a>
+            {page.secondaryCta && <a class="ma-btn ma-btn-outline" href={page.secondaryCta.href}>{page.secondaryCta.label}</a>}
+          </div>
+        </div>
+
+        <aside class="phantom-signal" aria-label="Page signal">
+          <span>signal</span>
+          <strong>{page.signal}</strong>
+          <ul>
+            {page.outcomes.map((outcome) => <li>{outcome}</li>)}
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="ma-section" id="programme-pathway">
+      <div class="ma-container">
+        <div class="ma-section-header phantom-section-head">
+          <span class="ma-section-tag">// page_blueprint</span>
+          <h2>What this page must make clear</h2>
+        </div>
+        <div class="phantom-section-grid">
+          {page.sections.map((section) => (
+            <article class="phantom-info-card">
+              <div class="ma-card-line"></div>
+              <span>{section.eyebrow}</span>
+              <h3>{section.title}</h3>
+              <p>{section.body}</p>
+              {section.bullets && (
+                <ul>
+                  {section.bullets.map((bullet) => <li>{bullet}</li>)}
+                </ul>
+              )}
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="ma-section phantom-proof-band">
+      <div class="ma-container phantom-proof-grid">
+        <div>
+          <span class="ma-section-tag">// proof_layer</span>
+          <h2>Proof and reassurance</h2>
+        </div>
+        <div class="phantom-proof-list">
+          {page.proof.map((item) => <p>{item}</p>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="ma-section">
+      <div class="ma-container">
+        <div class="ma-section-header phantom-section-head">
+          <span class="ma-section-tag">// next_routes</span>
+          <h2>Where this page should lead</h2>
+        </div>
+        <div class="phantom-related-grid">
+          {page.related.map((item) => (
+            <a class="phantom-related" href={item.href}>
+              <strong>{item.label}</strong>
+              <span>{item.note}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .phantom-page {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 20% 10%, rgba(0, 229, 160, 0.12), transparent 30rem),
+      radial-gradient(circle at 85% 20%, rgba(96, 165, 250, 0.16), transparent 28rem),
+      var(--ma-bg);
+  }
+
+  .phantom-hero {
+    position: relative;
+    min-height: 82vh;
+    padding: 9rem 0 5rem;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .phantom-bg-grid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.16;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: linear-gradient(to bottom, black, transparent 82%);
+  }
+
+  .phantom-hero-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .phantom-hero-copy h1 {
+    max-width: 820px;
+    margin-bottom: 1.5rem;
+    font-size: 4.6rem;
+    letter-spacing: 0;
+  }
+
+  .phantom-hero-copy p {
+    max-width: 680px;
+    font-size: 1.18rem;
+    line-height: 1.7;
+  }
+
+  .phantom-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .phantom-signal {
+    border: 1px solid var(--ma-border);
+    border-radius: var(--ma-radius);
+    padding: 1.75rem;
+    background: rgba(17, 17, 34, 0.78);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
+  }
+
+  .phantom-signal span {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-family: var(--ma-font-mono);
+    color: var(--ma-mint);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+  }
+
+  .phantom-signal strong {
+    display: block;
+    color: var(--ma-white);
+    font-family: var(--ma-font-display);
+    font-size: 1.45rem;
+    line-height: 1.2;
+  }
+
+  .phantom-signal ul {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .phantom-signal li {
+    padding-left: 1rem;
+    border-left: 2px solid var(--ma-mint);
+    color: var(--ma-text);
+  }
+
+  .phantom-section-head {
+    max-width: 740px;
+  }
+
+  .phantom-section-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  .phantom-info-card {
+    min-height: 100%;
+    position: relative;
+    overflow: hidden;
+    padding: 1.6rem;
+    border: 1px solid var(--ma-border);
+    border-radius: var(--ma-radius);
+    background: var(--ma-surface);
+  }
+
+  .phantom-info-card > span {
+    display: inline-block;
+    margin-bottom: 1rem;
+    font-family: var(--ma-font-mono);
+    color: var(--ma-mint);
+    font-size: 0.78rem;
+  }
+
+  .phantom-info-card h3 {
+    margin-bottom: 0.9rem;
+    font-size: 1.2rem;
+    letter-spacing: 0;
+  }
+
+  .phantom-info-card p {
+    line-height: 1.65;
+  }
+
+  .phantom-info-card ul {
+    display: grid;
+    gap: 0.55rem;
+    margin-top: 1rem;
+    padding-left: 1.1rem;
+    color: var(--ma-text-dim);
+  }
+
+  .phantom-proof-band {
+    background: linear-gradient(135deg, rgba(0, 229, 160, 0.1), rgba(96, 165, 250, 0.08));
+    border-top: 1px solid var(--ma-border);
+    border-bottom: 1px solid var(--ma-border);
+  }
+
+  .phantom-proof-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .phantom-proof-list {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .phantom-proof-list p {
+    padding: 1.25rem;
+    border: 1px solid var(--ma-border);
+    border-radius: var(--ma-radius);
+    background: rgba(10, 10, 15, 0.45);
+    color: var(--ma-text);
+  }
+
+  .phantom-related-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .phantom-related {
+    display: grid;
+    gap: 0.45rem;
+    min-height: 136px;
+    padding: 1.4rem;
+    border: 1px solid var(--ma-border);
+    border-radius: var(--ma-radius);
+    background: var(--ma-surface-alt);
+    transition: border-color var(--ma-transition), transform var(--ma-transition), box-shadow var(--ma-transition);
+  }
+
+  .phantom-related:hover,
+  .phantom-related:focus-visible {
+    border-color: var(--ma-mint);
+    transform: translateY(-2px);
+    box-shadow: 0 18px 42px rgba(0, 229, 160, 0.08);
+  }
+
+  .phantom-related strong {
+    color: var(--ma-white);
+    font-family: var(--ma-font-display);
+    font-size: 1.05rem;
+  }
+
+  .phantom-related span {
+    color: var(--ma-text-dim);
+    line-height: 1.55;
+  }
+
+  @media (max-width: 980px) {
+    .phantom-hero-grid,
+    .phantom-proof-grid,
+    .phantom-section-grid,
+    .phantom-related-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .phantom-hero {
+      min-height: auto;
+      padding-top: 8rem;
+    }
+
+    .phantom-hero-copy h1 {
+      font-size: 3rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .phantom-hero-copy h1 {
+      font-size: 2.35rem;
+    }
+
+    .phantom-actions {
+      flex-direction: column;
+    }
+
+    .phantom-actions .ma-btn {
+      justify-content: center;
+      width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .phantom-related,
+    .ma-btn {
+      transition: none;
+    }
+
+    .phantom-related:hover,
+    .phantom-related:focus-visible,
+    .ma-btn:hover {
+      transform: none;
+    }
+  }
+</style>

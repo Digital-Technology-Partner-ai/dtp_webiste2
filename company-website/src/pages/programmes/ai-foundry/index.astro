@@ -1,0 +1,586 @@
+---
+import Header from '../../../components/Header.astro';
+import Layout from '../../../layouts/Layout.astro';
+
+const bookingUrl =
+  'https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous';
+
+const foundryOutputs = [
+  'Workflow opportunities grounded in real business work',
+  'A prioritised experiment backlog with practical next steps',
+  'Adoption observations: confidence, blockers, risk and ownership',
+  'Leadership evidence for what to fund, pause, govern or move into delivery',
+];
+
+const sessions = [
+  {
+    week: '01',
+    title: 'Frame the work',
+    text: 'Agree the group, the workflows in scope, the leadership question and the evidence needed to make Foundry useful.',
+  },
+  {
+    week: '02',
+    title: 'Map practical AI opportunities',
+    text: 'Look at real tasks, documents, decisions and handoffs to identify where AI could reduce drag or improve judgement.',
+  },
+  {
+    week: '03',
+    title: 'Prototype behaviour, not hype',
+    text: 'Explore tools, prompts, agents or workflow patterns in lightweight ways that reveal value, constraints and risks.',
+  },
+  {
+    week: '04',
+    title: 'Prioritise what deserves a next step',
+    text: 'Turn the evidence into a shortlist of experiments, delivery candidates, governance questions and parked ideas.',
+  },
+];
+
+const fitSignals = [
+  {
+    title: 'Best fit',
+    items: [
+      'Teams with real workflows to inspect',
+      'Leaders who want evidence before build',
+      'Organisations that need adoption confidence',
+    ],
+  },
+  {
+    title: 'Less suitable',
+    items: [
+      'A generic AI awareness session',
+      'A one-off motivational talk',
+      'A replacement for policy, legal or compliance work',
+    ],
+  },
+];
+
+const proofPoints = [
+  {
+    stat: '40% faster quotation preparation',
+    text: 'AI-assisted document and calculation workflows show the kind of practical value Foundry is designed to surface.',
+  },
+  {
+    stat: 'Zero missed maintenance tasks',
+    text: 'Operational agents become credible when the workflow, adoption pattern and controls are understood early.',
+  },
+  {
+    stat: 'Controlled path to delivery',
+    text: 'Strong Foundry outputs can move into Discovery, PoC, MVP, Pilot and Launch without losing governance discipline.',
+  },
+];
+---
+
+<Layout
+  title="AI Foundry - Digital Technology Partner"
+  description="A practical AI working group programme for evidence-led AI opportunity discovery inside the business."
+>
+  <Header />
+  <main class="foundry-page">
+    <section class="foundry-hero">
+      <div class="foundry-grid-bg"></div>
+      <div class="ma-container foundry-hero-grid">
+        <div class="foundry-copy">
+          <span class="ma-section-tag">// ai_foundry.working_group</span>
+          <h1>A practical AI working group, not another passive course.</h1>
+          <p>
+            AI Foundry helps teams build confidence by applying AI thinking to real work,
+            surfacing useful opportunities and giving leadership evidence for the next decision.
+          </p>
+          <div class="foundry-actions">
+            <a class="ma-btn ma-btn-mint" href={bookingUrl} target="_blank" rel="noopener noreferrer">
+              Discuss Foundry
+            </a>
+            <a class="ma-btn ma-btn-outline" href="/programmes/ai-adoption-readiness/">Start with Readiness</a>
+          </div>
+        </div>
+
+        <aside class="foundry-console" aria-label="AI Foundry output console">
+          <div class="console-top">
+            <span>foundry output</span>
+            <strong>Club, not course</strong>
+          </div>
+          <div class="console-core">
+            <span>Workflow</span>
+            <span>Evidence</span>
+            <span>Adoption</span>
+            <span>Delivery</span>
+          </div>
+          <ul>
+            {foundryOutputs.map((output) => <li>{output}</li>)}
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="ma-section context-section">
+      <div class="ma-container context-grid">
+        <div>
+          <span class="ma-section-tag">// why_foundry_exists</span>
+          <h2>AI confidence is built by doing the work, not watching slides.</h2>
+        </div>
+        <div class="context-copy">
+          <p>
+            Many organisations have AI interest scattered across teams, but no reliable way to
+            turn that curiosity into owned opportunities. Foundry gives the group a structured
+            place to inspect real workflows, test useful patterns and separate credible ideas
+            from tool-chasing.
+          </p>
+          <p>
+            The output is practical evidence: what might be worth funding, what needs governance,
+            who needs confidence and which ideas should wait.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="ma-section session-section">
+      <div class="ma-container">
+        <div class="ma-section-header">
+          <span class="ma-section-tag">// working_session_flow</span>
+          <h2>A focused working group rhythm.</h2>
+          <p>
+            The exact shape can flex, but Foundry should always create evidence, not just energy.
+          </p>
+        </div>
+        <div class="session-grid">
+          {sessions.map((session) => (
+            <article>
+              <span>{session.week}</span>
+              <h3>{session.title}</h3>
+              <p>{session.text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="ma-section fit-section">
+      <div class="ma-container fit-grid">
+        <div class="fit-panel">
+          <span class="ma-section-tag">// fit_check</span>
+          <h2>Use Foundry when the team needs evidence and confidence.</h2>
+          <p>
+            It is strongest after Readiness, or when leadership already knows there is enough
+            interest to convene a focused group.
+          </p>
+        </div>
+        <div class="fit-lists">
+          {fitSignals.map((group) => (
+            <article>
+              <h3>{group.title}</h3>
+              <ul>
+                {group.items.map((item) => <li>{item}</li>)}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="ma-section proof-section">
+      <div class="ma-container">
+        <div class="ma-section-header proof-head">
+          <span class="ma-section-tag">// from_workshop_to_outcome</span>
+          <h2>Foundry is designed to create delivery-grade evidence.</h2>
+        </div>
+        <div class="proof-grid">
+          {proofPoints.map((point) => (
+            <article>
+              <strong>{point.stat}</strong>
+              <p>{point.text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="foundry-cta">
+      <div class="ma-container cta-inner">
+        <span class="ma-section-tag">// next_decision</span>
+        <h2>Not sure whether to start with Readiness or Foundry?</h2>
+        <p>
+          If the organisation lacks a current-state map, start with Readiness. If the signal is
+          already clear and the team needs structured exploration, Foundry is the right next move.
+        </p>
+        <div class="cta-actions">
+          <a class="ma-btn ma-btn-mint ma-btn-lg" href={bookingUrl} target="_blank" rel="noopener noreferrer">
+            Talk through the route
+          </a>
+          <a class="ma-btn ma-btn-outline ma-btn-lg" href="/programmes/">Compare all programmes</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .foundry-page {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 18% 12%, rgba(0, 229, 160, 0.13), transparent 30rem),
+      radial-gradient(circle at 76% 22%, rgba(124, 139, 255, 0.09), transparent 28rem),
+      #000;
+  }
+
+  .foundry-hero {
+    position: relative;
+    min-height: 86vh;
+    padding: 8.75rem 0 3rem;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    border-bottom: 1px solid var(--ma-border);
+  }
+
+  .foundry-grid-bg {
+    position: absolute;
+    inset: 0;
+    opacity: 0.14;
+    background-image:
+      linear-gradient(rgba(244, 241, 232, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(244, 241, 232, 0.04) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: radial-gradient(ellipse 78% 70% at 58% 42%, black, transparent 84%);
+  }
+
+  .foundry-hero-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(420px, 0.92fr);
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .foundry-copy h1 {
+    max-width: 810px;
+    margin-bottom: 1.3rem;
+    color: #f4f1e8;
+    font-size: 4.55rem;
+    line-height: 0.98;
+    letter-spacing: 0;
+  }
+
+  .foundry-copy p {
+    max-width: 670px;
+    color: #d8d6ce;
+    font-size: 1.12rem;
+    line-height: 1.72;
+  }
+
+  .foundry-actions,
+  .cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .foundry-console {
+    padding: 1.45rem;
+    border: 1px solid rgba(0, 229, 160, 0.3);
+    border-radius: var(--ma-radius);
+    background:
+      radial-gradient(circle at 50% 30%, rgba(0, 229, 160, 0.13), transparent 17rem),
+      rgba(17, 17, 34, 0.72);
+    box-shadow: 0 28px 90px rgba(0, 0, 0, 0.34);
+  }
+
+  .console-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: start;
+    margin-bottom: 1.4rem;
+  }
+
+  .console-top span,
+  .session-grid article span {
+    color: var(--ma-mint);
+    font-family: var(--ma-font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .console-top strong {
+    color: #f4f1e8;
+    font-family: var(--ma-font-display);
+    font-size: 1.15rem;
+  }
+
+  .console-core {
+    min-height: 260px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+    padding: 1rem;
+    border: 1px solid rgba(244, 241, 232, 0.1);
+    border-radius: var(--ma-radius);
+    background:
+      linear-gradient(rgba(244, 241, 232, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(244, 241, 232, 0.04) 1px, transparent 1px),
+      rgba(0, 0, 0, 0.26);
+    background-size: 36px 36px;
+  }
+
+  .console-core span {
+    display: grid;
+    place-items: center;
+    min-height: 106px;
+    border: 1px solid rgba(244, 241, 232, 0.12);
+    border-radius: var(--ma-radius);
+    color: #f4f1e8;
+    font-family: var(--ma-font-display);
+    font-weight: 600;
+    background: rgba(5, 5, 9, 0.58);
+  }
+
+  .console-core span:first-child {
+    border-color: rgba(0, 229, 160, 0.55);
+    background: rgba(0, 229, 160, 0.09);
+  }
+
+  .foundry-console ul {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1.3rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .foundry-console li {
+    padding-left: 1rem;
+    border-left: 2px solid rgba(0, 229, 160, 0.66);
+    color: var(--ma-text);
+    line-height: 1.52;
+  }
+
+  .context-section {
+    background: var(--ma-bg);
+  }
+
+  .context-grid,
+  .fit-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.84fr) minmax(0, 1.16fr);
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .context-grid h2,
+  .session-section h2,
+  .fit-panel h2,
+  .proof-head h2,
+  .foundry-cta h2 {
+    letter-spacing: 0;
+  }
+
+  .context-copy {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .context-copy p,
+  .fit-panel p,
+  .foundry-cta p {
+    color: #d8d6ce;
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+
+  .session-section {
+    border-top: 1px solid var(--ma-border);
+    background:
+      linear-gradient(135deg, rgba(0, 229, 160, 0.07), rgba(124, 139, 255, 0.05)),
+      #07070c;
+  }
+
+  .session-section .ma-section-header {
+    max-width: 780px;
+  }
+
+  .session-section .ma-section-header p {
+    margin-top: 0.8rem;
+    color: #d8d6ce;
+    font-size: 1.05rem;
+    line-height: 1.68;
+  }
+
+  .session-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .session-grid article,
+  .fit-lists article,
+  .proof-grid article {
+    border: 1px solid rgba(244, 241, 232, 0.13);
+    border-radius: var(--ma-radius);
+    background: rgba(17, 17, 34, 0.74);
+  }
+
+  .session-grid article {
+    padding: 1.25rem;
+    min-height: 230px;
+  }
+
+  .session-grid h3 {
+    margin: 1rem 0 0.65rem;
+    color: #f4f1e8;
+    font-size: 1.14rem;
+    letter-spacing: 0;
+  }
+
+  .session-grid p,
+  .fit-lists li,
+  .proof-grid p {
+    line-height: 1.58;
+  }
+
+  .fit-section {
+    border-top: 1px solid var(--ma-border);
+    border-bottom: 1px solid var(--ma-border);
+    background: var(--ma-bg);
+  }
+
+  .fit-lists {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .fit-lists article {
+    padding: 1.35rem;
+  }
+
+  .fit-lists h3 {
+    margin-bottom: 1rem;
+    color: #f4f1e8;
+    font-size: 1.2rem;
+    letter-spacing: 0;
+  }
+
+  .fit-lists ul {
+    display: grid;
+    gap: 0.7rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .fit-lists li {
+    padding-left: 1rem;
+    border-left: 2px solid rgba(0, 229, 160, 0.58);
+    color: var(--ma-text);
+  }
+
+  .proof-section {
+    background:
+      linear-gradient(135deg, rgba(0, 229, 160, 0.08), rgba(124, 139, 255, 0.06)),
+      #07070c;
+  }
+
+  .proof-head {
+    max-width: 760px;
+  }
+
+  .proof-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .proof-grid article {
+    padding: 1.3rem;
+  }
+
+  .proof-grid strong {
+    display: block;
+    margin-bottom: 0.55rem;
+    color: #f4f1e8;
+    font-family: var(--ma-font-display);
+    font-size: 1.1rem;
+    line-height: 1.25;
+  }
+
+  .foundry-cta {
+    padding: 5.75rem 0;
+    text-align: center;
+    background:
+      radial-gradient(circle at 50% 16%, rgba(0, 229, 160, 0.12), transparent 25rem),
+      #050509;
+  }
+
+  .cta-inner {
+    max-width: 800px;
+  }
+
+  .foundry-cta p {
+    max-width: 700px;
+    margin: 1rem auto 0;
+  }
+
+  .cta-actions {
+    justify-content: center;
+  }
+
+  @media (max-width: 1080px) {
+    .foundry-hero-grid,
+    .context-grid,
+    .fit-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .session-grid,
+    .proof-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 720px) {
+    .foundry-hero {
+      min-height: auto;
+      padding: 7rem 0 3.5rem;
+    }
+
+    .foundry-copy h1 {
+      font-size: 2.68rem;
+      line-height: 1;
+    }
+
+    .foundry-copy p,
+    .context-copy p,
+    .fit-panel p,
+    .foundry-cta p,
+    .session-section .ma-section-header p {
+      font-size: 1rem;
+    }
+
+    .foundry-hero-grid {
+      gap: 2.6rem;
+    }
+
+    .foundry-actions,
+    .cta-actions {
+      display: grid;
+    }
+
+    .foundry-actions .ma-btn,
+    .cta-actions .ma-btn {
+      justify-content: center;
+      width: 100%;
+    }
+
+    .console-core,
+    .session-grid,
+    .fit-lists,
+    .proof-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .console-core {
+      min-height: auto;
+    }
+  }
+</style>
