@@ -160,6 +160,11 @@ sphereGroup.add(nodesGroup, envGroup);
 const dustGroup = new THREE.Group();   // world-level atmosphere, drifts independently
 scene.add(dustGroup);
 
+const universeGroup = new THREE.Group(); // Why DTP star universe, used as distant background
+universeGroup.position.set(0, 0, -42);
+universeGroup.scale.setScalar(window.innerWidth < 760 ? 3.6 : 5.2);
+scene.add(universeGroup);
+
 /* ---------------- node shaders ---------------- */
 
 const VERT = /* glsl */ `
@@ -369,6 +374,46 @@ function circlePoints(radius, lat, segments = 180) {
 
 const arcs = [];
 let pulsePoints = null;
+let universeParticles = null;
+
+function buildUniverseBackground() {
+  const mint = new THREE.Color(0x00e5a0);
+  const blue = new THREE.Color(0x7c8bff);
+  const ivory = new THREE.Color(0xf4f1e8);
+  const amber = new THREE.Color(0xf4c84a);
+
+  const particleCount = 860;
+  const particlePositions = new Float32Array(particleCount * 3);
+  const particleColors = new Float32Array(particleCount * 3);
+  for (let i = 0; i < particleCount; i++) {
+    const r = 0.8 + Math.random() * 3.8;
+    const a = Math.random() * Math.PI * 2;
+    const z = (Math.random() - 0.5) * 1.3;
+    particlePositions[i * 3] = Math.cos(a) * r;
+    particlePositions[i * 3 + 1] = Math.sin(a) * r * 0.64;
+    particlePositions[i * 3 + 2] = z;
+
+    const color = i % 13 === 0 ? amber : i % 7 === 0 ? blue : i % 5 === 0 ? ivory : mint;
+    particleColors[i * 3] = color.r;
+    particleColors[i * 3 + 1] = color.g;
+    particleColors[i * 3 + 2] = color.b;
+  }
+
+  const particleGeometry = new THREE.BufferGeometry();
+  particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+  particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
+  universeParticles = new THREE.Points(
+    particleGeometry,
+    registerAmbient(new THREE.PointsMaterial({
+      size: 0.025,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.5,
+      depthWrite: false,
+    }), 0.5)
+  );
+  universeGroup.add(universeParticles);
+}
 
 function buildEnvironment() {
   // graticule — faint structural lines of the environment
@@ -462,6 +507,8 @@ function buildEnvironment() {
     color: 0x9aa3ad, size: 0.09, sizeAttenuation: true,
   }), 0.32);
   dustGroup.add(new THREE.Points(dustGeo, dustMat));
+
+  buildUniverseBackground();
 }
 
 /* ---------------- interaction state ---------------- */
@@ -486,7 +533,7 @@ let moved = 0;
 let lastDx = 0, lastDy = 0;
 
 window.DTP = {
-  state, camera, nodes, openSection, closeSection,
+  state, camera, nodes, universeGroup, openSection, closeSection,
   get hovered() { return hovered; },
   get currentNode() { return currentNode; },
 };
@@ -803,6 +850,12 @@ function tick(t) {
 
   // dust drift
   dustGroup.rotation.y += 0.00012 * dt;
+  universeGroup.rotation.y += (0.00018 + tilt.cx * 0.00003) * dt;
+  universeGroup.rotation.x += ((-0.08 + tilt.cy * 0.025) - universeGroup.rotation.x) * 0.018 * dt;
+  if (universeParticles) {
+    universeParticles.rotation.z -= 0.00065 * dt;
+    universeParticles.rotation.y += 0.00038 * dt;
+  }
 
   // hover raycast
   if (!state.locked) {
@@ -830,4 +883,5 @@ window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
+  universeGroup.scale.setScalar(window.innerWidth < 760 ? 3.6 : 5.2);
 });
