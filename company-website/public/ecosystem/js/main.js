@@ -10,11 +10,17 @@ import * as THREE from 'three';
    node to travel into that section.
    ============================================================ */
 
-const RADIUS = 30;
-const NODE_W = 0.46;          // angular width at equator (rad)
+const RADIUS = 32;
+const NODE_W = Math.PI * (23 / 180); // angular width at equator (rad)
 const NODE_H = 0.28;          // angular height (rad)
 const MINT = 0x05cc90;
 const MINT_GLSL = 'vec3(0.020, 0.800, 0.565)';
+const ACTIVE_ARC = Math.PI;
+
+function arcTheta(index, count, offset = 0) {
+  if (count <= 1) return Math.PI + offset;
+  return Math.PI + offset - ACTIVE_ARC / 2 + (index / (count - 1)) * ACTIVE_ARC;
+}
 
 /* ---------------- destination content ---------------- */
 
@@ -90,6 +96,16 @@ const DEFAULT_DESTINATIONS = [
     ],
   },
   {
+    id: 'news', title: 'NEWS', band: 'upper',
+    desc: 'Updates from DTP and the AI landscape.',
+    intro: 'News from Digital Technology Partner: company updates, AI market movement and practical signals for leaders tracking what is changing now.',
+    blocks: [
+      ['Company updates', 'Announcements, launches and useful changes from inside DTP.'],
+      ['Market signals', 'Relevant movement across AI, automation, data and digital transformation.'],
+      ['Leader context', 'Short updates framed around what decision-makers need to know next.'],
+    ],
+  },
+  {
     id: 'learning', title: 'LEARNING SOLUTIONS', band: 'lower',
     desc: 'Capability building for your teams.',
     intro: 'Technology only compounds when people grow with it. We design learning that builds durable capability — practical, contextual and embedded in real work.',
@@ -116,8 +132,11 @@ const DEFAULT_RING_ITEMS = [
   { label: 'WHY DTP', id: 'why-dtp' },
   { label: 'AI FOUNDRY', id: 'ai-foundry' },
   { label: 'USE CASES', id: 'use-cases' },
+  { label: 'PROCESS', id: 'process' },
+  { label: 'NEWS', id: 'news' },
   { label: 'CASE STUDIES', id: 'case-studies' },
   { label: 'INSIGHTS', id: 'insights' },
+  { label: 'LEARNING', id: 'learning' },
   { label: 'CONTACT', id: 'contact' },
 ];
 
@@ -145,7 +164,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x07090d);
 
-const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 140);
+const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 140);
 scene.add(camera);
 
 const pivot = new THREE.Group();       // vertical look (x)
@@ -318,22 +337,9 @@ const nodes = [];
 function buildNodes() {
   const upper = DESTINATIONS.filter(d => d.band === 'upper');
   const lower = DESTINATIONS.filter(d => d.band === 'lower');
-  const densifyWithRepeats = (list) => {
-    if (!list.length) return [];
-    const doubled = [];
-    for (let i = 0; i < list.length - 1; i++) {
-      doubled.push(list[i]);
-      doubled.push(list[i]);
-    }
-    doubled.push(list[list.length - 1]);
-    return doubled;
-  };
   const place = (list, lat, offset) => {
-    const denseList = densifyWithRepeats(list);
-    const slot = (Math.PI * 2) / denseList.length;
-    const center = Math.PI + offset;
-    denseList.forEach((dest, i) => {
-      const theta = center + i * slot;
+    list.forEach((dest, i) => {
+      const theta = arcTheta(i, list.length, offset);
       const index = DESTINATIONS.indexOf(dest);
       const effW = NODE_W / Math.cos(lat);
       const geo = curvedPanelGeometry(theta, lat, effW, NODE_H, RADIUS);
@@ -358,8 +364,8 @@ function buildNodes() {
       nodes.push(node);
     });
   };
-  place(upper, 0.30, 0);
-  place(lower, -0.30, Math.PI / 4);
+  place(upper, Math.PI * (18 / 180), 0);
+  place(lower, -Math.PI * (18 / 180), 0);
 }
 
 /* ---------------- environment: graticule, ring, arcs, dust ---------------- */
@@ -668,8 +674,9 @@ function findRingItemAt(x, y) {
 }
 
 function buildRingNav() {
-  const slot = (Math.PI * 2) / RING_ITEMS.length;
   RING_ITEMS.forEach((item, i) => {
+    const theta = arcTheta(i, RING_ITEMS.length, 0);
+    const beltLat = i % 2 === 0 ? 0.075 : -0.075;
     const el = document.createElement('button');
     el.className = 'ring-item';
     el.textContent = item.label;
@@ -690,12 +697,12 @@ function buildRingNav() {
     const pick = new THREE.Mesh(ringPickGeo, ringPickMat);
     pick.userData.ringIndex = i;
     pick.visible = false;
-    pick.position.copy(sph(1, Math.PI + i * slot, 0.05)).multiplyScalar(29.8);
+    pick.position.copy(sph(1, theta, beltLat)).multiplyScalar(29.8);
     sphereGroup.add(pick);
     ringPickMeshes.push(pick);
     const ringItem = {
       el,
-      anchor: sph(1, Math.PI + i * slot, 0.05),
+      anchor: sph(1, theta, beltLat),
       pick,
       node: item.id ? nodes.find(n => n.dest.id === item.id) : null,
       visible: false,
