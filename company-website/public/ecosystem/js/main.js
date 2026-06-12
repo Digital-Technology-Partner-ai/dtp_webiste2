@@ -452,6 +452,108 @@ function resetSignal(signal, phase = Math.random()) {
 const arcs = [];
 const signalPulses = [];
 let universeParticles = null;
+
+/* ---------------- AI-core video backdrop ---------------- */
+/* The supplied processor-landscape film wraps the viewer as a
+   distant horizon band: graded toward the DTP mint, faded into
+   darkness above and below, and parallax-coupled to the orbit
+   so the gallery appears to hover above the inside of the
+   machine. Renders first, behind every existing layer. */
+
+const VIDEO_BACKDROP_SRC = '/ecosystem/video/ai-core-loop.mp4';
+const VIDEO_BACKDROP_RADIUS = 92;
+const VIDEO_BACKDROP_BASE_Y = -14;
+const VIDEO_PARALLAX_ORBIT = 0.12;   // fraction of sphere orbit the horizon follows
+const videoFade = { v: 0 };
+const videoBackdropGroup = new THREE.Group();
+let videoBackdropMat = null;
+scene.add(videoBackdropGroup);
+
+const VIDEO_VERT = /* glsl */ `
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+const VIDEO_FRAG = /* glsl */ `
+  uniform sampler2D uMap;
+  uniform float uOpacity;
+  uniform float uRepeat;
+  varying vec2 vUv;
+  void main() {
+    vec3 col = texture2D(uMap, vec2(vUv.x * uRepeat, vUv.y)).rgb;
+    col = pow(col, vec3(1.18));
+    float lum = dot(col, vec3(0.299, 0.587, 0.114));
+    col = mix(col, ${MINT_GLSL} * lum * 1.55, 0.22);
+    col *= 0.6;
+    float band = smoothstep(0.02, 0.24, vUv.y) * (1.0 - smoothstep(0.70, 0.985, vUv.y));
+    gl_FragColor = vec4(col, uOpacity * band);
+  }
+`;
+
+let videoBackdropEl = null;
+
+function buildVideoBackdrop() {
+  const video = document.createElement('video');
+  videoBackdropEl = video;
+  video.muted = true;
+  video.loop = true;
+  video.playsInline = true;
+  video.setAttribute('playsinline', '');
+  video.setAttribute('muted', '');
+  video.preload = 'auto';
+  video.src = VIDEO_BACKDROP_SRC;
+
+  const tex = new THREE.VideoTexture(video);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.wrapS = THREE.MirroredRepeatWrapping;
+  tex.wrapT = THREE.ClampToEdgeWrapping;
+  tex.minFilter = THREE.LinearFilter;
+  tex.magFilter = THREE.LinearFilter;
+  tex.generateMipmaps = false;
+
+  videoBackdropMat = new THREE.ShaderMaterial({
+    uniforms: {
+      uMap: { value: tex },
+      uOpacity: { value: 0 },
+      uRepeat: { value: 3.0 },
+    },
+    vertexShader: VIDEO_VERT,
+    fragmentShader: VIDEO_FRAG,
+    transparent: true,
+    depthWrite: false,
+    side: THREE.BackSide,
+  });
+
+  // height keeps the film aspect-true across each mirrored 120° arc
+  const arcPerCopy = (Math.PI * 2 * VIDEO_BACKDROP_RADIUS) / 3;
+  const height = arcPerCopy / (784 / 470);
+  const geo = new THREE.CylinderGeometry(
+    VIDEO_BACKDROP_RADIUS, VIDEO_BACKDROP_RADIUS, height, 96, 1, true);
+  const mesh = new THREE.Mesh(geo, videoBackdropMat);
+  mesh.renderOrder = -1;
+  mesh.frustumCulled = false;
+  videoBackdropGroup.add(mesh);
+  videoBackdropGroup.position.y = VIDEO_BACKDROP_BASE_Y;
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const start = () => {
+    if (reduceMotion) {
+      video.currentTime = 0.1; // hold a single graded frame
+      return;
+    }
+    video.play().catch(() => {
+      window.addEventListener('pointerdown', () => video.play().catch(() => {}), { once: true });
+    });
+  };
+  if (video.readyState >= 2) start();
+  else video.addEventListener('canplay', start, { once: true });
+
+  gsap.to(videoFade, { v: 1, duration: 2.8, ease: 'power2.inOut', delay: 0.5 });
+}
+
 const signalRaycaster = new THREE.Raycaster();
 const signalNdc = new THREE.Vector2();
 const signalWorld = new THREE.Vector3();
@@ -633,6 +735,7 @@ let lastDx = 0, lastDy = 0;
 
 window.DTP = {
   state, camera, nodes, universeGroup, openSection, closeSection,
+  get videoBackdrop() { return videoBackdropEl; },
   get hovered() { return hovered; },
   get infoNode() { return infoNode; },
   get currentNode() { return currentNode; },
@@ -926,6 +1029,7 @@ async function boot() {
 
   buildNodes();
   buildEnvironment();
+  buildVideoBackdrop();
   buildRingNav();
   buildMenu();
 
@@ -1015,6 +1119,15 @@ function tick(t) {
     signal.depthFade += (targetFade - signal.depthFade) * 0.16 * dt;
     const pastCameraFade = 1 - Math.max(0, eased - 0.82) / 0.18;
     signal.mat.opacity = signal.mat.userData.base * ambientFade.v * signal.depthFade * pastCameraFade;
+  }
+
+  // video horizon — lags the orbit, counter-shifts against tilt, breathes
+  if (videoBackdropMat) {
+    videoBackdropGroup.rotation.y = state.curY * VIDEO_PARALLAX_ORBIT + t * 0.00005;
+    videoBackdropGroup.position.x = tilt.cx * 1.5;
+    videoBackdropGroup.position.y = VIDEO_BACKDROP_BASE_Y
+      + state.curX * 7 - tilt.cy * 1.2 + Math.sin(t * 0.00021) * 0.8;
+    videoBackdropMat.uniforms.uOpacity.value = videoFade.v * (0.3 + 0.7 * ambientFade.v);
   }
 
   // dust drift
