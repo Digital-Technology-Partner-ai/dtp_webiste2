@@ -10,12 +10,21 @@ import * as THREE from 'three';
    node to travel into that section.
    ============================================================ */
 
-const RADIUS = 32;
+const RADIUS = 36;
 const NODE_W = Math.PI * (23 / 180); // angular width at equator (rad)
 const NODE_H = 0.28;          // angular height (rad)
 const MINT = 0x05cc90;
 const MINT_GLSL = 'vec3(0.020, 0.800, 0.565)';
 const ACTIVE_ARC = Math.PI;
+const SIGNAL_COUNT = 30;
+const SIGNAL_REAR_RATIO = 0.70;
+const SIGNAL_REAR_FADE = 0.19;
+const SIGNAL_RANDOMNESS = 1;
+const SIGNAL_START_PHASE = 0.90;
+const SIGNAL_ENTRY_SPREAD = Math.PI * (220 / 180);
+const SIGNAL_ENTRY_LAT = 0.62;
+const SIGNAL_DEPTH_TRAVEL = 18;
+const SIGNAL_MOTION_SPEED = 1.5;
 
 function arcTheta(index, count, offset = 0) {
   if (count <= 1) return Math.PI + offset;
@@ -390,8 +399,55 @@ function circlePoints(radius, lat, segments = 180) {
   return pts;
 }
 
+function makeSignalTexture() {
+  const c = document.createElement('canvas');
+  c.width = 64;
+  c.height = 64;
+  const x = c.getContext('2d');
+  x.clearRect(0, 0, 64, 64);
+  x.shadowColor = 'rgba(5, 204, 144, 0.75)';
+  x.shadowBlur = 18;
+  x.fillStyle = 'rgba(5, 204, 144, 0.92)';
+  x.fillRect(20, 20, 24, 24);
+  x.shadowBlur = 0;
+  x.strokeStyle = 'rgba(244, 241, 232, 0.26)';
+  x.strokeRect(20.5, 20.5, 23, 23);
+  const tex = new THREE.CanvasTexture(c);
+  tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  return tex;
+}
+
+function angularDelta(a, b) {
+  return Math.atan2(Math.sin(a - b), Math.cos(a - b));
+}
+
+function insideCardBoundary(theta, lat) {
+  for (const node of nodes) {
+    const halfW = (NODE_W / Math.cos(node.lat)) / 2;
+    const halfH = NODE_H / 2;
+    if (Math.abs(angularDelta(theta, node.theta)) <= halfW && Math.abs(lat - node.lat) <= halfH) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function resetSignal(signal, phase = Math.random()) {
+  const halfSpread = SIGNAL_ENTRY_SPREAD / 2;
+  const startOffset = -halfSpread + Math.random() * SIGNAL_ENTRY_SPREAD;
+  const direction = Math.random() < 0.5 ? -1 : 1;
+  const exitOffset = direction * (halfSpread + 0.55 + Math.random() * 0.45);
+  signal.theta = Math.PI + startOffset;
+  signal.lat = (Math.random() - 0.5) * SIGNAL_ENTRY_LAT;
+  signal.thetaTravel = (exitOffset - startOffset) * (0.82 + Math.random() * 0.18 * SIGNAL_RANDOMNESS);
+  signal.thetaDrift = (Math.random() - 0.5) * 0.035 * SIGNAL_RANDOMNESS;
+  signal.latDrift = (Math.random() - 0.5) * 0.012 * SIGNAL_RANDOMNESS;
+  signal.depthPhase = phase;
+  signal.speed = (0.0011 + Math.random() * 0.0022) * SIGNAL_MOTION_SPEED;
+}
+
 const arcs = [];
-let pulsePoints = null;
+const signalPulses = [];
 let universeParticles = null;
 
 function buildUniverseBackground() {
@@ -501,15 +557,33 @@ function buildEnvironment() {
     arcs.push({ pts, t: Math.random(), speed: 0.0009 + Math.random() * 0.0016 });
   }
 
-  // signal pulses travelling along the arcs
-  const pulseGeo = new THREE.BufferGeometry();
-  pulseGeo.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(arcs.length * 3), 3));
-  const pulseMat = registerAmbient(new THREE.PointsMaterial({
-    color: MINT, size: 0.42, sizeAttenuation: true,
-  }), 0.8);
-  pulsePoints = new THREE.Points(pulseGeo, pulseMat);
-  pulsePoints.frustumCulled = false;
-  envGroup.add(pulsePoints);
+  // signal cubes enter the forward field from random angles rather than tracing tracks.
+  const signalTexture = makeSignalTexture();
+  const signalCount = SIGNAL_COUNT;
+  for (let i = 0; i < signalCount; i++) {
+    const behind = ((Math.sin((i + 1) * 12.9898) * 43758.5453) % 1 + 1) % 1 < SIGNAL_REAR_RATIO;
+    const mat = registerAmbient(new THREE.SpriteMaterial({
+      map: signalTexture,
+      color: MINT,
+      transparent: true,
+      opacity: behind ? 0.72 : 0.92,
+      depthTest: true,
+      depthWrite: false,
+    }), behind ? 0.72 : 0.92);
+    const sprite = new THREE.Sprite(mat);
+    sprite.renderOrder = behind ? 1 : 4;
+    sprite.scale.setScalar(behind ? 0.7 : 0.82);
+    envGroup.add(sprite);
+    const signal = {
+      sprite,
+      mat,
+      behind,
+      depthFade: 1,
+      scale: behind ? 0.7 : 0.82,
+    };
+    resetSignal(signal, (SIGNAL_START_PHASE + i / signalCount) % 1);
+    signalPulses.push(signal);
+  }
 
   // sparse ambient dust — atmosphere, not spectacle
   const dustGeo = new THREE.BufferGeometry();
@@ -875,7 +949,6 @@ boot();
 /* ---------------- frame loop ---------------- */
 
 let lastT = performance.now();
-const pulseAttr = () => pulsePoints && pulsePoints.geometry.attributes.position;
 const _p = new THREE.Vector3();
 
 function tick(t) {
@@ -910,17 +983,26 @@ function tick(t) {
   // ambient material fade
   for (const m of ambientMats) m.opacity = m.userData.base * ambientFade.v;
 
-  // signal pulses along arcs
-  const attr = pulseAttr();
-  if (attr) {
-    arcs.forEach((arc, i) => {
-      arc.t = (arc.t + arc.speed * dt) % 1;
-      const f = arc.t * (arc.pts.length - 1);
-      const a = Math.floor(f);
-      _p.copy(arc.pts[a]).lerp(arc.pts[Math.min(a + 1, arc.pts.length - 1)], f - a);
-      attr.setXYZ(i, _p.x, _p.y, _p.z);
-    });
-    attr.needsUpdate = true;
+  // signal cubes entering through the forward field
+  for (const signal of signalPulses) {
+    signal.depthPhase += signal.speed * dt;
+    if (signal.depthPhase >= 1) resetSignal(signal, signal.depthPhase % 1);
+
+    const eased = signal.depthPhase * signal.depthPhase * (3 - 2 * signal.depthPhase);
+    const theta = signal.theta + signal.thetaTravel * signal.depthPhase + signal.thetaDrift * Math.sin(signal.depthPhase * Math.PI * 2);
+    const lat = signal.lat + signal.latDrift * Math.cos(signal.depthPhase * Math.PI * 2);
+    const frontDepth = signal.behind ? 1.8 : 5.2;
+    const radialDepth = RADIUS + SIGNAL_DEPTH_TRAVEL * 0.5 - eased * (SIGNAL_DEPTH_TRAVEL + frontDepth);
+    _p.copy(sph(radialDepth, theta, lat));
+
+    const nearCard = insideCardBoundary(theta, lat);
+    const targetFade = signal.behind && nearCard ? SIGNAL_REAR_FADE : 1;
+    signal.depthFade += (targetFade - signal.depthFade) * 0.11 * dt;
+
+    const visibleDepth = signal.behind && nearCard ? Math.max(radialDepth, RADIUS + 3.4) : radialDepth;
+    signal.sprite.position.copy(_p.normalize().multiplyScalar(visibleDepth));
+    signal.sprite.scale.setScalar(signal.scale * (0.42 + signal.depthFade * 0.58));
+    signal.mat.opacity = signal.mat.userData.base * ambientFade.v * signal.depthFade;
   }
 
   // dust drift
