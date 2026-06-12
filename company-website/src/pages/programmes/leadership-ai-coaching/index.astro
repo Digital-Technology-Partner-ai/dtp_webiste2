@@ -2,9 +2,6 @@
 import Header from '../../../components/Header.astro';
 import Layout from '../../../layouts/Layout.astro';
 
-const bookingUrl =
-  'https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous';
-
 const privateSignals = [
   'You need to test your thinking before taking it to the board.',
   'Vendor claims, AI agents or governance questions are moving faster than your available time.',
@@ -54,36 +51,56 @@ const boundaries = [
   'Not a sales push into a build',
   'Not a public workshop unless you choose that route later',
 ];
+
+const boardroomQuestions = [
+  '"What actually is an agent, and do we need one?"',
+  '"Which of these vendor claims are real?"',
+  '"Is our data safe in these tools, really?"',
+  '"What should I personally be using by now?"',
+  '"Is our AI strategy actually a strategy?"',
+];
 ---
 
 <Layout
-  title="Senior Leadership AI Coaching - Digital Technology Partner"
-  description="Discreet one-to-one AI and technology coaching for senior leaders who need private clarity, technical translation and decision support."
+  title="Senior Leadership AI Coaching: private, one-to-one | Digital Technology Partner"
+  description="Confidential AI coaching for senior leaders: plain-language translation, decision support and a private place to test your thinking before you commit publicly."
 >
   <Header />
   <main class="coaching-page">
     <section class="coaching-hero" aria-labelledby="coaching-title">
-      <canvas id="leadership-scene" class="leadership-scene" aria-hidden="true"></canvas>
+      <canvas id="leadership-scene" class="leadership-scene" aria-hidden="true"
+      ></canvas>
       <div class="scene-vignette"></div>
       <div class="ma-container coaching-hero-grid">
         <div class="coaching-copy" data-reveal>
-          <span class="ma-section-tag">// leadership_suite.private_ai_clarity</span>
-          <h1 id="coaching-title">Private AI and technology support for senior leaders.</h1>
+          <span class="ma-section-tag">// nobody_gave_you_the_manual</span>
+          <h1 id="coaching-title">
+            Everyone assumes you have an AI strategy. Nobody gave you the
+            manual.
+          </h1>
           <p>
-            A calm, confidential route for leaders who need a trusted technical sounding board,
-            practical translation and clearer decisions around AI.
+            Private, one-to-one AI and technology support for senior leaders: a
+            confidential place to ask anything, test your thinking and walk into
+            the room already decided.
           </p>
           <div class="coaching-actions">
-            <a class="ma-btn ma-btn-mint" href={bookingUrl} target="_blank" rel="noopener noreferrer">
+            <a class="ma-btn ma-btn-mint" href="/contact/">
               Arrange a confidential conversation
             </a>
-            <a class="ma-btn ma-btn-outline" href="/programmes/ai-adoption-readiness/">
+            <a
+              class="ma-btn ma-btn-outline"
+              href="/programmes/ai-adoption-readiness/"
+            >
               Explore Readiness first
             </a>
           </div>
         </div>
 
-        <aside class="privacy-console" aria-label="Leadership coaching signal" data-reveal>
+        <aside
+          class="privacy-console"
+          aria-label="Leadership coaching signal"
+          data-reveal
+        >
           <span>executive signal</span>
           <strong>Think clearly before you have to decide publicly.</strong>
           <ul>
@@ -96,18 +113,39 @@ const boundaries = [
     <section class="ma-section clarity-section">
       <div class="ma-container clarity-grid">
         <div>
-          <span class="ma-section-tag">// why_this_exists</span>
-          <h2>Leadership pressure has changed. The support model should too.</h2>
+          <span class="ma-section-tag">// youre_not_behind</span>
+          <h2>
+            Most senior leaders are improvising on AI. The confident ones hide
+            it better.
+          </h2>
         </div>
         <div class="clarity-copy">
           <p>
-            Senior leaders are expected to answer questions about AI strategy, risk, tools,
-            agents, data, workforce impact and vendor claims. The problem is not intelligence;
-            it is bandwidth, translation and a safe place to pressure-test thinking.
+            Leadership pressure has changed. You're expected to answer for
+            strategy, risk, tools, agents, data, workforce impact and vendor
+            claims, often in the same meeting. The problem is not intelligence.
+            It is bandwidth, translation and a safe place to pressure-test
+            thinking before it goes public.
           </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="ma-section questions-section">
+      <div class="ma-container questions-grid">
+        <div>
+          <span class="ma-section-tag">// the_questions</span>
+          <h2>The questions you can't ask in the boardroom.</h2>
+        </div>
+        <div class="questions-copy">
+          <div class="question-list">
+            {boardroomQuestions.map((question) => <p>{question}</p>)}
+          </div>
           <p>
-            This coaching offer gives leaders practical fluency without forcing the organisation
-            into a public programme before the decision is ready.
+            Coaching is one-to-one and confidential. No audience, no judgement,
+            just plain-language answers and a sharper version of your own
+            thinking. You don't need to become technical. You need the
+            confidence to decide.
           </p>
         </div>
       </div>
@@ -120,13 +158,15 @@ const boundaries = [
           <h2>What the coaching can cover.</h2>
         </div>
         <div class="themes-grid">
-          {coachingThemes.map((theme) => (
-            <article data-reveal-card>
-              <div class="ma-card-line"></div>
-              <h3>{theme.title}</h3>
-              <p>{theme.text}</p>
-            </article>
-          ))}
+          {
+            coachingThemes.map((theme) => (
+              <article data-reveal-card>
+                <div class="ma-card-line" />
+                <h3>{theme.title}</h3>
+                <p>{theme.text}</p>
+              </article>
+            ))
+          }
         </div>
       </div>
     </section>
@@ -137,20 +177,23 @@ const boundaries = [
           <span class="ma-section-tag">// discreet_session_model</span>
           <h2>A private rhythm for clearer decisions.</h2>
           <p>
-            Sessions are shaped around the decisions in front of you. They can be exploratory,
-            technical, strategic or hands-on depending on what would create confidence fastest.
+            Sessions are shaped around the decisions in front of you. They can
+            be exploratory, technical, strategic or hands-on, depending on what
+            would create confidence fastest.
           </p>
         </div>
         <div class="session-steps">
-          {sessionFlow.map((step) => (
-            <article>
-              <span>{step.label}</span>
-              <div>
-                <h3>{step.title}</h3>
-                <p>{step.text}</p>
-              </div>
-            </article>
-          ))}
+          {
+            sessionFlow.map((step) => (
+              <article>
+                <span>{step.label}</span>
+                <div>
+                  <h3>{step.title}</h3>
+                  <p>{step.text}</p>
+                </div>
+              </article>
+            ))
+          }
         </div>
       </div>
     </section>
@@ -161,13 +204,19 @@ const boundaries = [
           <span class="ma-section-tag">// premium_boundaries</span>
           <h2>Clear boundaries make the offer more useful.</h2>
           <p>
-            The value is confidential judgement, translation and decision support. It is not a
-            noisy workshop or a generic course wearing executive clothes.
+            The value is confidential judgement, translation and decision
+            support. It is not a noisy workshop or a generic course wearing
+            executive clothes.
           </p>
         </div>
         <div class="boundary-list" aria-label="Coaching boundaries">
           {boundaries.map((boundary) => <div>{boundary}</div>)}
         </div>
+        <p class="boundaries-note">
+          Coaching is not a funnel into delivery work. If a build is genuinely
+          the right route, we'll say so, and you can take that conclusion to
+          anyone, including someone who isn't us.
+        </p>
       </div>
     </section>
 
@@ -176,14 +225,16 @@ const boundaries = [
         <span class="ma-section-tag">// private_next_step</span>
         <h2>Need a discreet place to think this through?</h2>
         <p>
-          Start with a confidential conversation. If Readiness, Foundry or delivery is the better
-          route, we will say so plainly.
+          Start with a confidential conversation. If Readiness, Foundry or
+          delivery is the better route, we will say so plainly.
         </p>
         <div class="cta-actions">
-          <a class="ma-btn ma-btn-mint ma-btn-lg" href={bookingUrl} target="_blank" rel="noopener noreferrer">
+          <a class="ma-btn ma-btn-mint ma-btn-lg" href="/contact/">
             Arrange a confidential conversation
           </a>
-          <a class="ma-btn ma-btn-outline ma-btn-lg" href="/programmes/">Compare all programmes</a>
+          <a class="ma-btn ma-btn-outline ma-btn-lg" href="/programmes/"
+            >Compare all programmes</a
+          >
         </div>
       </div>
     </section>
@@ -191,11 +242,18 @@ const boundaries = [
 </Layout>
 
 <script>
-  const canvas = document.getElementById('leadership-scene') as HTMLCanvasElement | null;
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canvas = document.getElementById(
+    'leadership-scene'
+  ) as HTMLCanvasElement | null;
+  const reducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  ).matches;
 
   if (canvas) {
-    const [THREE, gsapModule] = await Promise.all([import('three'), import('gsap')]);
+    const [THREE, gsapModule] = await Promise.all([
+      import('three'),
+      import('gsap'),
+    ]);
     const { gsap } = gsapModule;
 
     const renderer = new THREE.WebGLRenderer({
@@ -231,7 +289,10 @@ const boundaries = [
       wireframe: true,
     });
 
-    const inner = new THREE.Mesh(new THREE.IcosahedronGeometry(1.12, 1), chamberMaterial);
+    const inner = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(1.12, 1),
+      chamberMaterial
+    );
     inner.rotation.set(0.4, 0.1, 0.25);
     group.add(inner);
 
@@ -266,8 +327,14 @@ const boundaries = [
     }
 
     const particleGeometry = new THREE.BufferGeometry();
-    particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    particleGeometry.setAttribute(
+      'position',
+      new THREE.BufferAttribute(positions, 3)
+    );
+    particleGeometry.setAttribute(
+      'color',
+      new THREE.BufferAttribute(colors, 3)
+    );
     const particles = new THREE.Points(
       particleGeometry,
       new THREE.PointsMaterial({
@@ -381,8 +448,16 @@ const boundaries = [
   .coaching-page {
     min-height: 100vh;
     background:
-      radial-gradient(circle at 22% 12%, rgba(0, 229, 160, 0.1), transparent 30rem),
-      radial-gradient(circle at 78% 20%, rgba(124, 139, 255, 0.09), transparent 30rem),
+      radial-gradient(
+        circle at 22% 12%,
+        rgba(0, 229, 160, 0.1),
+        transparent 30rem
+      ),
+      radial-gradient(
+        circle at 78% 20%,
+        rgba(124, 139, 255, 0.09),
+        transparent 30rem
+      ),
       #000;
   }
 
@@ -408,8 +483,19 @@ const boundaries = [
     position: absolute;
     inset: 0;
     background:
-      linear-gradient(90deg, rgba(0, 0, 0, 0.94) 0%, rgba(0, 0, 0, 0.72) 34%, rgba(0, 0, 0, 0.28) 64%, rgba(0, 0, 0, 0.7) 100%),
-      linear-gradient(180deg, rgba(0, 0, 0, 0.7), transparent 38%, rgba(0, 0, 0, 0.82));
+      linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.94) 0%,
+        rgba(0, 0, 0, 0.72) 34%,
+        rgba(0, 0, 0, 0.28) 64%,
+        rgba(0, 0, 0, 0.7) 100%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.7),
+        transparent 38%,
+        rgba(0, 0, 0, 0.82)
+      );
     pointer-events: none;
   }
 
@@ -490,11 +576,13 @@ const boundaries = [
   }
 
   .clarity-section,
+  .questions-section,
   .boundaries-section {
     background: var(--ma-bg);
   }
 
   .clarity-grid,
+  .questions-grid,
   .session-grid,
   .boundaries-grid {
     display: grid;
@@ -504,6 +592,7 @@ const boundaries = [
   }
 
   .clarity-grid h2,
+  .questions-grid h2,
   .themes-head h2,
   .session-copy h2,
   .boundaries-panel h2,
@@ -517,6 +606,7 @@ const boundaries = [
   }
 
   .clarity-copy p,
+  .questions-copy p,
   .session-copy p,
   .boundaries-panel p,
   .coaching-cta p {
@@ -525,11 +615,39 @@ const boundaries = [
     line-height: 1.7;
   }
 
+  .questions-section {
+    border-top: 1px solid var(--ma-border);
+  }
+
+  .questions-copy {
+    display: grid;
+    gap: 1.2rem;
+  }
+
+  .question-list {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .question-list p {
+    margin: 0;
+    padding: 1rem 1.1rem;
+    border-left: 3px solid rgba(0, 229, 160, 0.72);
+    background: rgba(244, 241, 232, 0.04);
+    color: #f4f1e8;
+    font-family: var(--ma-font-display);
+    line-height: 1.35;
+  }
+
   .themes-section,
   .session-section {
     border-top: 1px solid var(--ma-border);
     background:
-      linear-gradient(135deg, rgba(0, 229, 160, 0.07), rgba(124, 139, 255, 0.05)),
+      linear-gradient(
+        135deg,
+        rgba(0, 229, 160, 0.07),
+        rgba(124, 139, 255, 0.05)
+      ),
       #07070c;
   }
 
@@ -599,6 +717,15 @@ const boundaries = [
     gap: 1rem;
   }
 
+  .boundaries-note {
+    grid-column: 1 / -1;
+    max-width: 900px;
+    margin: 0;
+    color: #d8d6ce;
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+
   .boundary-list div {
     min-height: 96px;
     display: grid;
@@ -614,7 +741,11 @@ const boundaries = [
     padding: 5.75rem 0;
     text-align: center;
     background:
-      radial-gradient(circle at 50% 16%, rgba(0, 229, 160, 0.12), transparent 25rem),
+      radial-gradient(
+        circle at 50% 16%,
+        rgba(0, 229, 160, 0.12),
+        transparent 25rem
+      ),
       #050509;
   }
 
@@ -634,6 +765,7 @@ const boundaries = [
   @media (max-width: 1080px) {
     .coaching-hero-grid,
     .clarity-grid,
+    .questions-grid,
     .session-grid,
     .boundaries-grid {
       grid-template-columns: 1fr;
@@ -656,7 +788,12 @@ const boundaries = [
 
     .scene-vignette {
       background:
-        linear-gradient(180deg, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.7) 42%, rgba(0, 0, 0, 0.96)),
+        linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.92),
+          rgba(0, 0, 0, 0.7) 42%,
+          rgba(0, 0, 0, 0.96)
+        ),
         linear-gradient(90deg, rgba(0, 0, 0, 0.84), rgba(0, 0, 0, 0.38));
     }
 
@@ -667,6 +804,7 @@ const boundaries = [
 
     .coaching-copy p,
     .clarity-copy p,
+    .questions-copy p,
     .session-copy p,
     .boundaries-panel p,
     .coaching-cta p {
@@ -676,6 +814,12 @@ const boundaries = [
     .coaching-actions,
     .cta-actions {
       display: grid;
+      justify-content: stretch;
+      width: 100%;
+    }
+
+    .coaching-cta .cta-actions {
+      justify-content: stretch;
     }
 
     .coaching-actions .ma-btn,

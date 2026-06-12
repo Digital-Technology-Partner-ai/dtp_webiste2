@@ -2,54 +2,62 @@
 import Header from '../components/Header.astro';
 import Layout from '../layouts/Layout.astro';
 
-const bookingUrl =
-  'https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous';
-
 const phases = [
   {
     id: 'discover',
     code: '01',
     title: 'Discover',
+    question: 'Is the problem clear enough to deserve money?',
     promise: 'Make the problem clear enough to choose a responsible route.',
     detail:
       'Understand users, workflow, data, systems, risk, ownership and the business decision the work must improve.',
-    evidence: 'Current-state map, constraints, success criteria and recommended first route.',
+    evidence:
+      'Current-state map, constraints, success criteria and recommended first route.',
   },
   {
     id: 'prove',
     code: '02',
     title: 'Prove',
+    question: 'Is the value real outside a slide?',
     promise: 'Test the smallest convincing version of value.',
     detail:
       'Create a focused PoC around one workflow, data path, decision surface, agent behaviour or integration risk.',
-    evidence: 'Evidence of feasibility, value, limits and what must be true before MVP.',
+    evidence:
+      'Evidence of feasibility, value, limits and what must be true before MVP.',
   },
   {
     id: 'build',
     code: '03',
     title: 'Build',
+    question: 'Can real users touch it without it breaking?',
     promise: 'Turn the proven core into something real users can touch.',
     detail:
       'Build an MVP with usable interfaces, real data pathways, controls, support assumptions and delivery-grade architecture.',
-    evidence: 'Working MVP, measured behaviours, operational feedback and launch-readiness gaps.',
+    evidence:
+      'Working MVP, measured behaviours, operational feedback and launch-readiness gaps.',
   },
   {
     id: 'pilot',
     code: '04',
     title: 'Pilot',
+    question: 'Does it survive actual operations?',
     promise: 'Run safely inside a controlled operational setting.',
     detail:
       'Test with users, measure adoption, expose edge cases, refine controls and decide whether the system should scale.',
-    evidence: 'Pilot findings, adoption signals, risk updates and scale/no-scale recommendation.',
+    evidence:
+      'Pilot findings, adoption signals, risk updates and scale/no-scale recommendation.',
   },
   {
     id: 'launch',
     code: '05',
     title: 'Launch',
-    promise: 'Scale the system with ownership, monitoring and improvement cycles.',
+    question: "Who owns it when it's live?",
+    promise:
+      'Scale the system with ownership, monitoring and improvement cycles.',
     detail:
       'Move into live use with support, documentation, monitoring, feedback loops and a clear improvement backlog.',
-    evidence: 'Live system, handover, monitoring model and next improvement route.',
+    evidence:
+      'Live system, handover, monitoring model and next improvement route.',
   },
 ];
 
@@ -61,15 +69,27 @@ const safeguards = [
 ];
 
 const routeLinks = [
-  { label: 'AI Adoption Readiness', href: '/programmes/ai-adoption-readiness/', note: 'When the starting point is unclear.' },
-  { label: 'AI Foundry', href: '/programmes/ai-foundry/', note: 'When the team needs evidence and confidence.' },
-  { label: 'Solutions', href: '/solutions/', note: 'When a use case is ready to shape.' },
+  {
+    label: 'AI Adoption Readiness',
+    href: '/programmes/ai-adoption-readiness/',
+    note: 'When the starting point is unclear.',
+  },
+  {
+    label: 'AI Foundry',
+    href: '/programmes/ai-foundry/',
+    note: 'When the team needs evidence and confidence.',
+  },
+  {
+    label: 'Solutions',
+    href: '/solutions/',
+    note: 'When a use case is ready to shape.',
+  },
 ];
 ---
 
 <Layout
-  title="Process - Digital Technology Partner"
-  description="How DTP moves AI and digital systems from discovery to proof, MVP, pilot and launch with clear decision gates."
+  title="Process, five evidence gates from idea to live system | Digital Technology Partner"
+  description="DTP's delivery method: Discover, Prove, Build, Pilot, Launch. Every gate demands evidence and includes the right to stop. That's what keeps the work fast and honest."
 >
   <Header />
   <main class="process-page">
@@ -77,21 +97,31 @@ const routeLinks = [
       <div class="process-grid"></div>
       <div class="ma-container process-hero-inner">
         <div class="process-copy" data-process-reveal>
-          <span class="ma-section-tag">// controlled_delivery_path</span>
-          <h1 id="process-title">From uncertain idea to live system, one decision gate at a time.</h1>
+          <span class="ma-section-tag">// the_right_to_stop</span>
+          <h1 id="process-title">
+            Every gate includes the right to stop. That's why the work moves
+            fast.
+          </h1>
           <p>
-            DTP delivery is designed to reduce risk before scale. Each phase creates evidence,
-            exposes constraints and makes the next commitment easier to judge.
+            DTP delivery runs through five evidence gates: Discover, Prove,
+            Build, Pilot, Launch. Each one buys information before anything
+            costs scale, and stopping at any of them is a result, not a failure.
           </p>
           <div class="process-actions">
-            <a class="ma-btn ma-btn-mint" href={bookingUrl} target="_blank" rel="noopener noreferrer">
-              Talk through your route
-            </a>
-            <a class="ma-btn ma-btn-outline" href="/solutions/">See solution types</a>
+            <a class="ma-btn ma-btn-mint" href="/contact/"
+              >Talk through your route</a
+            >
+            <a class="ma-btn ma-btn-outline" href="/solutions/"
+              >See solution types</a
+            >
           </div>
         </div>
 
-        <aside class="delivery-console" aria-label="Animated DTP delivery corridor" data-process-reveal>
+        <aside
+          class="delivery-console"
+          aria-label="Animated DTP delivery corridor"
+          data-process-reveal
+        >
           <div class="delivery-console-top">
             <span>delivery corridor</span>
             <strong id="phase-console-title">Discover</strong>
@@ -115,8 +145,9 @@ const routeLinks = [
           <span class="ma-section-tag">// gate_sequence</span>
           <h2>Progress is earned by evidence, not optimism.</h2>
           <p>
-            A useful process keeps momentum without pretending every idea deserves full
-            delivery. The gate is passed when the evidence is strong enough.
+            Each gate buys information before it costs scale. The gate is passed
+            when the evidence is strong enough, and closed without shame when it
+            isn't.
           </p>
           <div class="phase-progress" aria-hidden="true">
             <span></span>
@@ -124,25 +155,28 @@ const routeLinks = [
         </div>
 
         <div class="phase-stack" aria-label="DTP delivery phases">
-          {phases.map((phase, index) => (
-            <article
-              class="phase-panel"
-              data-process-card
-              data-phase-id={phase.id}
-              data-phase-index={index}
-              data-phase-title={phase.title}
-              data-phase-promise={phase.promise}
-            >
-              <span>{phase.code}</span>
-              <h3>{phase.title}</h3>
-              <strong>{phase.promise}</strong>
-              <p>{phase.detail}</p>
-              <div>
-                <small>Evidence gate</small>
-                <p>{phase.evidence}</p>
-              </div>
-            </article>
-          ))}
+          {
+            phases.map((phase, index) => (
+              <article
+                class="phase-panel"
+                data-process-card
+                data-phase-id={phase.id}
+                data-phase-index={index}
+                data-phase-title={phase.title}
+                data-phase-promise={phase.promise}
+              >
+                <span>{phase.code}</span>
+                <p class="phase-question">{phase.question}</p>
+                <h3>{phase.title}</h3>
+                <strong>{phase.promise}</strong>
+                <p>{phase.detail}</p>
+                <div>
+                  <small>Evidence gate</small>
+                  <p>{phase.evidence}</p>
+                </div>
+              </article>
+            ))
+          }
         </div>
       </div>
     </section>
@@ -153,12 +187,16 @@ const routeLinks = [
           <span class="ma-section-tag">// delivery_safeguards</span>
           <h2>Controls are part of the build, not decoration at the end.</h2>
           <p>
-            The process works because governance, adoption and technical reality are handled
-            while the system is being shaped.
+            The process works because governance, adoption and technical reality
+            are handled while the system is being shaped.
           </p>
         </div>
         <div class="safeguard-list">
           {safeguards.map((item) => <p data-process-card>{item}</p>)}
+          <p class="safeguard-note" data-process-card>
+            We publish the method because the method isn't the moat. Judgement
+            is.
+          </p>
         </div>
       </div>
     </section>
@@ -170,12 +208,14 @@ const routeLinks = [
           <h2>Enter the process at the right level of certainty.</h2>
         </div>
         <div class="route-grid">
-          {routeLinks.map((route) => (
-            <a class="route-card" href={route.href} data-process-card>
-              <strong>{route.label}</strong>
-              <span>{route.note}</span>
-            </a>
-          ))}
+          {
+            routeLinks.map((route) => (
+              <a class="route-card" href={route.href} data-process-card>
+                <strong>{route.label}</strong>
+                <span>{route.note}</span>
+              </a>
+            ))
+          }
         </div>
       </div>
     </section>
@@ -183,12 +223,16 @@ const routeLinks = [
     <section class="process-cta">
       <div class="ma-container process-cta-inner" data-process-reveal>
         <span class="ma-section-tag">// make_the_next_gate_clear</span>
-        <h2>Not every idea needs a build. Every serious idea needs a responsible next gate.</h2>
+        <h2>
+          Not every idea needs a build. Every serious idea needs a responsible
+          next gate.
+        </h2>
         <div class="process-actions">
-          <a class="ma-btn ma-btn-mint ma-btn-lg" href={bookingUrl} target="_blank" rel="noopener noreferrer">
-            Talk through your route
-          </a>
-          <a class="ma-btn ma-btn-outline ma-btn-lg" href="/why-dtp/">Why DTP</a>
+          <a class="ma-btn ma-btn-mint ma-btn-lg" href="/contact/"
+            >Talk through your route</a
+          >
+          <a class="ma-btn ma-btn-outline ma-btn-lg" href="/why-dtp/">Why DTP</a
+          >
         </div>
       </div>
     </section>
@@ -196,15 +240,23 @@ const routeLinks = [
 </Layout>
 
 <script>
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const canvas = document.getElementById('delivery-corridor-scene') as HTMLCanvasElement | null;
+  const reducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  ).matches;
+  const canvas = document.getElementById(
+    'delivery-corridor-scene'
+  ) as HTMLCanvasElement | null;
   const gsapReady = import('gsap');
-  const phasePanels = Array.from(document.querySelectorAll('[data-phase-id]')) as HTMLElement[];
+  const phasePanels = Array.from(
+    document.querySelectorAll('[data-phase-id]')
+  ) as HTMLElement[];
   const consoleTitle = document.getElementById('phase-console-title');
   const consolePromise = document.getElementById('phase-console-promise');
 
   const setActivePhaseDom = async (panel: HTMLElement) => {
-    phasePanels.forEach((item) => item.classList.toggle('active', item === panel));
+    phasePanels.forEach((item) =>
+      item.classList.toggle('active', item === panel)
+    );
     if (consoleTitle) consoleTitle.textContent = panel.dataset.phaseTitle || '';
     if (consolePromise) {
       if (reducedMotion) {
@@ -218,14 +270,22 @@ const routeLinks = [
           ease: 'power2.out',
           onComplete: () => {
             consolePromise.textContent = panel.dataset.phasePromise || '';
-            gsap.to(consolePromise, { opacity: 1, y: 0, duration: 0.24, ease: 'power3.out' });
+            gsap.to(consolePromise, {
+              opacity: 1,
+              y: 0,
+              duration: 0.24,
+              ease: 'power3.out',
+            });
           },
         });
       }
     }
     document.dispatchEvent(
       new CustomEvent('delivery-phase-focus', {
-        detail: { index: Number(panel.dataset.phaseIndex || 0), id: panel.dataset.phaseId },
+        detail: {
+          index: Number(panel.dataset.phaseIndex || 0),
+          id: panel.dataset.phaseId,
+        },
       })
     );
   };
@@ -263,7 +323,12 @@ const routeLinks = [
     const geometries: THREE.BufferGeometry[] = [];
     const gates: THREE.Mesh[] = [];
     const lanes: THREE.Line[] = [];
-    const focusState = { targetX: -2.4, yaw: -0.08, zoom: 8.8, particleOpacity: 0.62 };
+    const focusState = {
+      targetX: -2.4,
+      yaw: -0.08,
+      zoom: 8.8,
+      particleOpacity: 0.62,
+    };
 
     const gateX = [-2.8, -1.4, 0, 1.4, 2.8];
 
@@ -280,7 +345,14 @@ const routeLinks = [
     };
 
     gateX.forEach((x, index) => {
-      const color = index === 0 ? mint : index === 4 ? amber : index % 2 === 0 ? blue : ivory;
+      const color =
+        index === 0
+          ? mint
+          : index === 4
+            ? amber
+            : index % 2 === 0
+              ? blue
+              : ivory;
       const ring = new THREE.Mesh(
         new THREE.TorusGeometry(0.42, 0.014, 12, 96),
         makeMaterial(color, index === 0 ? 0.78 : 0.28)
@@ -309,7 +381,11 @@ const routeLinks = [
         new THREE.Vector3(3.25, y, z),
       ]);
       geometries.push(geometry);
-      const material = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.22 });
+      const material = new THREE.LineBasicMaterial({
+        color,
+        transparent: true,
+        opacity: 0.22,
+      });
       materials.push(material);
       const line = new THREE.Line(geometry, material);
       line.userData.focusOpacity = 0.22;
@@ -331,15 +407,22 @@ const routeLinks = [
       particlePositions[i * 3] = x;
       particlePositions[i * 3 + 1] = y;
       particlePositions[i * 3 + 2] = z;
-      const color = i % 11 === 0 ? amber : i % 5 === 0 ? blue : i % 3 === 0 ? ivory : mint;
+      const color =
+        i % 11 === 0 ? amber : i % 5 === 0 ? blue : i % 3 === 0 ? ivory : mint;
       particleColors[i * 3] = color.r;
       particleColors[i * 3 + 1] = color.g;
       particleColors[i * 3 + 2] = color.b;
     }
 
     const particleGeometry = new THREE.BufferGeometry();
-    particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-    particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
+    particleGeometry.setAttribute(
+      'position',
+      new THREE.BufferAttribute(particlePositions, 3)
+    );
+    particleGeometry.setAttribute(
+      'color',
+      new THREE.BufferAttribute(particleColors, 3)
+    );
     const particles = new THREE.Points(
       particleGeometry,
       new THREE.PointsMaterial({
@@ -386,7 +469,10 @@ const routeLinks = [
       const phaseEvent = event as CustomEvent<{ index: number }>;
       focusPhase(phaseEvent.detail.index);
     };
-    document.addEventListener('delivery-phase-focus', onPhaseFocus as EventListener);
+    document.addEventListener(
+      'delivery-phase-focus',
+      onPhaseFocus as EventListener
+    );
     focusPhase(0);
 
     const resize = () => {
@@ -444,13 +530,17 @@ const routeLinks = [
     const render = () => {
       const t = (window.performance.now() - start) / 1000;
       if (!reducedMotion) {
-        group.rotation.y += (focusState.yaw + pointer.x - group.rotation.y) * 0.026;
+        group.rotation.y +=
+          (focusState.yaw + pointer.x - group.rotation.y) * 0.026;
         group.rotation.x += (-0.12 + pointer.y - group.rotation.x) * 0.024;
         camera.position.z += (focusState.zoom - camera.position.z) * 0.035;
-        camera.position.x += (focusState.targetX * 0.12 - camera.position.x) * 0.03;
+        camera.position.x +=
+          (focusState.targetX * 0.12 - camera.position.x) * 0.03;
         particles.rotation.z += 0.00055;
         (particles.material as THREE.PointsMaterial).opacity +=
-          (focusState.particleOpacity - (particles.material as THREE.PointsMaterial).opacity) * 0.04;
+          (focusState.particleOpacity -
+            (particles.material as THREE.PointsMaterial).opacity) *
+          0.04;
         gates.forEach((gate, index) => {
           const material = gate.material as THREE.MeshBasicMaterial;
           const pulse = Math.sin(t * 1.75 + index * 0.4) * 0.045;
@@ -460,7 +550,9 @@ const routeLinks = [
         });
         lanes.forEach((lane, index) => {
           const material = lane.material as THREE.LineBasicMaterial;
-          material.opacity = (lane.userData.focusOpacity ?? 0.2) + Math.sin(t * 1.2 + index) * 0.026;
+          material.opacity =
+            (lane.userData.focusOpacity ?? 0.2) +
+            Math.sin(t * 1.2 + index) * 0.026;
         });
       }
       renderer.render(scene, camera);
@@ -472,7 +564,10 @@ const routeLinks = [
       window.cancelAnimationFrame(frame);
       window.removeEventListener('resize', resize);
       canvas.removeEventListener('pointermove', onPointerMove);
-      document.removeEventListener('delivery-phase-focus', onPhaseFocus as EventListener);
+      document.removeEventListener(
+        'delivery-phase-focus',
+        onPhaseFocus as EventListener
+      );
       renderer.dispose();
       particleGeometry.dispose();
       geometries.forEach((geometry) => geometry.dispose());
@@ -518,8 +613,16 @@ const routeLinks = [
   .process-page {
     min-height: 100vh;
     background:
-      radial-gradient(circle at 16% 10%, rgba(0, 229, 160, 0.12), transparent 31rem),
-      radial-gradient(circle at 78% 18%, rgba(124, 139, 255, 0.1), transparent 30rem),
+      radial-gradient(
+        circle at 16% 10%,
+        rgba(0, 229, 160, 0.12),
+        transparent 31rem
+      ),
+      radial-gradient(
+        circle at 78% 18%,
+        rgba(124, 139, 255, 0.1),
+        transparent 30rem
+      ),
       linear-gradient(135deg, #000 0%, #080812 56%, #000 100%);
     color: var(--ma-text);
   }
@@ -543,7 +646,11 @@ const routeLinks = [
       linear-gradient(rgba(244, 241, 232, 0.045) 1px, transparent 1px),
       linear-gradient(90deg, rgba(244, 241, 232, 0.035) 1px, transparent 1px);
     background-size: 70px 70px;
-    mask-image: radial-gradient(ellipse 78% 74% at 62% 46%, black, transparent 86%);
+    mask-image: radial-gradient(
+      ellipse 78% 74% at 62% 46%,
+      black,
+      transparent 86%
+    );
   }
 
   .process-hero-inner {
@@ -585,7 +692,11 @@ const routeLinks = [
     border: 1px solid rgba(244, 241, 232, 0.14);
     border-radius: var(--ma-radius);
     background:
-      radial-gradient(circle at 48% 42%, rgba(0, 229, 160, 0.13), transparent 22rem),
+      radial-gradient(
+        circle at 48% 42%,
+        rgba(0, 229, 160, 0.13),
+        transparent 22rem
+      ),
       linear-gradient(145deg, rgba(17, 17, 34, 0.84), rgba(0, 0, 0, 0.5));
     box-shadow: 0 34px 100px rgba(0, 0, 0, 0.32);
   }
@@ -766,6 +877,15 @@ const routeLinks = [
     letter-spacing: 0;
   }
 
+  .phase-panel .phase-question {
+    margin: 0.85rem 0 0;
+    color: #f4f1e8;
+    font-family: var(--ma-font-display);
+    font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+    font-weight: 700;
+    line-height: 1.32;
+  }
+
   .phase-panel strong {
     display: block;
     max-width: 620px;
@@ -803,7 +923,11 @@ const routeLinks = [
 
   .safeguard-section {
     background:
-      linear-gradient(135deg, rgba(0, 229, 160, 0.08), rgba(124, 139, 255, 0.05)),
+      linear-gradient(
+        135deg,
+        rgba(0, 229, 160, 0.08),
+        rgba(124, 139, 255, 0.05)
+      ),
       var(--ma-bg);
     border-top: 1px solid var(--ma-border);
     border-bottom: 1px solid var(--ma-border);
@@ -826,6 +950,13 @@ const routeLinks = [
     padding: 1.1rem 1.2rem;
     border-left: 2px solid rgba(0, 229, 160, 0.68);
     background: rgba(5, 5, 9, 0.54);
+  }
+
+  .safeguard-list .safeguard-note {
+    border-left-color: rgba(244, 200, 74, 0.74);
+    color: #f4f1e8;
+    font-family: var(--ma-font-display);
+    font-weight: 700;
   }
 
   .route-section {
@@ -881,7 +1012,11 @@ const routeLinks = [
     padding: 5.8rem 0;
     text-align: center;
     background:
-      radial-gradient(circle at 50% 8%, rgba(0, 229, 160, 0.14), transparent 27rem),
+      radial-gradient(
+        circle at 50% 8%,
+        rgba(0, 229, 160, 0.14),
+        transparent 27rem
+      ),
       #000;
   }
 
@@ -928,6 +1063,12 @@ const routeLinks = [
 
     .process-actions {
       display: grid;
+      width: 100%;
+      justify-content: stretch;
+    }
+
+    .process-cta .process-actions {
+      justify-content: stretch;
     }
 
     .process-actions .ma-btn {

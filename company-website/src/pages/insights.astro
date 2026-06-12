@@ -3,8 +3,13 @@ import { getCollection } from 'astro:content';
 import Header from '../components/Header.astro';
 import Layout from '../layouts/Layout.astro';
 
-const approvedNews = await getCollection('news', ({ data }) => data.approved === true);
-const articles = approvedNews.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+const approvedNews = await getCollection(
+  'news',
+  ({ data }) => data.approved === true
+);
+const articles = approvedNews.sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
 const featured = articles[0];
 const latest = articles.slice(1, 7);
 
@@ -35,11 +40,14 @@ const formatDate = (date: Date) =>
     month: 'short',
     year: 'numeric',
   });
+
+const cleanCopy = (value: string) =>
+  value.replace(/\s*[\u2014\u2013]\s*/g, ', ');
 ---
 
 <Layout
-  title="Insights - Digital Technology Partner"
-  description="Curated DTP insights on AI adoption, delivery, governance, automation and operational AI."
+  title="Insights, the filtered AI feed for leadership decisions | Digital Technology Partner"
+  description="AI adoption, governance and delivery news, read for you and reduced to what changes a leadership decision. Read less. Decide more."
 >
   <Header />
   <main class="insights-page">
@@ -47,21 +55,30 @@ const formatDate = (date: Date) =>
       <div class="insights-grid"></div>
       <div class="ma-container insights-hero-inner">
         <div class="insights-copy" data-insights-reveal>
-          <span class="ma-section-tag">// signal_room</span>
-          <h1 id="insights-title">Insight for leaders turning AI noise into operational decisions.</h1>
+          <span class="ma-section-tag">// the_filter</span>
+          <h1 id="insights-title">
+            You can't drink from the AI firehose. We already do.
+          </h1>
           <p>
-            A curated view of AI adoption, governance, delivery and automation, written for
-            teams who need practical judgement rather than another trend feed.
+            Insights is the filtered feed: AI adoption, governance, delivery and
+            automation, read for you and reduced to what changes a leadership
+            decision. Read less. Decide more.
           </p>
           <div class="insights-actions">
-            <a class="ma-btn ma-btn-mint" href="/programmes/ai-adoption-readiness/">
-              Start with readiness
-            </a>
-            <a class="ma-btn ma-btn-outline" href="/news/">View all newsroom articles</a>
+            <a class="ma-btn ma-btn-mint" href="#latest-signal"
+              >View the latest signal</a
+            >
+            <a class="ma-btn ma-btn-outline" href="/news/"
+              >Browse the full newsroom</a
+            >
           </div>
         </div>
 
-        <aside class="signal-console" aria-label="Animated insights signal atlas" data-insights-reveal>
+        <aside
+          class="signal-console"
+          aria-label="Animated insights signal atlas"
+          data-insights-reveal
+        >
           <div class="signal-console-top">
             <span>signal atlas</span>
             <strong id="signal-console-title">Leadership</strong>
@@ -81,54 +98,81 @@ const formatDate = (date: Date) =>
 
     <section class="ma-section theme-section">
       <div class="ma-container theme-strip" aria-label="Insight themes">
-        {themes.map((theme) => (
-          <button
-            type="button"
-            data-signal-theme={theme.id}
-            data-signal-label={theme.label}
-            data-signal-value={theme.title}
-            class:list={['theme-button', { active: theme.id === 'leadership' }]}
-            aria-pressed={theme.id === 'leadership' ? 'true' : 'false'}
-          >
-            <span>{theme.label}</span>
-            <strong>{theme.title}</strong>
-          </button>
-        ))}
+        {
+          themes.map((theme) => (
+            <button
+              type="button"
+              data-signal-theme={theme.id}
+              data-signal-label={theme.label}
+              data-signal-value={theme.title}
+              class:list={[
+                'theme-button',
+                { active: theme.id === 'leadership' },
+              ]}
+              aria-pressed={theme.id === 'leadership' ? 'true' : 'false'}
+            >
+              <span>{theme.label}</span>
+              <strong>{theme.title}</strong>
+            </button>
+          ))
+        }
       </div>
     </section>
 
-    <section class="ma-section editorial-section">
+    <section class="ma-section editorial-section" id="latest-signal">
       <div class="ma-container editorial-grid">
         <div class="editorial-copy" data-insights-reveal>
           <span class="ma-section-tag">// latest_signal</span>
           <h2>Read what is changing, then decide what deserves attention.</h2>
+          <p>Five minutes a week is enough. Start with the featured piece.</p>
         </div>
         <div class="editorial-feed">
-          {featured && (
-            <article class="featured-article" data-insights-card>
-              <div class="article-meta">
-                <span>Featured</span>
-                <time datetime={featured.data.pubDate.toISOString()}>{formatDate(featured.data.pubDate)}</time>
-              </div>
-              <h3><a href={`/news/${featured.id}`}>{featured.data.title}</a></h3>
-              <p>{featured.data.description}</p>
-              <div class="article-tags">
-                {[featured.data.category, ...(featured.data.tags || []).slice(0, 3)].map((tag) => <span>{tag}</span>)}
-              </div>
-            </article>
-          )}
+          {
+            featured && (
+              <article class="featured-article" data-insights-card>
+                <div class="article-meta">
+                  <span>Featured</span>
+                  <time datetime={featured.data.pubDate.toISOString()}>
+                    {formatDate(featured.data.pubDate)}
+                  </time>
+                </div>
+                <h3>
+                  <a href={`/news/${featured.id}`}>
+                    {cleanCopy(featured.data.title)}
+                  </a>
+                </h3>
+                <p>{cleanCopy(featured.data.description)}</p>
+                <div class="article-tags">
+                  {[
+                    featured.data.category,
+                    ...(featured.data.tags || []).slice(0, 3),
+                  ].map((tag) => (
+                    <span>{tag}</span>
+                  ))}
+                </div>
+              </article>
+            )
+          }
 
           <div class="article-list">
-            {latest.map((article) => (
-              <article data-insights-card>
-                <div class="article-meta">
-                  <span>{article.data.category}</span>
-                  <time datetime={article.data.pubDate.toISOString()}>{formatDate(article.data.pubDate)}</time>
-                </div>
-                <h3><a href={`/news/${article.id}`}>{article.data.title}</a></h3>
-                <p>{article.data.description}</p>
-              </article>
-            ))}
+            {
+              latest.map((article) => (
+                <article data-insights-card>
+                  <div class="article-meta">
+                    <span>{article.data.category}</span>
+                    <time datetime={article.data.pubDate.toISOString()}>
+                      {formatDate(article.data.pubDate)}
+                    </time>
+                  </div>
+                  <h3>
+                    <a href={`/news/${article.id}`}>
+                      {cleanCopy(article.data.title)}
+                    </a>
+                  </h3>
+                  <p>{cleanCopy(article.data.description)}</p>
+                </article>
+              ))
+            }
           </div>
         </div>
       </div>
@@ -141,13 +185,38 @@ const formatDate = (date: Date) =>
           <h2>Use Insights as a decision filter.</h2>
         </div>
         <div class="theme-map">
-          {themes.map((theme) => (
-            <article data-insights-card>
-              <span>{theme.label}</span>
-              <h3>{theme.title}</h3>
-              <p>{theme.tags.map((tag) => `#${tag}`).join('  ')}</p>
-            </article>
-          ))}
+          {
+            themes.map((theme) => (
+              <article data-insights-card>
+                <span>{theme.label}</span>
+                <h3>{theme.title}</h3>
+                <p>{theme.tags.map((tag) => `#${tag}`).join('  ')}</p>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="insights-cta">
+      <div class="ma-container insights-cta-inner" data-insights-reveal>
+        <span class="ma-section-tag">// the_sample</span>
+        <h2>This is the judgement we sell. Sample it freely.</h2>
+        <p>
+          Every piece here is written with the same question we bring to client
+          work: what deserves your attention, your budget or your guardrails
+          next? If the thinking is useful, the conversation is more useful.
+        </p>
+        <div class="insights-actions">
+          <a
+            class="ma-btn ma-btn-mint ma-btn-lg"
+            href="/programmes/ai-adoption-readiness/"
+          >
+            Start with AI Readiness
+          </a>
+          <a class="ma-btn ma-btn-outline ma-btn-lg" href="/contact/"
+            >Book a Discovery Call</a
+          >
         </div>
       </div>
     </section>
@@ -155,10 +224,16 @@ const formatDate = (date: Date) =>
 </Layout>
 
 <script>
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const canvas = document.getElementById('signal-atlas-scene') as HTMLCanvasElement | null;
+  const reducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  ).matches;
+  const canvas = document.getElementById(
+    'signal-atlas-scene'
+  ) as HTMLCanvasElement | null;
   const gsapReady = import('gsap');
-  const themeButtons = Array.from(document.querySelectorAll('[data-signal-theme]')) as HTMLButtonElement[];
+  const themeButtons = Array.from(
+    document.querySelectorAll('[data-signal-theme]')
+  ) as HTMLButtonElement[];
   const signalTitle = document.getElementById('signal-console-title');
   const signalValue = document.getElementById('signal-console-value');
 
@@ -181,12 +256,21 @@ const formatDate = (date: Date) =>
           ease: 'power2.out',
           onComplete: () => {
             signalValue.textContent = button.dataset.signalValue || '';
-            gsap.to(signalValue, { opacity: 1, y: 0, duration: 0.24, ease: 'power3.out' });
+            gsap.to(signalValue, {
+              opacity: 1,
+              y: 0,
+              duration: 0.24,
+              ease: 'power3.out',
+            });
           },
         });
       }
     }
-    document.dispatchEvent(new CustomEvent('signal-theme-focus', { detail: { id: button.dataset.signalTheme } }));
+    document.dispatchEvent(
+      new CustomEvent('signal-theme-focus', {
+        detail: { id: button.dataset.signalTheme },
+      })
+    );
   };
 
   themeButtons.forEach((button) => {
@@ -198,7 +282,12 @@ const formatDate = (date: Date) =>
   if (canvas) {
     const [THREE, gsapModule] = await Promise.all([import('three'), gsapReady]);
     const { gsap } = gsapModule;
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance',
+    });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.6));
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 80);
@@ -213,12 +302,35 @@ const formatDate = (date: Date) =>
     const materials: THREE.Material[] = [];
     const nodes: THREE.Mesh[] = [];
     const rings: THREE.Mesh[] = [];
-    const focusState = { yaw: -0.12, pitch: -0.18, zoom: 8.4, particleOpacity: 0.66 };
+    const focusState = {
+      yaw: -0.12,
+      pitch: -0.18,
+      zoom: 8.4,
+      particleOpacity: 0.66,
+    };
 
     const focusMap = {
-      leadership: { node: 0, yaw: -0.16, pitch: -0.08, zoom: 8.15, particleOpacity: 0.72 },
-      delivery: { node: 1, yaw: 0.18, pitch: -0.22, zoom: 8.05, particleOpacity: 0.82 },
-      governance: { node: 2, yaw: 0.02, pitch: -0.34, zoom: 7.95, particleOpacity: 0.9 },
+      leadership: {
+        node: 0,
+        yaw: -0.16,
+        pitch: -0.08,
+        zoom: 8.15,
+        particleOpacity: 0.72,
+      },
+      delivery: {
+        node: 1,
+        yaw: 0.18,
+        pitch: -0.22,
+        zoom: 8.05,
+        particleOpacity: 0.82,
+      },
+      governance: {
+        node: 2,
+        yaw: 0.02,
+        pitch: -0.34,
+        zoom: 7.95,
+        particleOpacity: 0.9,
+      },
     } as const;
 
     const nodePositions = [
@@ -229,14 +341,24 @@ const formatDate = (date: Date) =>
     ] as Array<[number, number, number]>;
 
     const makeMaterial = (color: THREE.Color, opacity: number) => {
-      const material = new THREE.MeshBasicMaterial({ color, transparent: true, opacity, depthWrite: false, side: THREE.DoubleSide });
+      const material = new THREE.MeshBasicMaterial({
+        color,
+        transparent: true,
+        opacity,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+      });
       materials.push(material);
       return material;
     };
 
     nodePositions.forEach((position, index) => {
-      const color = index === 0 ? mint : index === 1 ? blue : index === 2 ? amber : ivory;
-      const node = new THREE.Mesh(new THREE.SphereGeometry(index === 3 ? 0.1 : 0.08, 24, 24), makeMaterial(color, index === 3 ? 0.9 : 0.78));
+      const color =
+        index === 0 ? mint : index === 1 ? blue : index === 2 ? amber : ivory;
+      const node = new THREE.Mesh(
+        new THREE.SphereGeometry(index === 3 ? 0.1 : 0.08, 24, 24),
+        makeMaterial(color, index === 3 ? 0.9 : 0.78)
+      );
       node.position.set(...position);
       node.userData.focusScale = index === 0 ? 1.35 : 0.94;
       group.add(node);
@@ -244,7 +366,10 @@ const formatDate = (date: Date) =>
     });
 
     [1.1, 2.05, 3].forEach((radius, index) => {
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.008, 12, 160), makeMaterial(index === 1 ? blue : mint, index === 1 ? 0.08 : 0.12));
+      const ring = new THREE.Mesh(
+        new THREE.TorusGeometry(radius, 0.008, 12, 160),
+        makeMaterial(index === 1 ? blue : mint, index === 1 ? 0.08 : 0.12)
+      );
       ring.rotation.x = Math.PI / 2 + index * 0.2;
       ring.rotation.y = index * 0.24;
       group.add(ring);
@@ -260,22 +385,36 @@ const formatDate = (date: Date) =>
       particlePositions[i * 3] = Math.cos(a) * r;
       particlePositions[i * 3 + 1] = Math.sin(a) * r * 0.64;
       particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 1.1;
-      const color = i % 11 === 0 ? amber : i % 7 === 0 ? blue : i % 4 === 0 ? ivory : mint;
+      const color =
+        i % 11 === 0 ? amber : i % 7 === 0 ? blue : i % 4 === 0 ? ivory : mint;
       particleColors[i * 3] = color.r;
       particleColors[i * 3 + 1] = color.g;
       particleColors[i * 3 + 2] = color.b;
     }
     const particleGeometry = new THREE.BufferGeometry();
-    particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-    particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
+    particleGeometry.setAttribute(
+      'position',
+      new THREE.BufferAttribute(particlePositions, 3)
+    );
+    particleGeometry.setAttribute(
+      'color',
+      new THREE.BufferAttribute(particleColors, 3)
+    );
     const particles = new THREE.Points(
       particleGeometry,
-      new THREE.PointsMaterial({ size: 0.022, vertexColors: true, transparent: true, opacity: 0.66, depthWrite: false })
+      new THREE.PointsMaterial({
+        size: 0.022,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.66,
+        depthWrite: false,
+      })
     );
     group.add(particles);
 
     const focusTheme = (id: keyof typeof focusMap | string) => {
-      const target = focusMap[id as keyof typeof focusMap] || focusMap.leadership;
+      const target =
+        focusMap[id as keyof typeof focusMap] || focusMap.leadership;
       gsap.to(focusState, {
         yaw: target.yaw,
         pitch: target.pitch,
@@ -302,7 +441,11 @@ const formatDate = (date: Date) =>
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
-      renderer.setSize(Math.max(rect.width, 1), Math.max(rect.height, 1), false);
+      renderer.setSize(
+        Math.max(rect.width, 1),
+        Math.max(rect.height, 1),
+        false
+      );
       camera.aspect = Math.max(rect.width, 1) / Math.max(rect.height, 1);
       camera.updateProjectionMatrix();
       group.scale.setScalar(window.innerWidth < 760 ? 0.76 : 1);
@@ -311,12 +454,23 @@ const formatDate = (date: Date) =>
     window.addEventListener('resize', resize, { passive: true });
 
     if (!reducedMotion) {
-      gsap.from('[data-insights-reveal]', { opacity: 0, y: 24, duration: 0.84, ease: 'power3.out', stagger: 0.12 });
+      gsap.from('[data-insights-reveal]', {
+        opacity: 0,
+        y: 24,
+        duration: 0.84,
+        ease: 'power3.out',
+        stagger: 0.12,
+      });
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (!entry.isIntersecting) return;
-            gsap.to(entry.target, { opacity: 1, y: 0, duration: 0.66, ease: 'power3.out' });
+            gsap.to(entry.target, {
+              opacity: 1,
+              y: 0,
+              duration: 0.66,
+              ease: 'power3.out',
+            });
             observer.unobserve(entry.target);
           });
         },
@@ -338,12 +492,17 @@ const formatDate = (date: Date) =>
         camera.position.z += (focusState.zoom - camera.position.z) * 0.035;
         particles.rotation.z -= 0.0006;
         (particles.material as THREE.PointsMaterial).opacity +=
-          (focusState.particleOpacity - (particles.material as THREE.PointsMaterial).opacity) * 0.04;
+          (focusState.particleOpacity -
+            (particles.material as THREE.PointsMaterial).opacity) *
+          0.04;
         rings.forEach((ring, index) => {
           ring.rotation.z = t * (0.04 + index * 0.02);
         });
         nodes.forEach((node, index) => {
-          node.scale.setScalar((node.userData.focusScale ?? 1) + Math.sin(t * 1.55 + index * 0.5) * 0.045);
+          node.scale.setScalar(
+            (node.userData.focusScale ?? 1) +
+              Math.sin(t * 1.55 + index * 0.5) * 0.045
+          );
         });
       }
       renderer.render(scene, camera);
@@ -354,7 +513,10 @@ const formatDate = (date: Date) =>
     document.addEventListener('astro:before-swap', () => {
       window.cancelAnimationFrame(frame);
       window.removeEventListener('resize', resize);
-      document.removeEventListener('signal-theme-focus', onTheme as EventListener);
+      document.removeEventListener(
+        'signal-theme-focus',
+        onTheme as EventListener
+      );
       renderer.dispose();
       particleGeometry.dispose();
       materials.forEach((material) => material.dispose());
@@ -366,8 +528,16 @@ const formatDate = (date: Date) =>
   .insights-page {
     min-height: 100vh;
     background:
-      radial-gradient(circle at 16% 10%, rgba(0, 229, 160, 0.12), transparent 31rem),
-      radial-gradient(circle at 78% 18%, rgba(124, 139, 255, 0.1), transparent 30rem),
+      radial-gradient(
+        circle at 16% 10%,
+        rgba(0, 229, 160, 0.12),
+        transparent 31rem
+      ),
+      radial-gradient(
+        circle at 78% 18%,
+        rgba(124, 139, 255, 0.1),
+        transparent 30rem
+      ),
       linear-gradient(135deg, #000 0%, #080812 56%, #000 100%);
     color: var(--ma-text);
   }
@@ -390,7 +560,11 @@ const formatDate = (date: Date) =>
       linear-gradient(rgba(244, 241, 232, 0.045) 1px, transparent 1px),
       linear-gradient(90deg, rgba(244, 241, 232, 0.035) 1px, transparent 1px);
     background-size: 70px 70px;
-    mask-image: radial-gradient(ellipse 78% 74% at 62% 46%, black, transparent 86%);
+    mask-image: radial-gradient(
+      ellipse 78% 74% at 62% 46%,
+      black,
+      transparent 86%
+    );
   }
 
   .insights-hero-inner {
@@ -432,7 +606,11 @@ const formatDate = (date: Date) =>
     border: 1px solid rgba(244, 241, 232, 0.14);
     border-radius: var(--ma-radius);
     background:
-      radial-gradient(circle at 48% 42%, rgba(0, 229, 160, 0.13), transparent 22rem),
+      radial-gradient(
+        circle at 48% 42%,
+        rgba(0, 229, 160, 0.13),
+        transparent 22rem
+      ),
       linear-gradient(145deg, rgba(17, 17, 34, 0.84), rgba(0, 0, 0, 0.5));
     box-shadow: 0 34px 100px rgba(0, 0, 0, 0.32);
   }
@@ -584,9 +762,19 @@ const formatDate = (date: Date) =>
   }
 
   .editorial-copy h2,
-  .theme-map-head h2 {
+  .theme-map-head h2,
+  .insights-cta h2 {
     color: #f4f1e8;
     letter-spacing: 0;
+  }
+
+  .editorial-copy p,
+  .insights-cta p {
+    max-width: 690px;
+    margin-top: 1rem;
+    color: #d8d6ce;
+    font-size: 1.05rem;
+    line-height: 1.68;
   }
 
   .editorial-feed {
@@ -676,7 +864,11 @@ const formatDate = (date: Date) =>
 
   .theme-map-section {
     background:
-      linear-gradient(135deg, rgba(0, 229, 160, 0.08), rgba(124, 139, 255, 0.05)),
+      linear-gradient(
+        135deg,
+        rgba(0, 229, 160, 0.08),
+        rgba(124, 139, 255, 0.05)
+      ),
       var(--ma-bg);
     border-top: 1px solid var(--ma-border);
   }
@@ -684,6 +876,31 @@ const formatDate = (date: Date) =>
   .theme-map-head {
     max-width: 780px;
     margin-bottom: 2.5rem;
+  }
+
+  .insights-cta {
+    padding: 5.8rem 0;
+    text-align: center;
+    background:
+      radial-gradient(
+        circle at 50% 8%,
+        rgba(0, 229, 160, 0.14),
+        transparent 27rem
+      ),
+      #000;
+  }
+
+  .insights-cta-inner {
+    max-width: 900px;
+  }
+
+  .insights-cta p {
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .insights-cta .insights-actions {
+    justify-content: center;
   }
 
   @media (max-width: 1120px) {
@@ -714,12 +931,20 @@ const formatDate = (date: Date) =>
       line-height: 1.04;
     }
 
-    .insights-copy p {
+    .insights-copy p,
+    .editorial-copy p,
+    .insights-cta p {
       font-size: 1rem;
     }
 
     .insights-actions {
       display: grid;
+      width: 100%;
+      justify-content: stretch;
+    }
+
+    .insights-cta .insights-actions {
+      justify-content: stretch;
     }
 
     .insights-actions .ma-btn {

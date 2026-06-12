@@ -3,15 +3,23 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 
-const approvedNews = await getCollection('news', ({ data }) => data.approved === true);
-const news = approvedNews.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+const approvedNews = await getCollection(
+  'news',
+  ({ data }) => data.approved === true
+);
+const news = approvedNews.sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
 
 const [featured, ...rest] = news;
+
+const cleanCopy = (value: string) =>
+  value.replace(/\s*[\u2014\u2013]\s*/g, ', ');
 ---
 
 <Layout
-  title="Newsroom | Digital Technology Partner"
-  description="AI-assisted, human-approved insights on digital transformation, automation, and operations."
+  title="Newsroom, full article archive | Digital Technology Partner"
+  description="Everything DTP publishes on AI adoption, governance, delivery and automation, tagged, filterable, current."
 >
   <Header />
 
@@ -20,6 +28,10 @@ const [featured, ...rest] = news;
       <div class="ma-section-header">
         <span class="ma-section-tag">// newsroom</span>
         <h1>Newsroom</h1>
+        <p class="news-standfirst">
+          The full archive, everything we publish, tagged and filterable. For
+          the filtered view, start with <a href="/insights/">Insights</a>.
+        </p>
       </div>
 
       {
@@ -33,7 +45,9 @@ const [featured, ...rest] = news;
             <aside class="news-sidebar">
               <h3>Filter by Tag</h3>
               <div class="news-tag-list" id="tag-filter">
-                <button data-tag="all" class="news-tag-btn active">All</button>
+                <button data-tag="all" class="news-tag-btn active">
+                  All
+                </button>
               </div>
             </aside>
 
@@ -41,7 +55,11 @@ const [featured, ...rest] = news;
               {featured && (
                 <article
                   class="news-card news-card-featured"
-                  data-tags={['featured', featured.data.category.toLowerCase(), ...(featured.data.tags || []).map((t) => t.toLowerCase())].join(',')}
+                  data-tags={[
+                    'featured',
+                    featured.data.category.toLowerCase(),
+                    ...(featured.data.tags || []).map((t) => t.toLowerCase()),
+                  ].join(',')}
                 >
                   <div class="ma-card-line" />
                   <div class="news-card-meta">
@@ -54,8 +72,12 @@ const [featured, ...rest] = news;
                       })}
                     </span>
                   </div>
-                  <h2><a href={`/news/${featured.id}`}>{featured.data.title}</a></h2>
-                  <p>{featured.data.description}</p>
+                  <h2>
+                    <a href={`/news/${featured.id}`}>
+                      {cleanCopy(featured.data.title)}
+                    </a>
+                  </h2>
+                  <p>{cleanCopy(featured.data.description)}</p>
                   <div class="news-tags">
                     {(featured.data.tags || []).slice(0, 4).map((tag) => (
                       <span class="ma-tag">#{tag}</span>
@@ -68,7 +90,10 @@ const [featured, ...rest] = news;
                 {rest.map((article) => (
                   <article
                     class="news-card"
-                    data-tags={[article.data.category.toLowerCase(), ...(article.data.tags || []).map((t) => t.toLowerCase())].join(',')}
+                    data-tags={[
+                      article.data.category.toLowerCase(),
+                      ...(article.data.tags || []).map((t) => t.toLowerCase()),
+                    ].join(',')}
                   >
                     <div class="ma-card-line" />
                     <div class="news-card-meta">
@@ -81,10 +106,17 @@ const [featured, ...rest] = news;
                         })}
                       </span>
                     </div>
-                    <h3><a href={`/news/${article.id}`}>{article.data.title}</a></h3>
-                    <p>{article.data.description}</p>
+                    <h3>
+                      <a href={`/news/${article.id}`}>
+                        {cleanCopy(article.data.title)}
+                      </a>
+                    </h3>
+                    <p>{cleanCopy(article.data.description)}</p>
                   </article>
                 ))}
+              </div>
+              <div class="news-empty-filter" id="news-empty-filter" hidden>
+                Nothing under that tag yet. Try another lens.
               </div>
             </section>
           </div>
@@ -95,33 +127,142 @@ const [featured, ...rest] = news;
 </Layout>
 
 <style>
-  .news-layout { display:grid; grid-template-columns: 220px 1fr; gap:1.25rem; align-items:start; }
-  .news-sidebar { position:sticky; top:6rem; background:var(--ma-surface); border:1px solid var(--ma-border); border-radius:var(--ma-radius-lg); padding:1rem; }
-  .news-sidebar h3 { font-size:.95rem; margin-bottom:.8rem; }
-  .news-tag-list { display:flex; flex-direction:column; gap:.5rem; }
-  .news-tag-btn { text-align:left; background:transparent; border:1px solid transparent; color:var(--ma-text-dim); padding:.75rem 1rem; min-height:44px; border-radius:8px; cursor:pointer; }
-  .news-tag-btn:hover { border-color:var(--ma-border); color:var(--ma-text); }
-  .news-tag-btn.active { color:var(--ma-mint); background:var(--ma-mint-dim); border-color:rgba(0,229,160,.25); }
+  .news-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 1.25rem;
+    align-items: start;
+  }
+  .news-standfirst {
+    max-width: 760px;
+    margin-top: 0.9rem;
+    color: var(--ma-text-secondary);
+    font-size: 1.05rem;
+    line-height: 1.65;
+  }
+  .news-standfirst a {
+    color: var(--ma-mint);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .news-standfirst a:hover {
+    text-decoration: underline;
+  }
+  .news-sidebar {
+    position: sticky;
+    top: 6rem;
+    background: var(--ma-surface);
+    border: 1px solid var(--ma-border);
+    border-radius: var(--ma-radius-lg);
+    padding: 1rem;
+  }
+  .news-sidebar h3 {
+    font-size: 0.95rem;
+    margin-bottom: 0.8rem;
+  }
+  .news-tag-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .news-tag-btn {
+    text-align: left;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--ma-text-dim);
+    padding: 0.75rem 1rem;
+    min-height: 44px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .news-tag-btn:hover {
+    border-color: var(--ma-border);
+    color: var(--ma-text);
+  }
+  .news-tag-btn.active {
+    color: var(--ma-mint);
+    background: var(--ma-mint-dim);
+    border-color: rgba(0, 229, 160, 0.25);
+  }
 
-  .news-content { display:grid; gap:1rem; }
-  .news-card { position:relative; background:var(--ma-surface); border:1px solid var(--ma-border); border-radius:var(--ma-radius-lg); padding:1.1rem; overflow:hidden; }
-  .news-card h2,.news-card h3 { margin:.35rem 0 .5rem; line-height:1.25; }
-  .news-card h2 a,.news-card h3 a { color:inherit; text-decoration:none; }
-  .news-card h2 a:hover,.news-card h3 a:hover { color:var(--ma-mint); }
-  .news-card p { color:var(--ma-text-secondary); margin:0; }
-  .news-card-meta { display:flex; gap:.6rem; align-items:center; margin-bottom:.35rem; }
-  .news-date { font-size:.78rem; color:var(--ma-text-tertiary); }
-  .news-card-featured { min-height: 260px; }
-  .news-tags { display:flex; gap:.4rem; flex-wrap:wrap; margin-top:1rem; }
-  .news-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; }
+  .news-content {
+    display: grid;
+    gap: 1rem;
+  }
+  .news-card {
+    position: relative;
+    background: var(--ma-surface);
+    border: 1px solid var(--ma-border);
+    border-radius: var(--ma-radius-lg);
+    padding: 1.1rem;
+    overflow: hidden;
+  }
+  .news-card h2,
+  .news-card h3 {
+    margin: 0.35rem 0 0.5rem;
+    line-height: 1.25;
+  }
+  .news-card h2 a,
+  .news-card h3 a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .news-card h2 a:hover,
+  .news-card h3 a:hover {
+    color: var(--ma-mint);
+  }
+  .news-card p {
+    color: var(--ma-text-secondary);
+    margin: 0;
+  }
+  .news-card-meta {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    margin-bottom: 0.35rem;
+  }
+  .news-date {
+    font-size: 0.78rem;
+    color: var(--ma-text-tertiary);
+  }
+  .news-card-featured {
+    min-height: 260px;
+  }
+  .news-tags {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+  .news-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  .news-empty-filter {
+    padding: 1.1rem;
+    border: 1px solid var(--ma-border);
+    border-radius: var(--ma-radius-lg);
+    background: var(--ma-surface);
+    color: var(--ma-text-secondary);
+  }
 
   @media (max-width: 980px) {
-    .news-layout { grid-template-columns:1fr; }
-    .news-sidebar { position:static; }
-    .news-tag-list { flex-direction:row; flex-wrap:wrap; }
+    .news-layout {
+      grid-template-columns: 1fr;
+    }
+    .news-sidebar {
+      position: static;
+    }
+    .news-tag-list {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
   }
   @media (max-width: 720px) {
-    .news-grid { grid-template-columns:1fr; }
+    .news-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
 
@@ -129,6 +270,7 @@ const [featured, ...rest] = news;
   (function () {
     const tagContainer = document.getElementById('tag-filter');
     const content = document.getElementById('news-content');
+    const emptyState = document.getElementById('news-empty-filter');
     if (!tagContainer || !content) return;
 
     const cards = Array.from(content.querySelectorAll('article'));
@@ -142,25 +284,35 @@ const [featured, ...rest] = news;
     });
 
     const allBtn = tagContainer.querySelector('[data-tag="all"]');
-    Array.from(tags).sort().forEach((tag) => {
-      const value = String(tag);
-      const b = document.createElement('button');
-      b.className = 'news-tag-btn';
-      b.setAttribute('data-tag', value);
-      b.textContent = value.replace(/\b\w/g, (m) => m.toUpperCase());
-      tagContainer.appendChild(b);
-    });
+    Array.from(tags)
+      .sort()
+      .forEach((tag) => {
+        const value = String(tag);
+        const b = document.createElement('button');
+        b.className = 'news-tag-btn';
+        b.setAttribute('data-tag', value);
+        b.textContent = value.replace(/\b\w/g, (m) => m.toUpperCase());
+        tagContainer.appendChild(b);
+      });
 
     function activate(btn) {
-      tagContainer.querySelectorAll('.news-tag-btn').forEach((x) => x.classList.remove('active'));
+      tagContainer
+        .querySelectorAll('.news-tag-btn')
+        .forEach((x) => x.classList.remove('active'));
       btn.classList.add('active');
     }
 
     function filter(tag) {
+      let visibleCount = 0;
       cards.forEach((c) => {
-        const list = (c.getAttribute('data-tags') || '').split(',').map((x) => x.trim().toLowerCase());
-        c.style.display = tag === 'all' || list.includes(tag) ? '' : 'none';
+        const list = (c.getAttribute('data-tags') || '')
+          .split(',')
+          .map((x) => x.trim().toLowerCase());
+        const visible = tag === 'all' || list.includes(tag);
+        c.style.display = visible ? '' : 'none';
+        if (visible) visibleCount += 1;
       });
+      if (emptyState) emptyState.hidden = visibleCount !== 0;
     }
 
     tagContainer.addEventListener('click', (e) => {

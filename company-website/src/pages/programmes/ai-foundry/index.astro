@@ -2,9 +2,6 @@
 import Header from '../../../components/Header.astro';
 import Layout from '../../../layouts/Layout.astro';
 
-const bookingUrl =
-  'https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous';
-
 const foundryOutputs = [
   'Workflow opportunities grounded in real business work',
   'A prioritised experiment backlog with practical next steps',
@@ -12,27 +9,95 @@ const foundryOutputs = [
   'Leadership evidence for what to fund, pause, govern or move into delivery',
 ];
 
+const principles = [
+  {
+    number: '01',
+    title: 'Club, not course.',
+    text: 'Energy matters more than syllabus. People should leave with something they tried, not something they watched.',
+  },
+  {
+    number: '02',
+    title: 'Safe to be a beginner.',
+    text: 'The room must work for first-time users and regular experimenters alike. Nobody performs expertise; nobody hides confusion.',
+  },
+  {
+    number: '03',
+    title: 'Tie it to real work.',
+    text: 'The centre of gravity is operational friction, not abstract AI exploration.',
+  },
+  {
+    number: '04',
+    title: "Facilitate, don't lecture.",
+    text: 'DTP brings structure and questions. The expertise lives in the room.',
+  },
+  {
+    number: '05',
+    title: 'Notice governance.',
+    text: 'Surface acceptable use, confidentiality and quality control as you go, without making governance the whole point.',
+  },
+];
+
 const sessions = [
   {
-    week: '01',
-    title: 'Frame the work',
-    text: 'Agree the group, the workflows in scope, the leadership question and the evidence needed to make Foundry useful.',
+    week: 'Week 1',
+    title: 'Mobilise',
+    text: 'Sponsor intent, participant mix, baseline, tools and permission boundary.',
   },
   {
-    week: '02',
-    title: 'Map practical AI opportunities',
-    text: 'Look at real tasks, documents, decisions and handoffs to identify where AI could reduce drag or improve judgement.',
+    week: 'Weeks 2 and 3',
+    title: 'Common ground',
+    text: 'A shared mental model of what AI does well, where it fails and how to use it responsibly.',
   },
   {
-    week: '03',
-    title: 'Prototype behaviour, not hype',
-    text: 'Explore tools, prompts, agents or workflow patterns in lightweight ways that reveal value, constraints and risks.',
+    week: 'Weeks 4 to 7',
+    title: 'Hands dirty',
+    text: "Tool demos, toolbox day, mini-challenges and hackathons. Bring the most annoying workflow you own; that's the raw material.",
   },
   {
-    week: '04',
-    title: 'Prioritise what deserves a next step',
-    text: 'Turn the evidence into a shortlist of experiments, delivery candidates, governance questions and parked ideas.',
+    week: 'Weeks 8 to 10',
+    title: 'Apply to work',
+    text: 'Cross-functional pitches and business workshops tied to real operational friction.',
   },
+  {
+    week: 'Weeks 11 and 12',
+    title: 'Land it',
+    text: 'Showcase, lessons learned, shortlist, guardrail themes and the leadership readout.',
+  },
+];
+
+const readoutPiles = [
+  {
+    title: 'Fund',
+    text: 'use cases with enough evidence, appetite and ownership to justify the next stage.',
+  },
+  {
+    title: 'Guide',
+    text: 'useful activity that needs data rules, accountable owners, human review or escalation.',
+  },
+  {
+    title: 'Investigate',
+    text: 'promising areas that need more evidence before leadership commits.',
+  },
+  {
+    title: 'Pause',
+    text: 'work blocked by access, risk, unclear ownership or weak timing.',
+  },
+  {
+    title: 'Stop',
+    text: "ideas that look interesting but don't deserve more organisational attention.",
+  },
+  {
+    title: 'Build confidence',
+    text: 'measured before and after: not just attendance, but people comfortable applying and presenting AI work.',
+  },
+];
+
+const leaveWith = [
+  'A shortlist of practical AI use cases grounded in your real problems',
+  'One or two proof-of-concept candidates ready for a serious decision',
+  'A measurably more confident, more connected workforce',
+  "A leadership readout: where you are, what's worth doing, and what isn't",
+  'A decision pack with clear next steps',
 ];
 
 const fitSignals = [
@@ -71,8 +136,8 @@ const proofPoints = [
 ---
 
 <Layout
-  title="AI Foundry - Digital Technology Partner"
-  description="A practical AI working group programme for evidence-led AI opportunity discovery inside the business."
+  title="AI Foundry: a twelve-week working group, not a course | Digital Technology Partner"
+  description="AI Foundry turns scattered experiments into evidence and leadership decisions in twelve weeks: five principles, real work, and a readout of choices: fund, guide, investigate, pause or stop."
 >
   <Header />
   <main class="foundry-page">
@@ -80,18 +145,35 @@ const proofPoints = [
       <div class="foundry-grid-bg"></div>
       <div class="ma-container foundry-hero-grid">
         <div class="foundry-copy">
-          <span class="ma-section-tag">// ai_foundry.working_group</span>
-          <h1>A practical AI working group, not another passive course.</h1>
+          <span class="ma-section-tag">// club_not_course</span>
+          <h1>This is not AI training. It's a club.</h1>
           <p>
-            AI Foundry helps teams build confidence by applying AI thinking to real work,
-            surfacing useful opportunities and giving leadership evidence for the next decision.
+            AI Foundry is a twelve-week working group that turns scattered
+            experiments into shared confidence, useful evidence and decisions
+            leadership can act on. Energy over syllabus. Evidence over opinion.
           </p>
           <div class="foundry-actions">
-            <a class="ma-btn ma-btn-mint" href={bookingUrl} target="_blank" rel="noopener noreferrer">
-              Discuss Foundry
+            <a class="ma-btn ma-btn-mint" href="/contact/">
+              Discuss sponsoring a Foundry
             </a>
-            <a class="ma-btn ma-btn-outline" href="/programmes/ai-adoption-readiness/">Start with Readiness</a>
+            <a class="ma-btn ma-btn-outline" href="#twelve-weeks"
+              >See the twelve weeks</a
+            >
           </div>
+          <dl class="foundry-stats" aria-label="AI Foundry summary">
+            <div>
+              <dt>12 weeks</dt>
+              <dd>Time-boxed working group</dd>
+            </div>
+            <div>
+              <dt>5 principles</dt>
+              <dd>How the room works</dd>
+            </div>
+            <div>
+              <dt>6 decisions</dt>
+              <dd>What leadership decides</dd>
+            </div>
+          </dl>
         </div>
 
         <aside class="foundry-console" aria-label="AI Foundry output console">
@@ -115,41 +197,85 @@ const proofPoints = [
     <section class="ma-section context-section">
       <div class="ma-container context-grid">
         <div>
-          <span class="ma-section-tag">// why_foundry_exists</span>
-          <h2>AI confidence is built by doing the work, not watching slides.</h2>
+          <span class="ma-section-tag">// five_foundry_principles</span>
+          <h2>Five principles make the room work.</h2>
         </div>
         <div class="context-copy">
           <p>
-            Many organisations have AI interest scattered across teams, but no reliable way to
-            turn that curiosity into owned opportunities. Foundry gives the group a structured
-            place to inspect real workflows, test useful patterns and separate credible ideas
-            from tool-chasing.
+            Most people in your organisation are hiding what they don't know
+            about AI. The room is designed for that.
           </p>
-          <p>
-            The output is practical evidence: what might be worth funding, what needs governance,
-            who needs confidence and which ideas should wait.
-          </p>
+          <div class="principles-list">
+            {
+              principles.map((principle) => (
+                <article>
+                  <span>{principle.number}</span>
+                  <h3>{principle.title}</h3>
+                  <p>{principle.text}</p>
+                </article>
+              ))
+            }
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="ma-section session-section">
+    <section class="ma-section session-section" id="twelve-weeks">
       <div class="ma-container">
         <div class="ma-section-header">
-          <span class="ma-section-tag">// working_session_flow</span>
-          <h2>A focused working group rhythm.</h2>
+          <span class="ma-section-tag">// the_twelve_weeks</span>
+          <h2>Make the next step obvious.</h2>
           <p>
-            The exact shape can flex, but Foundry should always create evidence, not just energy.
+            A controlled route across five phases: enough structure to be
+            useful, enough room for real operational friction to surface.
           </p>
         </div>
         <div class="session-grid">
-          {sessions.map((session) => (
-            <article>
-              <span>{session.week}</span>
-              <h3>{session.title}</h3>
-              <p>{session.text}</p>
-            </article>
-          ))}
+          {
+            sessions.map((session) => (
+              <article>
+                <span>{session.week}</span>
+                <h3>{session.title}</h3>
+                <p>{session.text}</p>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="ma-section readout-section">
+      <div class="ma-container readout-grid">
+        <div>
+          <span class="ma-section-tag">// the_readout</span>
+          <h2>The output is not a deck. It's a set of choices.</h2>
+          <p>
+            Your organisation doesn't lack AI ideas; it lacks evidence. Twelve
+            weeks of real attempts let leadership sort the pipeline into six
+            honest decisions:
+          </p>
+        </div>
+        <div class="readout-piles">
+          {
+            readoutPiles.map((pile) => (
+              <article>
+                <strong>{pile.title}</strong>
+                <p>{pile.text}</p>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="ma-section leave-section">
+      <div class="ma-container leave-grid">
+        <div>
+          <span class="ma-section-tag">// what_you_leave_with</span>
+          <h2>What you leave with.</h2>
+        </div>
+        <div class="leave-list">
+          {leaveWith.map((item) => <p>{item}</p>)}
         </div>
       </div>
     </section>
@@ -157,22 +283,41 @@ const proofPoints = [
     <section class="ma-section fit-section">
       <div class="ma-container fit-grid">
         <div class="fit-panel">
-          <span class="ma-section-tag">// fit_check</span>
-          <h2>Use Foundry when the team needs evidence and confidence.</h2>
-          <p>
-            It is strongest after Readiness, or when leadership already knows there is enough
-            interest to convene a focused group.
-          </p>
+          <span class="ma-section-tag">// what_it_takes</span>
+          <h2>Foundry asks three things of you.</h2>
+          <ul class="takes-list">
+            <li>
+              <strong>A named sponsor</strong> someone who owns the leadership question.
+            </li>
+            <li>
+              <strong>A working contact</strong> someone who keeps the group connected
+              to real work.
+            </li>
+            <li>
+              <strong>Leadership air cover</strong> permission for people to spend
+              real time and be beginners in public.
+            </li>
+          </ul>
         </div>
         <div class="fit-lists">
-          {fitSignals.map((group) => (
-            <article>
-              <h3>{group.title}</h3>
-              <ul>
-                {group.items.map((item) => <li>{item}</li>)}
-              </ul>
-            </article>
-          ))}
+          {
+            fitSignals.map((group) => (
+              <article>
+                <h3>{group.title}</h3>
+                <ul>
+                  {group.items.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </article>
+            ))
+          }
+          <p class="fit-outro">
+            If the sponsor, contact or air cover isn't available yet, start with
+            Readiness: it's a smaller ask. <a
+              href="/programmes/ai-adoption-readiness/">Start with Readiness</a
+            >
+          </p>
         </div>
       </div>
     </section>
@@ -184,12 +329,14 @@ const proofPoints = [
           <h2>Foundry is designed to create delivery-grade evidence.</h2>
         </div>
         <div class="proof-grid">
-          {proofPoints.map((point) => (
-            <article>
-              <strong>{point.stat}</strong>
-              <p>{point.text}</p>
-            </article>
-          ))}
+          {
+            proofPoints.map((point) => (
+              <article>
+                <strong>{point.stat}</strong>
+                <p>{point.text}</p>
+              </article>
+            ))
+          }
         </div>
       </div>
     </section>
@@ -199,14 +346,17 @@ const proofPoints = [
         <span class="ma-section-tag">// next_decision</span>
         <h2>Not sure whether to start with Readiness or Foundry?</h2>
         <p>
-          If the organisation lacks a current-state map, start with Readiness. If the signal is
-          already clear and the team needs structured exploration, Foundry is the right next move.
+          If the organisation lacks a current-state map, start with Readiness.
+          If the signal is already clear and the team needs structured
+          exploration, Foundry is the right next move.
         </p>
         <div class="cta-actions">
-          <a class="ma-btn ma-btn-mint ma-btn-lg" href={bookingUrl} target="_blank" rel="noopener noreferrer">
+          <a class="ma-btn ma-btn-mint ma-btn-lg" href="/contact/">
             Talk through the route
           </a>
-          <a class="ma-btn ma-btn-outline ma-btn-lg" href="/programmes/">Compare all programmes</a>
+          <a class="ma-btn ma-btn-outline ma-btn-lg" href="/programmes/"
+            >Compare all programmes</a
+          >
         </div>
       </div>
     </section>
@@ -217,8 +367,16 @@ const proofPoints = [
   .foundry-page {
     min-height: 100vh;
     background:
-      radial-gradient(circle at 18% 12%, rgba(0, 229, 160, 0.13), transparent 30rem),
-      radial-gradient(circle at 76% 22%, rgba(124, 139, 255, 0.09), transparent 28rem),
+      radial-gradient(
+        circle at 18% 12%,
+        rgba(0, 229, 160, 0.13),
+        transparent 30rem
+      ),
+      radial-gradient(
+        circle at 76% 22%,
+        rgba(124, 139, 255, 0.09),
+        transparent 28rem
+      ),
       #000;
   }
 
@@ -240,7 +398,11 @@ const proofPoints = [
       linear-gradient(rgba(244, 241, 232, 0.06) 1px, transparent 1px),
       linear-gradient(90deg, rgba(244, 241, 232, 0.04) 1px, transparent 1px);
     background-size: 72px 72px;
-    mask-image: radial-gradient(ellipse 78% 70% at 58% 42%, black, transparent 84%);
+    mask-image: radial-gradient(
+      ellipse 78% 70% at 58% 42%,
+      black,
+      transparent 84%
+    );
   }
 
   .foundry-hero-grid {
@@ -276,12 +438,46 @@ const proofPoints = [
     margin-top: 2rem;
   }
 
+  .foundry-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    max-width: 720px;
+    margin-top: 2.4rem;
+  }
+
+  .foundry-stats div {
+    padding: 1rem;
+    border: 1px solid rgba(244, 241, 232, 0.12);
+    border-radius: var(--ma-radius);
+    background: rgba(16, 16, 27, 0.72);
+  }
+
+  .foundry-stats dt {
+    margin-bottom: 0.2rem;
+    color: var(--ma-mint);
+    font-family: var(--ma-font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .foundry-stats dd {
+    margin: 0;
+    color: var(--ma-text-dim);
+    font-size: 0.88rem;
+    line-height: 1.35;
+  }
+
   .foundry-console {
     padding: 1.45rem;
     border: 1px solid rgba(0, 229, 160, 0.3);
     border-radius: var(--ma-radius);
     background:
-      radial-gradient(circle at 50% 30%, rgba(0, 229, 160, 0.13), transparent 17rem),
+      radial-gradient(
+        circle at 50% 30%,
+        rgba(0, 229, 160, 0.13),
+        transparent 17rem
+      ),
       rgba(17, 17, 34, 0.72);
     box-shadow: 0 28px 90px rgba(0, 0, 0, 0.34);
   }
@@ -361,6 +557,8 @@ const proofPoints = [
   }
 
   .context-grid,
+  .readout-grid,
+  .leave-grid,
   .fit-grid {
     display: grid;
     grid-template-columns: minmax(0, 0.84fr) minmax(0, 1.16fr);
@@ -370,6 +568,8 @@ const proofPoints = [
 
   .context-grid h2,
   .session-section h2,
+  .readout-grid h2,
+  .leave-grid h2,
   .fit-panel h2,
   .proof-head h2,
   .foundry-cta h2 {
@@ -382,6 +582,7 @@ const proofPoints = [
   }
 
   .context-copy p,
+  .readout-grid > div > p,
   .fit-panel p,
   .foundry-cta p {
     color: #d8d6ce;
@@ -389,10 +590,54 @@ const proofPoints = [
     line-height: 1.7;
   }
 
+  .principles-list,
+  .readout-piles,
+  .leave-list {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .principles-list article,
+  .readout-piles article,
+  .leave-list p {
+    margin: 0;
+    padding: 1rem 1.1rem;
+    border-left: 3px solid rgba(0, 229, 160, 0.72);
+    background: rgba(244, 241, 232, 0.04);
+  }
+
+  .principles-list span {
+    display: block;
+    margin-bottom: 0.45rem;
+    color: var(--ma-mint);
+    font-family: var(--ma-font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .principles-list h3 {
+    margin-bottom: 0.4rem;
+    color: #f4f1e8;
+    font-size: 1.1rem;
+    letter-spacing: 0;
+  }
+
+  .principles-list p,
+  .readout-piles p,
+  .leave-list p {
+    color: #d8d6ce;
+    line-height: 1.58;
+  }
+
   .session-section {
     border-top: 1px solid var(--ma-border);
     background:
-      linear-gradient(135deg, rgba(0, 229, 160, 0.07), rgba(124, 139, 255, 0.05)),
+      linear-gradient(
+        135deg,
+        rgba(0, 229, 160, 0.07),
+        rgba(124, 139, 255, 0.05)
+      ),
       #07070c;
   }
 
@@ -409,7 +654,7 @@ const proofPoints = [
 
   .session-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 1rem;
   }
 
@@ -445,10 +690,76 @@ const proofPoints = [
     background: var(--ma-bg);
   }
 
+  .readout-section {
+    border-top: 1px solid var(--ma-border);
+    background: var(--ma-bg);
+  }
+
+  .readout-grid > div:first-child p {
+    margin-top: 1rem;
+  }
+
+  .readout-piles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .readout-piles strong {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: #f4f1e8;
+    font-family: var(--ma-font-display);
+  }
+
+  .leave-section {
+    border-top: 1px solid var(--ma-border);
+    background:
+      linear-gradient(
+        135deg,
+        rgba(0, 229, 160, 0.06),
+        rgba(124, 139, 255, 0.05)
+      ),
+      #07070c;
+  }
+
   .fit-lists {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
+  }
+
+  .fit-outro {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: #d8d6ce;
+    line-height: 1.62;
+  }
+
+  .fit-outro a {
+    color: var(--ma-mint);
+    font-family: var(--ma-font-display);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .takes-list {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 1.3rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .takes-list li {
+    padding-left: 1rem;
+    border-left: 2px solid rgba(0, 229, 160, 0.58);
+    color: var(--ma-text);
+    line-height: 1.58;
+  }
+
+  .takes-list strong {
+    display: block;
+    color: #f4f1e8;
+    font-family: var(--ma-font-display);
   }
 
   .fit-lists article {
@@ -477,7 +788,11 @@ const proofPoints = [
 
   .proof-section {
     background:
-      linear-gradient(135deg, rgba(0, 229, 160, 0.08), rgba(124, 139, 255, 0.06)),
+      linear-gradient(
+        135deg,
+        rgba(0, 229, 160, 0.08),
+        rgba(124, 139, 255, 0.06)
+      ),
       #07070c;
   }
 
@@ -508,7 +823,11 @@ const proofPoints = [
     padding: 5.75rem 0;
     text-align: center;
     background:
-      radial-gradient(circle at 50% 16%, rgba(0, 229, 160, 0.12), transparent 25rem),
+      radial-gradient(
+        circle at 50% 16%,
+        rgba(0, 229, 160, 0.12),
+        transparent 25rem
+      ),
       #050509;
   }
 
@@ -528,11 +847,14 @@ const proofPoints = [
   @media (max-width: 1080px) {
     .foundry-hero-grid,
     .context-grid,
+    .readout-grid,
+    .leave-grid,
     .fit-grid {
       grid-template-columns: 1fr;
     }
 
     .session-grid,
+    .readout-piles,
     .proof-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -562,8 +884,11 @@ const proofPoints = [
     }
 
     .foundry-actions,
-    .cta-actions {
+    .cta-actions,
+    .foundry-stats {
       display: grid;
+      justify-content: stretch;
+      width: 100%;
     }
 
     .foundry-actions .ma-btn,
@@ -574,6 +899,7 @@ const proofPoints = [
 
     .console-core,
     .session-grid,
+    .readout-piles,
     .fit-lists,
     .proof-grid {
       grid-template-columns: 1fr;

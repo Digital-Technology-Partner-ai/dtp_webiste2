@@ -2,17 +2,17 @@
 import Header from '../components/Header.astro';
 import Layout from '../layouts/Layout.astro';
 
-const bookingUrl =
-  'https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous';
-
 const solutionCategories = [
   {
     id: 'systems',
     eyebrow: '01 / strategy',
     title: 'Business systems strategy',
-    copy:
-      'Map the current estate, expose friction, define the target operating picture and turn scattered requirements into a phased technical roadmap.',
-    outcomes: ['Current-state map', 'Architecture options', 'Prioritised roadmap'],
+    copy: 'Map the current estate, expose friction, define the target operating picture and turn scattered requirements into a phased technical roadmap.',
+    outcomes: [
+      'Current-state map',
+      'Architecture options',
+      'Prioritised roadmap',
+    ],
     signal: 'fragmented estate',
     mode: 'target architecture',
     result: 'sequenced roadmap',
@@ -21,9 +21,12 @@ const solutionCategories = [
     id: 'data',
     eyebrow: '02 / visibility',
     title: 'Data and reporting',
-    copy:
-      'Bring operational data into view with dashboards, alerts and decision surfaces that make progress, risk and exceptions easier to act on.',
-    outcomes: ['Leadership dashboards', 'Operational alerts', 'Data quality signals'],
+    copy: 'Bring operational data into view with dashboards, alerts and decision surfaces that make progress, risk and exceptions easier to act on.',
+    outcomes: [
+      'Leadership dashboards',
+      'Operational alerts',
+      'Data quality signals',
+    ],
     signal: 'hidden signals',
     mode: 'decision surface',
     result: 'visible exceptions',
@@ -32,8 +35,7 @@ const solutionCategories = [
     id: 'workflow',
     eyebrow: '03 / automation',
     title: 'Workflow automation',
-    copy:
-      'Remove manual steps from document handling, task routing, approvals and handoffs while keeping people in control of the moments that matter.',
+    copy: 'Remove manual steps from document handling, task routing, approvals and handoffs while keeping people in control of the moments that matter.',
     outcomes: ['Document processing', 'Task routing', 'Human approval loops'],
     signal: 'manual drag',
     mode: 'workflow routing',
@@ -43,9 +45,12 @@ const solutionCategories = [
     id: 'agents',
     eyebrow: '04 / controlled ai',
     title: 'AI agents and copilots',
-    copy:
-      'Design controlled agents that work inside real operating constraints: permissions, audit trails, escalation paths, data boundaries and measurable value.',
-    outcomes: ['Messaging-native agents', 'Operational copilots', 'Governed escalation'],
+    copy: 'Design controlled agents that work inside real operating constraints: permissions, audit trails, escalation paths, data boundaries and measurable value.',
+    outcomes: [
+      'Messaging-native agents',
+      'Operational copilots',
+      'Governed escalation',
+    ],
     signal: 'repeatable judgement',
     mode: 'controlled copilot',
     result: 'auditable support',
@@ -54,9 +59,12 @@ const solutionCategories = [
     id: 'bespoke',
     eyebrow: '05 / custom systems',
     title: 'Bespoke AI systems',
-    copy:
-      'Build custom AI-enabled products, search layers, knowledge tools and workflow systems when off-the-shelf software cannot match the work.',
-    outcomes: ['Custom interfaces', 'Search and retrieval', 'Production integrations'],
+    copy: 'Build custom AI-enabled products, search layers, knowledge tools and workflow systems when off-the-shelf software cannot match the work.',
+    outcomes: [
+      'Custom interfaces',
+      'Search and retrieval',
+      'Production integrations',
+    ],
     signal: 'specialist workflow',
     mode: 'bespoke system',
     result: 'fit-for-purpose tool',
@@ -68,40 +76,35 @@ const decisionRoutes = [
     trigger: 'clarity',
     label: 'We need clarity',
     fit: 'Start with systems strategy.',
-    body:
-      'Use this when leaders know there is value somewhere, but the problem, ownership, constraints or sequence are still too fuzzy to build safely.',
+    body: 'Use this when leaders know there is value somewhere, but the problem, ownership, constraints or sequence are still too fuzzy to build safely.',
     next: 'Discovery or AI Adoption Readiness',
   },
   {
     trigger: 'visibility',
     label: 'We need visibility',
     fit: 'Start with data and reporting.',
-    body:
-      'Use this when decisions are slowed by spreadsheets, missing signals, inconsistent reports or operational exceptions that surface too late.',
+    body: 'Use this when decisions are slowed by spreadsheets, missing signals, inconsistent reports or operational exceptions that surface too late.',
     next: 'Data audit, dashboard prototype, alert design',
   },
   {
     trigger: 'manual',
     label: 'We need less manual work',
     fit: 'Start with workflow automation.',
-    body:
-      'Use this when teams are losing time to repeatable document, routing, checking, quoting, approval or coordination work.',
+    body: 'Use this when teams are losing time to repeatable document, routing, checking, quoting, approval or coordination work.',
     next: 'Workflow map, automation PoC, controlled MVP',
   },
   {
     trigger: 'assistant',
     label: 'We need an AI assistant',
     fit: 'Start with controlled agents.',
-    body:
-      'Use this when the organisation wants an agent or copilot, but needs guardrails around data, permissions, reliability and escalation.',
+    body: 'Use this when the organisation wants an agent or copilot, but needs guardrails around data, permissions, reliability and escalation.',
     next: 'Agent design sprint, governance model, pilot',
   },
   {
     trigger: 'custom',
     label: 'Nothing fits',
     fit: 'Start with bespoke system design.',
-    body:
-      'Use this when the workflow is specialised enough that value depends on a custom interface, model workflow, integration layer or product experience.',
+    body: 'Use this when the workflow is specialised enough that value depends on a custom interface, model workflow, integration layer or product experience.',
     next: 'Technical discovery, prototype, MVP route',
   },
 ];
@@ -109,23 +112,28 @@ const decisionRoutes = [
 const deliveryPath = [
   {
     phase: 'Discover',
-    detail: 'Understand users, data, systems, risk and the business decision the build must improve.',
+    detail:
+      'Understand users, data, systems, risk and the business decision the build must improve.',
   },
   {
     phase: 'Prove',
-    detail: 'Create the smallest convincing test of value before asking the organisation to fund the full idea.',
+    detail:
+      'Create the smallest convincing test of value before asking the organisation to fund the full idea.',
   },
   {
     phase: 'Build',
-    detail: 'Turn the proven core into an MVP that can survive real users, real data and real constraints.',
+    detail:
+      'Turn the proven core into an MVP that can survive real users, real data and real constraints.',
   },
   {
     phase: 'Pilot',
-    detail: 'Run in a controlled setting, measure behaviour, refine adoption and expose operational edge cases.',
+    detail:
+      'Run in a controlled setting, measure behaviour, refine adoption and expose operational edge cases.',
   },
   {
     phase: 'Launch',
-    detail: 'Scale with support, monitoring, improvement cycles and clear ownership after go-live.',
+    detail:
+      'Scale with support, monitoring, improvement cycles and clear ownership after go-live.',
   },
 ];
 
@@ -140,14 +148,14 @@ const proofPoints = [
   },
   {
     stat: 'Controlled architecture for AI search',
-    copy: 'Custom AI/ML and vector-search systems can be designed around security, context and practical use.',
+    copy: 'Custom AI/ML and vector-search systems designed around security, context and practical use.',
   },
 ];
 ---
 
 <Layout
-  title="Solutions - Digital Technology Partner"
-  description="Practical AI and digital systems for business systems strategy, data, reporting, automation, AI agents and bespoke systems."
+  title="Solutions, practical AI systems built around your work | Digital Technology Partner"
+  description="Dashboards, automation, AI agents and bespoke systems, designed problem-first, governed by design, delivered through staged gates. Tell us where the time goes."
 >
   <Header />
   <main class="solution-page">
@@ -156,19 +164,22 @@ const proofPoints = [
       <div class="solution-scan"></div>
       <div class="ma-container solution-hero-grid">
         <div class="solution-copy">
-          <span class="ma-section-tag">// solution_engine</span>
+          <span class="ma-section-tag">// tell_us_where_the_time_goes</span>
           <h1 id="solution-title" data-solution-reveal>
-            Useful AI starts with the work your organisation needs to improve.
+            Tell us where the time goes. We'll tell you what to build.
           </h1>
           <p data-solution-reveal>
-            DTP designs and builds practical systems around workflow, data, people and governance.
-            The aim is measurable operational value, not isolated tools.
+            DTP designs and builds practical systems around workflow, data,
+            people and governance, dashboards, automation, agents and bespoke
+            AI. The aim is measurable operational value, not another tool.
           </p>
           <div class="solution-actions" data-solution-reveal>
-            <a class="ma-btn ma-btn-mint" href={bookingUrl} target="_blank" rel="noopener noreferrer">
-              Talk through a business problem
-            </a>
-            <a class="ma-btn ma-btn-outline" href="/process/">See the delivery path</a>
+            <a class="ma-btn ma-btn-mint" href="/contact/"
+              >Talk through a business problem</a
+            >
+            <a class="ma-btn ma-btn-outline" href="/process/"
+              >See the delivery path</a
+            >
           </div>
         </div>
 
@@ -211,18 +222,25 @@ const proofPoints = [
     <section class="ma-section engine-intro">
       <div class="ma-container intro-grid">
         <div data-solution-reveal>
-          <span class="ma-section-tag">// business_problem_first</span>
+          <span class="ma-section-tag">// the_work_comes_first</span>
           <h2>The solution is chosen after the work is understood.</h2>
         </div>
         <div class="intro-copy" data-solution-reveal>
           <p>
-            AI projects become expensive when the tool is selected before the workflow is understood.
-            DTP starts with the operating problem: where time is lost, where decisions are weak,
-            where data is hidden and where a system would create measurable value.
+            AI projects become expensive when the tool is selected before the
+            workflow is understood. DTP starts with the operating problem: where
+            time is lost, where decisions are weak, where data is hidden and
+            where a system would create measurable value.
           </p>
           <p>
-            From there, the answer might be a dashboard, an automation, an agent, a custom
-            interface or a staged roadmap. The right solution is the one that fits the work.
+            From there, the answer might be a dashboard, an automation, an
+            agent, a custom interface or a staged roadmap. Sometimes it's
+            software you already own. We'll say that too.
+          </p>
+          <p>
+            And the most valuable AI is usually boring: fewer missed tasks,
+            faster documents, cleaner handoffs. The margin notices, even when
+            the demo isn't flashy.
           </p>
         </div>
       </div>
@@ -234,60 +252,100 @@ const proofPoints = [
           <span class="ma-section-tag">// practical_catalogue</span>
           <h2>Five kinds of practical build work.</h2>
           <p>
-            Each route can stand alone, but the strongest work usually combines strategy,
-            data, workflow design and controlled AI into one useful operating system.
+            Each route can stand alone, but the strongest work usually combines
+            strategy, data, workflow design and controlled AI into one useful
+            operating system.
           </p>
         </div>
         <div class="catalogue-rail" aria-label="DTP solution categories">
-          {solutionCategories.map((category) => (
-            <article class="solution-module" data-solution-card data-engine-id={category.id}>
-              <button
-                type="button"
-                class="solution-module-hit"
-                data-engine-select={category.id}
-                data-engine-signal={category.signal}
-                data-engine-mode={category.mode}
-                data-engine-result={category.result}
-                aria-label={`Tune the engine to ${category.title}`}
-              ></button>
-              <span>{category.eyebrow}</span>
-              <h3>{category.title}</h3>
-              <p>{category.copy}</p>
-              <ul>
-                {category.outcomes.map((outcome) => <li>{outcome}</li>)}
-              </ul>
-            </article>
-          ))}
+          {
+            solutionCategories.map((category) => (
+              <article
+                class="solution-module"
+                data-solution-card
+                data-engine-id={category.id}
+              >
+                <button
+                  type="button"
+                  class="solution-module-hit"
+                  data-engine-select={category.id}
+                  data-engine-signal={category.signal}
+                  data-engine-mode={category.mode}
+                  data-engine-result={category.result}
+                  aria-label={`Tune the engine to ${category.title}`}
+                />
+                <span>{category.eyebrow}</span>
+                <h3>{category.title}</h3>
+                <p>{category.copy}</p>
+                <ul>
+                  {category.outcomes.map((outcome) => (
+                    <li>{outcome}</li>
+                  ))}
+                </ul>
+              </article>
+            ))
+          }
         </div>
       </div>
     </section>
 
-    <section class="ma-section decision-section" aria-labelledby="decision-title">
+    <section class="ma-section governance-section">
+      <div class="ma-container governance-grid">
+        <div data-solution-reveal>
+          <span class="ma-section-tag">// security_can_say_yes</span>
+          <h2>We build AI your security team can say yes to.</h2>
+        </div>
+        <div class="governance-copy" data-solution-reveal>
+          <p>
+            Some of the best tools in your organisation are frozen behind a
+            security "no", often rightly. DTP designs the yes: permissions, data
+            boundaries, audit trails, human escalation and in-tenant deployment
+            where it matters, so controlled AI runs inside real constraints
+            instead of around them.
+          </p>
+          <a class="solution-text-link" href="/process/"
+            >See how delivery stays controlled</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <section
+      class="ma-section decision-section"
+      aria-labelledby="decision-title"
+    >
       <div class="ma-container decision-grid">
         <div class="decision-copy" data-solution-reveal>
           <span class="ma-section-tag">// decision_engine</span>
           <h2 id="decision-title">Match the route to the problem signal.</h2>
           <p>
-            Buyers often arrive with a tool in mind. This chooser keeps the conversation anchored
-            to the business condition that actually needs to change.
+            Buyers often arrive with a tool in mind. This chooser keeps the
+            conversation anchored to the business condition that actually needs
+            to change.
           </p>
         </div>
         <div class="decision-console" data-solution-reveal>
-          <div class="decision-triggers" role="tablist" aria-label="Problem signals">
-            {decisionRoutes.map((route, index) => (
-              <button
-                type="button"
-                role="tab"
-                aria-selected={index === 0 ? 'true' : 'false'}
-                class:list={['decision-trigger', { active: index === 0 }]}
-                data-route-trigger={route.trigger}
-                data-fit={route.fit}
-                data-body={route.body}
-                data-next={route.next}
-              >
-                {route.label}
-              </button>
-            ))}
+          <div
+            class="decision-triggers"
+            role="tablist"
+            aria-label="Problem signals"
+          >
+            {
+              decisionRoutes.map((route, index) => (
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={index === 0 ? 'true' : 'false'}
+                  class:list={['decision-trigger', { active: index === 0 }]}
+                  data-route-trigger={route.trigger}
+                  data-fit={route.fit}
+                  data-body={route.body}
+                  data-next={route.next}
+                >
+                  {route.label}
+                </button>
+              ))
+            }
           </div>
           <article class="decision-output" aria-live="polite">
             <span>recommended route</span>
@@ -304,17 +362,22 @@ const proofPoints = [
         <div class="delivery-head" data-solution-reveal>
           <span class="ma-section-tag">// controlled_delivery</span>
           <h2>From business problem to live system, one gate at a time.</h2>
+          <a class="solution-text-link" href="/process/"
+            >The full delivery method, gate by gate</a
+          >
         </div>
         <div class="delivery-track-shell" data-solution-card>
           <div class="delivery-progress" aria-hidden="true"></div>
           <div class="delivery-track">
-            {deliveryPath.map((step, index) => (
-              <article data-delivery-step>
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                <h3>{step.phase}</h3>
-                <p>{step.detail}</p>
-              </article>
-            ))}
+            {
+              deliveryPath.map((step, index) => (
+                <article data-delivery-step>
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <h3>{step.phase}</h3>
+                  <p>{step.detail}</p>
+                </article>
+              ))
+            }
           </div>
         </div>
       </div>
@@ -324,19 +387,20 @@ const proofPoints = [
       <div class="ma-container proof-grid">
         <div class="proof-copy" data-solution-reveal>
           <span class="ma-section-tag">// proof_near_decision</span>
-          <h2>Built for practical outcomes, not AI theatre.</h2>
-          <p>
-            The best solution pages earn trust by showing business evidence close to the next
-            step. These are the types of operational gains DTP systems are built to create.
-          </p>
+          <h2>This is what "solutions" means here.</h2>
+          <a class="solution-text-link" href="/case-studies/"
+            >See the case studies</a
+          >
         </div>
         <div class="proof-list">
-          {proofPoints.map((point) => (
-            <article data-solution-card>
-              <strong>{point.stat}</strong>
-              <p>{point.copy}</p>
-            </article>
-          ))}
+          {
+            proofPoints.map((point) => (
+              <article data-solution-card>
+                <strong>{point.stat}</strong>
+                <p>{point.copy}</p>
+              </article>
+            ))
+          }
         </div>
       </div>
     </section>
@@ -346,15 +410,18 @@ const proofPoints = [
         <span class="ma-section-tag">// build_the_right_thing</span>
         <h2>Bring the business problem. We will help shape the system.</h2>
         <p>
-          If the use case is ready, move into Discovery. If the signal is still unclear, start with
-          Readiness or Foundry so the build earns its place.
+          If the use case is ready, move into Discovery. If the signal is still
+          unclear, start with Readiness or Foundry so the build earns its place.
         </p>
         <div class="cta-actions">
-          <a class="ma-btn ma-btn-mint ma-btn-lg" href={bookingUrl} target="_blank" rel="noopener noreferrer">
-            Talk through the build
-          </a>
-          <a class="ma-btn ma-btn-outline ma-btn-lg" href="/programmes/ai-adoption-readiness/">
-            Start with readiness
+          <a class="ma-btn ma-btn-mint ma-btn-lg" href="/contact/"
+            >Talk through the build</a
+          >
+          <a
+            class="ma-btn ma-btn-outline ma-btn-lg"
+            href="/programmes/ai-adoption-readiness/"
+          >
+            Start with Readiness
           </a>
         </div>
       </div>
@@ -363,13 +430,23 @@ const proofPoints = [
 </Layout>
 
 <script>
-  const canvas = document.getElementById('solution-engine-scene') as HTMLCanvasElement | null;
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canvas = document.getElementById(
+    'solution-engine-scene'
+  ) as HTMLCanvasElement | null;
+  const reducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  ).matches;
   const gsapReady = import('gsap');
 
-  const triggerButtons = Array.from(document.querySelectorAll('[data-route-trigger]')) as HTMLButtonElement[];
-  const moduleButtons = Array.from(document.querySelectorAll('[data-engine-select]')) as HTMLButtonElement[];
-  const moduleCards = Array.from(document.querySelectorAll('[data-engine-id]')) as HTMLElement[];
+  const triggerButtons = Array.from(
+    document.querySelectorAll('[data-route-trigger]')
+  ) as HTMLButtonElement[];
+  const moduleButtons = Array.from(
+    document.querySelectorAll('[data-engine-select]')
+  ) as HTMLButtonElement[];
+  const moduleCards = Array.from(
+    document.querySelectorAll('[data-engine-id]')
+  ) as HTMLElement[];
   const fitTarget = document.getElementById('decision-fit');
   const bodyTarget = document.getElementById('decision-body');
   const nextTarget = document.getElementById('decision-next');
@@ -400,7 +477,12 @@ const proofPoints = [
           if (fitTarget) fitTarget.textContent = button.dataset.fit || '';
           if (bodyTarget) bodyTarget.textContent = button.dataset.body || '';
           if (nextTarget) nextTarget.textContent = button.dataset.next || '';
-          gsap.to(output, { opacity: 1, y: 0, duration: 0.28, ease: 'power3.out' });
+          gsap.to(output, {
+            opacity: 1,
+            y: 0,
+            duration: 0.28,
+            ease: 'power3.out',
+          });
         },
       });
     }
@@ -431,18 +513,29 @@ const proofPoints = [
         Object.entries(values).forEach(([key, value]) => {
           ledgerTargets[key as keyof typeof ledgerTargets]!.textContent = value;
         });
-        gsap.to(targets, { opacity: 1, y: 0, duration: 0.28, ease: 'power3.out', stagger: 0.04 });
+        gsap.to(targets, {
+          opacity: 1,
+          y: 0,
+          duration: 0.28,
+          ease: 'power3.out',
+          stagger: 0.04,
+        });
       },
     });
   };
 
-  const setActiveEngineModule = async (button: HTMLButtonElement, animate = true) => {
+  const setActiveEngineModule = async (
+    button: HTMLButtonElement,
+    animate = true
+  ) => {
     const id = button.dataset.engineSelect || '';
     moduleCards.forEach((card) => {
       card.classList.toggle('active', card.dataset.engineId === id);
     });
     await updateLedger(button, animate);
-    document.dispatchEvent(new CustomEvent('solution-engine-focus', { detail: { id } }));
+    document.dispatchEvent(
+      new CustomEvent('solution-engine-focus', { detail: { id } })
+    );
   };
 
   triggerButtons.forEach((button) => {
@@ -512,11 +605,41 @@ const proofPoints = [
     ] as Array<[number, number, number]>;
 
     const focusMap = {
-      systems: { node: 1, yaw: -0.18, pitch: -0.08, zoom: 8.25, particleOpacity: 0.7 },
-      data: { node: 2, yaw: 0.16, pitch: -0.24, zoom: 8.05, particleOpacity: 0.76 },
-      workflow: { node: 3, yaw: -0.26, pitch: -0.28, zoom: 8.35, particleOpacity: 0.82 },
-      agents: { node: 4, yaw: 0.24, pitch: -0.12, zoom: 8.0, particleOpacity: 0.88 },
-      bespoke: { node: 5, yaw: 0.08, pitch: -0.34, zoom: 7.92, particleOpacity: 0.92 },
+      systems: {
+        node: 1,
+        yaw: -0.18,
+        pitch: -0.08,
+        zoom: 8.25,
+        particleOpacity: 0.7,
+      },
+      data: {
+        node: 2,
+        yaw: 0.16,
+        pitch: -0.24,
+        zoom: 8.05,
+        particleOpacity: 0.76,
+      },
+      workflow: {
+        node: 3,
+        yaw: -0.26,
+        pitch: -0.28,
+        zoom: 8.35,
+        particleOpacity: 0.82,
+      },
+      agents: {
+        node: 4,
+        yaw: 0.24,
+        pitch: -0.12,
+        zoom: 8.0,
+        particleOpacity: 0.88,
+      },
+      bespoke: {
+        node: 5,
+        yaw: 0.08,
+        pitch: -0.34,
+        zoom: 7.92,
+        particleOpacity: 0.92,
+      },
     } as const;
 
     const createMaterial = (color: typeof mint, opacity: number) => {
@@ -531,7 +654,14 @@ const proofPoints = [
     };
 
     const createNode = (position: [number, number, number], index: number) => {
-      const color = index === 0 ? mint : index % 3 === 0 ? blue : index % 2 === 0 ? amber : ivory;
+      const color =
+        index === 0
+          ? mint
+          : index % 3 === 0
+            ? blue
+            : index % 2 === 0
+              ? amber
+              : ivory;
       const glow = new THREE.Mesh(
         new THREE.SphereGeometry(index === 0 ? 0.42 : 0.28, 28, 28),
         createMaterial(color, index === 0 ? 0.14 : 0.08)
@@ -550,7 +680,11 @@ const proofPoints = [
 
     nodePositions.forEach(createNode);
 
-    const createLine = (start: [number, number, number], end: [number, number, number], color = mint) => {
+    const createLine = (
+      start: [number, number, number],
+      end: [number, number, number],
+      color = mint
+    ) => {
       const geometry = new THREE.BufferGeometry().setFromPoints([
         new THREE.Vector3(...start),
         new THREE.Vector3(...end),
@@ -568,9 +702,11 @@ const proofPoints = [
       return geometry;
     };
 
-    const lineGeometries = nodePositions.slice(1).map((position, index) =>
-      createLine(nodePositions[0], position, index % 2 === 0 ? mint : ivory)
-    );
+    const lineGeometries = nodePositions
+      .slice(1)
+      .map((position, index) =>
+        createLine(nodePositions[0], position, index % 2 === 0 ? mint : ivory)
+      );
     lineGeometries.push(createLine(nodePositions[1], nodePositions[3], blue));
     lineGeometries.push(createLine(nodePositions[2], nodePositions[4], amber));
     lineGeometries.push(createLine(nodePositions[5], nodePositions[6], mint));
@@ -585,7 +721,10 @@ const proofPoints = [
     sharedMaterials.push(ringMaterial);
 
     const rings = [1.2, 2.05, 3.02].map((radius, index) => {
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.009, 12, 180), ringMaterial.clone());
+      const ring = new THREE.Mesh(
+        new THREE.TorusGeometry(radius, 0.009, 12, 180),
+        ringMaterial.clone()
+      );
       sharedMaterials.push(ring.material);
       ring.rotation.x = Math.PI / 2 + index * 0.2;
       ring.rotation.y = index * 0.26;
@@ -604,15 +743,22 @@ const proofPoints = [
       positions[i * 3 + 1] = Math.sin(angle) * radius * 0.62 + lift * 0.1;
       positions[i * 3 + 2] = lift;
 
-      const color = i % 11 === 0 ? amber : i % 5 === 0 ? blue : i % 3 === 0 ? ivory : mint;
+      const color =
+        i % 11 === 0 ? amber : i % 5 === 0 ? blue : i % 3 === 0 ? ivory : mint;
       colors[i * 3] = color.r;
       colors[i * 3 + 1] = color.g;
       colors[i * 3 + 2] = color.b;
     }
 
     const particleGeometry = new THREE.BufferGeometry();
-    particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    particleGeometry.setAttribute(
+      'position',
+      new THREE.BufferAttribute(positions, 3)
+    );
+    particleGeometry.setAttribute(
+      'color',
+      new THREE.BufferAttribute(colors, 3)
+    );
     const particles = new THREE.Points(
       particleGeometry,
       new THREE.PointsMaterial({
@@ -651,7 +797,8 @@ const proofPoints = [
 
       engineLines.forEach((line, index) => {
         gsap.to(line.userData, {
-          focusOpacity: index === target.node - 1 ? 0.58 : index < 6 ? 0.22 : 0.16,
+          focusOpacity:
+            index === target.node - 1 ? 0.58 : index < 6 ? 0.22 : 0.16,
           duration: reducedMotion ? 0 : 0.4,
           ease: 'power2.out',
         });
@@ -663,7 +810,10 @@ const proofPoints = [
       focusEngineScene(focusEvent.detail.id);
     };
 
-    document.addEventListener('solution-engine-focus', onEngineFocus as EventListener);
+    document.addEventListener(
+      'solution-engine-focus',
+      onEngineFocus as EventListener
+    );
     focusEngineScene('systems');
 
     const resize = () => {
@@ -712,7 +862,14 @@ const proofPoints = [
       gsap.fromTo(
         '.engine-panel',
         { opacity: 0, y: 18, scale: 0.98 },
-        { opacity: 1, y: 0, scale: 1, duration: 1.05, ease: 'power3.out', delay: 0.24 }
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 1.05,
+          ease: 'power3.out',
+          delay: 0.24,
+        }
       );
     }
 
@@ -731,13 +888,16 @@ const proofPoints = [
       const t = (window.performance.now() - startTime) / 1000;
       if (!reducedMotion) {
         group.rotation.y += (pointer.x - group.rotation.y) * 0.025;
-        group.rotation.x += (focusState.pitch + pointer.y - group.rotation.x) * 0.025;
+        group.rotation.x +=
+          (focusState.pitch + pointer.y - group.rotation.x) * 0.025;
         group.rotation.y += (focusState.yaw - group.rotation.y) * 0.014;
         camera.position.z += (focusState.zoom - camera.position.z) * 0.035;
         particles.rotation.z -= 0.00085;
         particles.rotation.y += 0.00045;
         (particles.material as THREE.PointsMaterial).opacity +=
-          (focusState.particleOpacity - (particles.material as THREE.PointsMaterial).opacity) * 0.04;
+          (focusState.particleOpacity -
+            (particles.material as THREE.PointsMaterial).opacity) *
+          0.04;
         rings.forEach((ring, index) => {
           ring.rotation.z = t * (0.05 + index * 0.018);
         });
@@ -749,7 +909,8 @@ const proofPoints = [
         engineLines.forEach((line, index) => {
           const lineMaterial = line.material as THREE.LineBasicMaterial;
           const focusOpacity = line.userData.focusOpacity ?? 0.2;
-          lineMaterial.opacity = focusOpacity + Math.sin(t * 1.35 + index) * 0.035;
+          lineMaterial.opacity =
+            focusOpacity + Math.sin(t * 1.35 + index) * 0.035;
         });
       }
       renderer.render(scene, camera);
@@ -762,7 +923,10 @@ const proofPoints = [
       window.cancelAnimationFrame(frameId);
       window.removeEventListener('resize', resize);
       canvas.removeEventListener('pointermove', onPointerMove);
-      document.removeEventListener('solution-engine-focus', onEngineFocus as EventListener);
+      document.removeEventListener(
+        'solution-engine-focus',
+        onEngineFocus as EventListener
+      );
       renderer.dispose();
       particleGeometry.dispose();
       lineGeometries.forEach((geometry) => geometry.dispose());
@@ -778,14 +942,14 @@ const proofPoints = [
     gsap.set('[data-delivery-step]', { opacity: 0.48 });
     const deliveryTweens = [
       gsap.to('.delivery-progress', {
-      scaleX: 1,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: '.delivery-track-shell',
-        start: 'top 72%',
-        end: 'bottom 42%',
-        scrub: 0.5,
-      },
+        scaleX: 1,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.delivery-track-shell',
+          start: 'top 72%',
+          end: 'bottom 42%',
+          scrub: 0.5,
+        },
       }),
     ];
 
@@ -818,8 +982,16 @@ const proofPoints = [
   .solution-page {
     min-height: 100vh;
     background:
-      radial-gradient(circle at 16% 8%, rgba(0, 229, 160, 0.12), transparent 31rem),
-      radial-gradient(circle at 78% 14%, rgba(124, 139, 255, 0.1), transparent 30rem),
+      radial-gradient(
+        circle at 16% 8%,
+        rgba(0, 229, 160, 0.12),
+        transparent 31rem
+      ),
+      radial-gradient(
+        circle at 78% 14%,
+        rgba(124, 139, 255, 0.1),
+        transparent 30rem
+      ),
       linear-gradient(135deg, #000 0%, #080812 56%, #000 100%);
     color: var(--ma-text);
   }
@@ -856,11 +1028,20 @@ const proofPoints = [
       linear-gradient(rgba(244, 241, 232, 0.045) 1px, transparent 1px),
       linear-gradient(90deg, rgba(244, 241, 232, 0.035) 1px, transparent 1px);
     background-size: 72px 72px;
-    mask-image: radial-gradient(ellipse 74% 72% at 62% 44%, black, transparent 86%);
+    mask-image: radial-gradient(
+      ellipse 74% 72% at 62% 44%,
+      black,
+      transparent 86%
+    );
   }
 
   .solution-scan {
-    background: linear-gradient(180deg, transparent 0%, rgba(0, 229, 160, 0.07) 50%, transparent 100%);
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(0, 229, 160, 0.07) 50%,
+      transparent 100%
+    );
     height: 28%;
     transform: translateY(-110%);
     animation: solution-scan 7s ease-in-out infinite;
@@ -938,7 +1119,11 @@ const proofPoints = [
     border: 1px solid rgba(244, 241, 232, 0.14);
     border-radius: var(--ma-radius);
     background:
-      radial-gradient(circle at 48% 42%, rgba(0, 229, 160, 0.16), transparent 22rem),
+      radial-gradient(
+        circle at 48% 42%,
+        rgba(0, 229, 160, 0.16),
+        transparent 22rem
+      ),
       linear-gradient(145deg, rgba(17, 17, 34, 0.86), rgba(0, 0, 0, 0.48));
     box-shadow: 0 34px 100px rgba(0, 0, 0, 0.32);
   }
@@ -1042,6 +1227,7 @@ const proofPoints = [
   }
 
   .intro-grid,
+  .governance-grid,
   .decision-grid,
   .proof-grid {
     display: grid;
@@ -1051,6 +1237,7 @@ const proofPoints = [
   }
 
   .intro-grid h2,
+  .governance-grid h2,
   .catalogue-head h2,
   .decision-copy h2,
   .delivery-head h2,
@@ -1065,6 +1252,7 @@ const proofPoints = [
   }
 
   .intro-copy p,
+  .governance-copy p,
   .catalogue-head p,
   .decision-copy p,
   .proof-copy p,
@@ -1077,7 +1265,11 @@ const proofPoints = [
   .solution-catalogue {
     overflow: hidden;
     background:
-      radial-gradient(circle at 84% 10%, rgba(0, 229, 160, 0.1), transparent 28rem),
+      radial-gradient(
+        circle at 84% 10%,
+        rgba(0, 229, 160, 0.1),
+        transparent 28rem
+      ),
       #050509;
   }
 
@@ -1219,11 +1411,55 @@ const proofPoints = [
     line-height: 1.42;
   }
 
+  .governance-section {
+    border-top: 1px solid var(--ma-border);
+    background:
+      linear-gradient(
+        135deg,
+        rgba(244, 200, 74, 0.08),
+        rgba(0, 229, 160, 0.05)
+      ),
+      rgba(17, 17, 34, 0.54);
+  }
+
+  .governance-copy {
+    display: grid;
+    gap: 1.3rem;
+  }
+
+  .solution-text-link {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--ma-mint);
+    font-family: var(--ma-font-display);
+    font-size: 0.98rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .solution-text-link::after {
+    content: '->';
+    font-family: var(--ma-font-mono);
+    font-size: 0.9rem;
+    transition: transform 180ms ease;
+  }
+
+  .solution-text-link:hover::after,
+  .solution-text-link:focus-visible::after {
+    transform: translateX(4px);
+  }
+
   .decision-section {
     border-top: 1px solid var(--ma-border);
     border-bottom: 1px solid var(--ma-border);
     background:
-      linear-gradient(135deg, rgba(0, 229, 160, 0.08), rgba(124, 139, 255, 0.06)),
+      linear-gradient(
+        135deg,
+        rgba(0, 229, 160, 0.08),
+        rgba(124, 139, 255, 0.06)
+      ),
       var(--ma-bg);
   }
 
@@ -1318,13 +1554,22 @@ const proofPoints = [
     margin-bottom: 3rem;
   }
 
+  .delivery-head .solution-text-link {
+    margin-top: 1.2rem;
+  }
+
   .delivery-track-shell {
     position: relative;
     overflow: hidden;
     border: 1px solid rgba(244, 241, 232, 0.12);
     border-radius: var(--ma-radius);
     background:
-      linear-gradient(90deg, rgba(0, 229, 160, 0.05), transparent 45%, rgba(124, 139, 255, 0.05)),
+      linear-gradient(
+        90deg,
+        rgba(0, 229, 160, 0.05),
+        transparent 45%,
+        rgba(124, 139, 255, 0.05)
+      ),
       rgba(17, 17, 34, 0.46);
   }
 
@@ -1417,11 +1662,19 @@ const proofPoints = [
     line-height: 1.58;
   }
 
+  .proof-copy .solution-text-link {
+    margin-top: 1.1rem;
+  }
+
   .solution-cta {
     padding: 5.75rem 0;
     text-align: center;
     background:
-      radial-gradient(circle at 50% 10%, rgba(0, 229, 160, 0.14), transparent 26rem),
+      radial-gradient(
+        circle at 50% 10%,
+        rgba(0, 229, 160, 0.14),
+        transparent 26rem
+      ),
       #000;
   }
 
@@ -1456,6 +1709,7 @@ const proofPoints = [
   @media (max-width: 1180px) {
     .solution-hero-grid,
     .intro-grid,
+    .governance-grid,
     .decision-grid,
     .proof-grid {
       grid-template-columns: 1fr;
@@ -1504,6 +1758,7 @@ const proofPoints = [
 
     .solution-copy > p,
     .intro-copy p,
+    .governance-copy p,
     .catalogue-head p,
     .decision-copy p,
     .proof-copy p,
@@ -1514,6 +1769,8 @@ const proofPoints = [
     .solution-actions,
     .cta-actions {
       display: grid;
+      width: 100%;
+      justify-content: stretch;
     }
 
     .solution-actions .ma-btn,

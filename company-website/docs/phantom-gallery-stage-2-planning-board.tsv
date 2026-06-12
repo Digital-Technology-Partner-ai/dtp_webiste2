@@ -1,0 +1,40 @@
+Zone	Card	Current position / owns	Implication / note	Route
+Confirmed decisions	Sitemap direction	Accepted as a working basis	Proceed to page-level planning rather than reopening the full IA	
+Confirmed decisions	Route names	Acceptable for now	Use clear SEO-friendly route names while the hub can use more evocative labels	
+Confirmed decisions	Programmes label	Keep Programmes	AI Adoption Readiness, AI Foundry and Leadership AI Coaching sit together as packaged offers	
+Confirmed decisions	FAQ	Keep as top-level navigation	FAQ remains visible in the main nav and can also be reused contextually	/faq/
+Confirmed decisions	Case studies	Keep one Case Studies page in phase one	No individual case study page build is required for the first release	/case-studies/
+Confirmed decisions	Phantom Gallery role	Treat as ecosystem navigation, not a visual wrapper for the old menu	The hub should show relationships between readiness, programmes, solutions, proof and contact	/
+Open decisions	Homepage role	/ as immersive ecosystem, or /ecosystem/ as hub with / as a conventional entry	Favour / as the ecosystem if the experience remains fast, accessible and commercially clear. Keep /ecosystem/ as a fallback or preview route during build	/
+Open decisions	AI Adoption Readiness depth	Three child pages immediately, or Snapshot, Diagnostic and Advisory as sections on one parent page	Start with one parent page and deep sections unless each version has enough distinct sales copy, FAQs and CTAs	/programmes/ai-adoption-readiness/
+Open decisions	Newsroom label	Keep Newsroom, or rename to Insights	Favour Insights because it better fits practical AI guidance and leadership content	/insights/
+Open decisions	About page	Restore /about/, or absorb into /why-dtp/	Absorb most content into /why-dtp/ unless there is a strong founder/team story that needs its own page	/why-dtp/
+Open decisions	Products area	Keep app/product pages as utility routes, or create a future Products area	Keep utility routes out of primary navigation for phase one, then review if DTP needs a products portfolio later	
+Hub ownership	Command Centre	Trust, credibility, security and delivery confidence	Why DTP is a low-risk, practical partner for serious AI and digital work	/why-dtp/
+Hub ownership	Adoption Radar	Readiness, risk, current-state clarity and next-step evidence	Leaders can get a one-week view of what is happening, where risk sits and what to do next	/programmes/ai-adoption-readiness/
+Hub ownership	Foundry Floor	Collaborative opportunity discovery and confidence-building	This is a practical working group club, not passive AI training	/programmes/ai-foundry/
+Hub ownership	Leadership Suite	Discreet senior support, translation and decision confidence	Senior leaders can get private help without needing to become technical specialists	/programmes/leadership-ai-coaching/
+Hub ownership	Solution Engine	Practical business problems and DTP solution areas	DTP solves business systems, reporting, automation, agent and bespoke AI problems	/solutions/
+Hub ownership	Delivery Path	Method, sequence, validation and risk reduction	DTP moves from Discovery to Launch through stage-gated decisions	/process/
+Hub ownership	Proof Vault	Evidence, outcomes and sector credibility	DTP has delivered practical results in operational and technical contexts	/case-studies/
+Hub ownership	Signal Feed	Thought leadership and practical market guidance	DTP understands the AI adoption landscape and can explain it without hype	/insights/
+Hub ownership	Question Layer	Buying friction, reassurance and practical answers	Prospects can understand timelines, security, pricing, support and implementation expectations	/faq/
+Hub ownership	Contact Beacon	Conversion and intent capture	Visitors can start the right conversation quickly	/contact/
+Persona priorities	1. Expensive Googlers	Adoption Radar -> Foundry Floor -> Solution Engine	Strong commercial entry point because the pain is visible: money has been spent but work has not changed	
+Persona priorities	2. Compliance Hostages	Command Centre -> Adoption Radar -> Leadership Suite	Reassurance, governance and senior confidence should appear before selling delivery	
+Persona priorities	3. Tyre-Kickers	Adoption Radar -> Delivery Path	Convert dabbling into one owned initiative with a number and a decision gate	
+Persona priorities	4. AI Evangelists	Foundry Floor -> Solution Engine -> Delivery Path	Channel energy into prioritisation, governance and practical implementation	
+Persona priorities	5. Agent Cowboys	Leadership Suite -> AI Agents -> Command Centre	Speak to ambition first, then introduce control, ROI visibility and operating-model thinking	
+Persona priorities	6. Doubting Thomas	Command Centre -> Adoption Radar -> Proof Vault	Avoid hype. Lead with proof, risk reduction and a narrow first step	
+Content ownership	/	Existing homepage value proposition plus Phantom Gallery prototype direction	Ecosystem entry copy, hub orientation and fallback conventional navigation copy	/
+Content ownership	/why-dtp/	Existing benefits, testimonials, security and delivery confidence content	Stronger trust narrative, fit criteria and credibility framing	/why-dtp/
+Content ownership	/programmes/	New DTP programme positioning	Short overview of assess, build confidence, decide and deliver	/programmes/
+Content ownership	/programmes/ai-adoption-readiness/	User-supplied offer description and six-archetype PDF insight	Full commercial page copy, deliverables, levels, timeline, FAQs and CTAs	/programmes/ai-adoption-readiness/
+Content ownership	/programmes/ai-foundry/	User-supplied club-not-course positioning	Membership/workgroup explanation, outputs, cadence, evidence and leadership benefits	/programmes/ai-foundry/
+Content ownership	/programmes/leadership-ai-coaching/	User-supplied senior support offer and archetype insight	Discreet one-to-one positioning, use cases, boundaries, outcomes and enquiry CTA	/programmes/leadership-ai-coaching/
+Content ownership	/solutions/	Current use cases and case study references	Solution grouping copy and stronger links from problems to measurable business outcomes	/solutions/
+Content ownership	/process/	Existing Discovery, PoC, MVP, Pilot and Launch content	Decision gates, client outputs and risk-control language	/process/
+Content ownership	/case-studies/	Current case study assets and testimonials	Outcome-led summaries with sector tags and stronger metrics where available	/case-studies/
+Content ownership	/insights/	Current Newsroom content	Rename and reorganise around adoption, governance, agents, operations and leadership	/insights/
+Content ownership	/faq/	Existing FAQ	Add programme-specific and immersive-navigation questions	/faq/
+Content ownership	/contact/	Existing contact and booking content	Intent-led contact prompts and clearer programme/solution enquiry paths	/contact/

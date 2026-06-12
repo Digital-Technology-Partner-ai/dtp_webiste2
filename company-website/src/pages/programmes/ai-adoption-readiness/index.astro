@@ -2,30 +2,30 @@
 import Header from '../../../components/Header.astro';
 import Layout from '../../../layouts/Layout.astro';
 
-const bookingUrl =
-  'https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous';
-
 const readinessLevels = [
   {
     mode: '// Broad scan',
     title: 'Readiness Snapshot',
     summary:
-      'A fast self-reported baseline for leadership teams that need an initial signal before deciding whether deeper assessment is justified.',
-    bestFor: 'Early clarity, budget shaping and deciding whether AI adoption needs more attention.',
+      'A fast, self-reported baseline for leadership teams that need an initial signal before deciding whether deeper assessment is justified.',
+    bestFor:
+      'Early clarity, budget shaping and deciding whether AI adoption needs more attention.',
   },
   {
     mode: '// Pattern and proof',
     title: 'Readiness Diagnostic',
     summary:
-      'Structured answers plus AI-led interviews or listening sessions to expose adoption patterns, workflow drag, confidence gaps and risk signals.',
-    bestFor: 'When leadership needs evidence before choosing a route, sponsor or first serious use case.',
+      'Structured answers plus AI-led interviews and listening sessions that expose adoption patterns, workflow drag, confidence gaps and risk signals.',
+    bestFor:
+      'When leadership needs evidence before choosing a route, sponsor or first serious use case.',
   },
   {
     mode: '// Decision judgement',
     title: 'Readiness Advisory',
     summary:
       'DTP interpretation and leadership discussion, turning the evidence into practical recommendations on what to fund, govern, investigate or stop.',
-    bestFor: 'When the organisation needs a trusted external view before committing people, budget or policy change.',
+    bestFor:
+      'When the organisation needs a trusted external view before committing people, budget or policy change.',
   },
 ];
 
@@ -35,30 +35,62 @@ const inspectionAreas = [
   'Permission, data and review gaps',
   'Governance maturity and policy clarity',
   'Staff confidence, fear and blockers',
-  'Use cases worth encouraging or parking',
+  'Use cases worth encouraging, or parking',
 ];
 
 const weekFlow = [
   {
-    day: '01',
+    day: 'Day 01',
     title: 'Scope the map',
     text: 'Agree the leadership question, teams in scope, risk appetite and what a useful answer must look like.',
   },
   {
-    day: '02-03',
+    day: 'Days 02 and 03',
     title: 'Gather the signal',
     text: 'Collect structured inputs and, where useful, run AI-led listening sessions to surface patterns across teams.',
   },
   {
     day: '04',
     title: 'Separate signal from noise',
-    text: 'Map where AI is helping, where it is risky, where adoption is blocked and which ideas should wait.',
+    text: "Map where AI is helping, where it's risky, where adoption is blocked and which ideas should wait.",
   },
   {
     day: '05',
     title: 'Leadership readout',
-    text: 'Discuss the evidence, the decision options and the practical route into guidance, Foundry, Discovery, PoC or no further action.',
+    text: 'Discuss the evidence, the decision options and the practical route forward.',
   },
+];
+
+const mapPoints = [
+  {
+    title: 'Signal',
+    text: 'workflows where AI is already saving time or improving judgement.',
+  },
+  {
+    title: 'Risk',
+    text: 'data exposure, weak ownership, poor review or unclear permission.',
+  },
+  {
+    title: 'Noise',
+    text: 'tool-chasing, theatre and ideas that should be parked.',
+  },
+  {
+    title: 'Decision',
+    text: 'what leadership should encourage, control, investigate or stop.',
+  },
+];
+
+const leadershipOutputs = [
+  'A current-state map of AI use, including what was invisible before',
+  'A risk and opportunity summary in plain language',
+  'Prioritised next actions, each with an owner-shaped edge',
+  'A recommendation on the best route forward',
+];
+
+const nextRouteLinks = [
+  { label: 'Explore Foundry', href: '/programmes/ai-foundry/' },
+  { label: 'View Coaching', href: '/programmes/leadership-ai-coaching/' },
+  { label: 'See the delivery process', href: '/process/' },
 ];
 
 const faqs = [
@@ -70,7 +102,12 @@ const faqs = [
   {
     question: 'Do we need to know exactly what AI tools people are using?',
     answer:
-      'No. Part of the assessment is to establish what is visible, what is assumed and where there may be shadow adoption or unclear ownership.',
+      'No. Part of the assessment is establishing what is visible, what is assumed and where there may be shadow adoption or unclear ownership.',
+  },
+  {
+    question: 'Will this expose individuals?',
+    answer:
+      'No. Quiet experimentation is signal, not misconduct. The assessment maps patterns and workflows, not names, and staff are told that up front.',
   },
   {
     question: 'What happens after the sprint?',
@@ -81,8 +118,8 @@ const faqs = [
 ---
 
 <Layout
-  title="AI Adoption Readiness Sprint - Digital Technology Partner"
-  description="A one-week AI adoption readiness sprint showing where AI is helping, where risk sits and what leadership should do next."
+  title="AI Adoption Readiness Sprint: one week, one map | Digital Technology Partner"
+  description="A one-week assessment that maps where AI is helping, where it's risky and where it's noise, shadow adoption included. Three levels, one clear leadership decision."
 >
   <Header />
   <main class="readiness-page">
@@ -90,17 +127,21 @@ const faqs = [
       <div class="scope-grid"></div>
       <div class="ma-container readiness-hero-grid">
         <div class="readiness-copy" data-readiness-reveal>
-          <span class="ma-section-tag">// ai_adoption_readiness_sprint</span>
-          <h1>Where is AI helping, where is it risky, and where is it just noise?</h1>
+          <span class="ma-section-tag">// whats_already_happening</span>
+          <h1>AI is already inside your business. It didn't ask permission.</h1>
           <p>
-            A one-week assessment to show what is already happening with AI, where risk sits,
-            and what leadership should do next.
+            Staff are experimenting quietly. Teams are blocked by policy.
+            Licence spend isn't changing how work gets done. The Readiness
+            Sprint maps all of it in one week: signal, risk, noise, and the next
+            decision.
           </p>
           <div class="readiness-actions">
-            <a class="ma-btn ma-btn-mint" href={bookingUrl} target="_blank" rel="noopener noreferrer">
+            <a class="ma-btn ma-btn-mint" href="/contact/">
               Book a readiness call
             </a>
-            <a class="ma-btn ma-btn-outline" href="#levels">Compare the levels</a>
+            <a class="ma-btn ma-btn-outline" href="#levels"
+              >Compare the levels</a
+            >
           </div>
           <dl class="readiness-stats" aria-label="Readiness sprint summary">
             <div>
@@ -118,7 +159,11 @@ const faqs = [
           </dl>
         </div>
 
-        <div class="radar-panel" aria-label="Signal, risk and noise radar" data-readiness-reveal>
+        <div
+          class="radar-panel"
+          aria-label="Signal, risk and noise radar"
+          data-readiness-reveal
+        >
           <div class="radar-topline">
             <span>readiness radar</span>
             <strong>decision view</strong>
@@ -133,11 +178,17 @@ const faqs = [
           <div class="radar-callouts">
             <article>
               <span>Signal</span>
-              <p>Workflows where AI is already saving time or improving judgement.</p>
+              <p>
+                Workflows where AI is already saving time or improving
+                judgement.
+              </p>
             </article>
             <article class="risk">
               <span>Risk</span>
-              <p>Data exposure, weak ownership, poor review or unclear permission.</p>
+              <p>
+                Data exposure, weak ownership, poor review or unclear
+                permission.
+              </p>
             </article>
             <article class="noise">
               <span>Noise</span>
@@ -151,46 +202,27 @@ const faqs = [
     <section class="ma-section readiness-intro">
       <div class="ma-container intro-grid">
         <div>
-          <span class="ma-section-tag">// leadership_context</span>
-          <h2>Most organisations do not need more AI noise. They need a map.</h2>
+          <span class="ma-section-tag">// the_map</span>
+          <h2>
+            Most organisations do not need more AI noise. They need a map.
+          </h2>
         </div>
         <div class="intro-copy">
           <p>
-            Leaders are being asked to make decisions while the tools, risks and expectations
-            keep moving. Some staff are experimenting quietly. Some teams are blocked by policy.
-            Some licence spend is not changing work at all.
+            Leaders are being asked to decide while the tools, risks and
+            expectations keep moving. The sprint turns that uncertainty into one
+            decision view:
           </p>
-          <p>
-            The Readiness Sprint turns that uncertainty into a practical view of current use,
-            governance risk, missed value and the next decision worth making.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="ma-section levels-section" id="levels">
-      <div class="ma-container">
-        <div class="ma-section-header">
-          <span class="ma-section-tag">// choose_confidence_level</span>
-          <h2>Choose the right level of confidence</h2>
-          <p>
-            Each option stands alone. The right fit depends on appetite, budget and the strategic
-            driver behind the assessment.
-          </p>
-        </div>
-        <div class="levels-grid">
-          {readinessLevels.map((level) => (
-            <article class="level-card">
-              <div class="ma-card-line"></div>
-              <span>{level.mode}</span>
-              <h3>{level.title}</h3>
-              <p>{level.summary}</p>
-              <div class="best-for">
-                <strong>Best for</strong>
-                <p>{level.bestFor}</p>
-              </div>
-            </article>
-          ))}
+          <div class="map-list">
+            {
+              mapPoints.map((point) => (
+                <article>
+                  <strong>{point.title}</strong>
+                  <p>{point.text}</p>
+                </article>
+              ))
+            }
+          </div>
         </div>
       </div>
     </section>
@@ -201,9 +233,9 @@ const faqs = [
           <span class="ma-section-tag">// what_we_inspect</span>
           <h2>We inspect the operating reality, not just the tool list.</h2>
           <p>
-            The useful answer is rarely "which model should we use?" It is where AI is already
-            touching work, where staff feel exposed, and where the organisation has enough signal
-            to act.
+            The useful answer is rarely "which model should we use?" It's where
+            AI is already touching work, where staff feel exposed, and where the
+            organisation has enough signal to act.
           </p>
         </div>
         <div class="inspection-list" aria-label="Inspection areas">
@@ -216,38 +248,88 @@ const faqs = [
       <div class="ma-container">
         <div class="ma-section-header">
           <span class="ma-section-tag">// one_week_flow</span>
-          <h2>A sprint designed for leadership decisions</h2>
+          <h2>Monday we scope. Friday you decide.</h2>
         </div>
         <div class="flow-grid">
-          {weekFlow.map((step) => (
-            <article class="flow-step">
-              <span>{step.day}</span>
-              <h3>{step.title}</h3>
-              <p>{step.text}</p>
-            </article>
-          ))}
+          {
+            weekFlow.map((step) => (
+              <article class="flow-step">
+                <span>{step.day}</span>
+                <h3>{step.title}</h3>
+                <p>{step.text}</p>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="ma-section leadership-section">
+      <div class="ma-container leadership-grid">
+        <div>
+          <span class="ma-section-tag">// what_leadership_gets</span>
+          <h2>
+            Next board meeting, someone will ask about AI. The answer will be in
+            front of you.
+          </h2>
+        </div>
+        <div class="leadership-copy">
+          <p>
+            The sprint ends in a leadership readout built for the moments that
+            actually test you: the board question, the vendor pitch, the budget
+            round. You receive:
+          </p>
+          <div class="leadership-list">
+            {leadershipOutputs.map((item) => <p>{item}</p>)}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ma-section levels-section" id="levels">
+      <div class="ma-container">
+        <div class="ma-section-header">
+          <span class="ma-section-tag">// choose_confidence_level</span>
+          <h2>Choose the right level of confidence.</h2>
+          <p>
+            Each option stands alone. The right fit depends on appetite, budget
+            and the strategic driver behind the assessment.
+          </p>
+        </div>
+        <div class="levels-grid">
+          {
+            readinessLevels.map((level) => (
+              <article class="level-card">
+                <div class="ma-card-line" />
+                <span>{level.mode}</span>
+                <h3>{level.title}</h3>
+                <p>{level.summary}</p>
+                <div class="best-for">
+                  <strong>Best for</strong>
+                  <p>{level.bestFor}</p>
+                </div>
+              </article>
+            ))
+          }
         </div>
       </div>
     </section>
 
     <section class="ma-section decision-section">
-      <div class="ma-container decision-grid">
-        <article class="decision-panel inspect">
-          <span class="ma-section-tag">// what_leadership_gets</span>
-          <h2>A clearer view of what to encourage, control or stop.</h2>
+      <div class="ma-container honest-outcome">
+        <span class="ma-section-tag">// the_honest_outcome</span>
+        <h2>One legitimate outcome: no further action.</h2>
+        <div>
           <p>
-            Leadership receives a current-state view, risk and opportunity summary, prioritised
-            next actions and a recommendation on the best route forward.
+            The sprint ends with a recommendation, not a sales pitch. The route
+            forward might be guidance, AI Foundry, Discovery, a focused proof of
+            concept, leadership coaching, or stopping here. If the evidence says
+            stop, the readout says stop. The point is to choose with evidence.
           </p>
-        </article>
-        <article class="decision-panel decide">
-          <span class="ma-section-tag">// next_route</span>
-          <h2>From assessment to action.</h2>
-          <p>
-            The next step may be guidance, AI Foundry, Discovery, a focused proof of concept,
-            leadership coaching or no further action. The point is to choose with evidence.
-          </p>
-        </article>
+          <div class="route-links">
+            {nextRouteLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+          </div>
+        </div>
       </div>
     </section>
 
@@ -255,15 +337,17 @@ const faqs = [
       <div class="ma-container faq-grid">
         <div>
           <span class="ma-section-tag">// questions</span>
-          <h2>Useful questions before you start</h2>
+          <h2>Useful questions before you start.</h2>
         </div>
         <div class="faq-list">
-          {faqs.map((faq) => (
-            <details class="ma-faq-item">
-              <summary>{faq.question}</summary>
-              <p>{faq.answer}</p>
-            </details>
-          ))}
+          {
+            faqs.map((faq) => (
+              <details class="ma-faq-item">
+                <summary>{faq.question}</summary>
+                <p>{faq.answer}</p>
+              </details>
+            ))
+          }
         </div>
       </div>
     </section>
@@ -273,11 +357,14 @@ const faqs = [
         <span class="ma-section-tag">// start_with_clarity</span>
         <h2>Start with the clearest next decision.</h2>
         <p>
-          If AI adoption feels busy, risky or hard to read, the sprint gives leadership a practical
-          map before committing to a bigger programme.
+          If AI adoption feels busy, risky or hard to read, one week turns it
+          into a decision you can defend.
         </p>
-        <a class="ma-btn ma-btn-mint ma-btn-lg" href={bookingUrl} target="_blank" rel="noopener noreferrer">
+        <a class="ma-btn ma-btn-mint ma-btn-lg" href="/contact/">
           Book a readiness call
+        </a>
+        <a class="ma-btn ma-btn-outline ma-btn-lg" href="/programmes/">
+          Compare all programmes
         </a>
       </div>
     </section>
@@ -285,11 +372,18 @@ const faqs = [
 </Layout>
 
 <script>
-  const canvas = document.getElementById('readiness-radar-scene') as HTMLCanvasElement | null;
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canvas = document.getElementById(
+    'readiness-radar-scene'
+  ) as HTMLCanvasElement | null;
+  const reducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  ).matches;
 
   if (canvas) {
-    const [THREE, gsapModule] = await Promise.all([import('three'), import('gsap')]);
+    const [THREE, gsapModule] = await Promise.all([
+      import('three'),
+      import('gsap'),
+    ]);
     const { gsap } = gsapModule;
 
     const renderer = new THREE.WebGLRenderer({
@@ -336,7 +430,10 @@ const faqs = [
       opacity: 0.15,
     });
 
-    const makeLine = (points: Array<[number, number, number]>, material = axisMaterial) => {
+    const makeLine = (
+      points: Array<[number, number, number]>,
+      material = axisMaterial
+    ) => {
       const geometry = new THREE.BufferGeometry().setFromPoints(
         points.map(([x, y, z]) => new THREE.Vector3(x, y, z))
       );
@@ -345,13 +442,25 @@ const faqs = [
       return line;
     };
 
-    makeLine([[-3.2, 0, 0], [3.2, 0, 0]]);
-    makeLine([[0, -3.2, 0], [0, 3.2, 0]]);
-    makeLine([[-2.25, -2.25, 0], [2.25, 2.25, 0]], new THREE.LineBasicMaterial({
-      color: mint,
-      transparent: true,
-      opacity: 0.22,
-    }));
+    makeLine([
+      [-3.2, 0, 0],
+      [3.2, 0, 0],
+    ]);
+    makeLine([
+      [0, -3.2, 0],
+      [0, 3.2, 0],
+    ]);
+    makeLine(
+      [
+        [-2.25, -2.25, 0],
+        [2.25, 2.25, 0],
+      ],
+      new THREE.LineBasicMaterial({
+        color: mint,
+        transparent: true,
+        opacity: 0.22,
+      })
+    );
 
     const sweepMaterial = new THREE.MeshBasicMaterial({
       color: mint,
@@ -360,7 +469,10 @@ const faqs = [
       side: THREE.DoubleSide,
       depthWrite: false,
     });
-    const sweep = new THREE.Mesh(new THREE.CircleGeometry(3.08, 80, 0, Math.PI / 4.8), sweepMaterial);
+    const sweep = new THREE.Mesh(
+      new THREE.CircleGeometry(3.08, 80, 0, Math.PI / 4.8),
+      sweepMaterial
+    );
     sweep.rotation.z = -0.12;
     group.add(sweep);
 
@@ -369,9 +481,20 @@ const faqs = [
       transparent: true,
       opacity: 0.78,
     });
-    const vectorLine = makeLine([[0, 0, 0.03], [2.42, 1.84, 0.03]], vectorMaterial);
+    const vectorLine = makeLine(
+      [
+        [0, 0, 0.03],
+        [2.42, 1.84, 0.03],
+      ],
+      vectorMaterial
+    );
 
-    const createNode = (x: number, y: number, color: typeof mint, size = 0.075) => {
+    const createNode = (
+      x: number,
+      y: number,
+      color: typeof mint,
+      size = 0.075
+    ) => {
       const glow = new THREE.Mesh(
         new THREE.SphereGeometry(size * 3.4, 24, 24),
         new THREE.MeshBasicMaterial({
@@ -420,8 +543,14 @@ const faqs = [
     }
 
     const particleGeometry = new THREE.BufferGeometry();
-    particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    particleGeometry.setAttribute(
+      'position',
+      new THREE.BufferAttribute(positions, 3)
+    );
+    particleGeometry.setAttribute(
+      'color',
+      new THREE.BufferAttribute(colors, 3)
+    );
     const particles = new THREE.Points(
       particleGeometry,
       new THREE.PointsMaterial({
@@ -521,7 +650,11 @@ const faqs = [
   .readiness-page {
     min-height: 100vh;
     background:
-      radial-gradient(circle at 40% 18%, rgba(5, 204, 144, 0.11), transparent 32rem),
+      radial-gradient(
+        circle at 40% 18%,
+        rgba(5, 204, 144, 0.11),
+        transparent 32rem
+      ),
       linear-gradient(135deg, #000 0%, #080812 58%, #000 100%);
   }
 
@@ -560,7 +693,7 @@ const faqs = [
     color: #f4f1e8;
     font-size: clamp(3rem, 5.55vw, 5.15rem);
     line-height: 0.96;
-    letter-spacing: -0.045em;
+    letter-spacing: 0;
   }
 
   .readiness-copy > p {
@@ -613,7 +746,11 @@ const faqs = [
     border: 1px solid rgba(244, 241, 232, 0.13);
     border-radius: 28px;
     background:
-      radial-gradient(circle at 48% 44%, rgba(0, 229, 160, 0.12), transparent 20rem),
+      radial-gradient(
+        circle at 48% 44%,
+        rgba(0, 229, 160, 0.12),
+        transparent 20rem
+      ),
       linear-gradient(145deg, rgba(13, 13, 22, 0.8), rgba(0, 0, 0, 0.32));
     box-shadow: 0 28px 90px rgba(0, 0, 0, 0.28);
     overflow: hidden;
@@ -753,6 +890,7 @@ const faqs = [
 
   .intro-grid,
   .inspect-grid,
+  .leadership-grid,
   .decision-grid,
   .faq-grid {
     display: grid;
@@ -763,10 +901,11 @@ const faqs = [
 
   .intro-grid h2,
   .inspect-copy h2,
+  .leadership-grid h2,
   .decision-panel h2,
   .faq-grid h2,
   .readiness-cta h2 {
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
   }
 
   .intro-copy {
@@ -776,11 +915,40 @@ const faqs = [
 
   .intro-copy p,
   .inspect-copy p,
+  .leadership-copy p,
   .decision-panel p,
+  .honest-outcome p,
   .readiness-cta p {
     color: #d8d6ce;
     font-size: 1.05rem;
     line-height: 1.7;
+  }
+
+  .map-list,
+  .leadership-list {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .map-list article,
+  .leadership-list p {
+    margin: 0;
+    padding: 1rem 1.1rem;
+    border-left: 3px solid rgba(0, 229, 160, 0.72);
+    background: rgba(244, 241, 232, 0.04);
+  }
+
+  .map-list strong {
+    display: block;
+    margin-bottom: 0.3rem;
+    color: #f4f1e8;
+    font-family: var(--ma-font-display);
+  }
+
+  .map-list p,
+  .leadership-list p {
+    color: #d8d6ce;
+    line-height: 1.58;
   }
 
   .levels-section .ma-section-header {
@@ -806,7 +974,11 @@ const faqs = [
     padding: 1.55rem;
     border: 1px solid rgba(244, 241, 232, 0.14);
     border-radius: var(--ma-radius);
-    background: linear-gradient(145deg, rgba(23, 23, 41, 0.94), rgba(10, 10, 18, 0.86));
+    background: linear-gradient(
+      145deg,
+      rgba(23, 23, 41, 0.94),
+      rgba(10, 10, 18, 0.86)
+    );
   }
 
   .level-card > span {
@@ -843,8 +1015,23 @@ const faqs = [
 
   .inspect-section {
     background:
-      linear-gradient(135deg, rgba(0, 229, 160, 0.08), rgba(124, 139, 255, 0.07)),
+      linear-gradient(
+        135deg,
+        rgba(0, 229, 160, 0.08),
+        rgba(124, 139, 255, 0.07)
+      ),
       var(--ma-bg);
+  }
+
+  .leadership-section {
+    background: rgba(17, 17, 34, 0.5);
+    border-top: 1px solid var(--ma-border);
+    border-bottom: 1px solid var(--ma-border);
+  }
+
+  .leadership-copy {
+    display: grid;
+    gap: 1.2rem;
   }
 
   .inspection-list {
@@ -897,27 +1084,34 @@ const faqs = [
   }
 
   .decision-section {
-    padding-top: 0;
+    background:
+      linear-gradient(
+        135deg,
+        rgba(0, 229, 160, 0.08),
+        rgba(124, 139, 255, 0.07)
+      ),
+      var(--ma-bg);
   }
 
-  .decision-panel {
-    min-height: 360px;
-    padding: 2rem;
-    border: 1px solid rgba(244, 241, 232, 0.13);
-    border-radius: var(--ma-radius);
-    background: rgba(5, 5, 9, 0.64);
+  .honest-outcome {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: 3.5rem;
+    align-items: start;
   }
 
-  .decision-panel.inspect {
-    border-color: rgba(234, 179, 8, 0.3);
+  .route-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem 1.2rem;
+    margin-top: 1.4rem;
   }
 
-  .decision-panel.decide {
-    border-color: rgba(5, 204, 144, 0.3);
-  }
-
-  .decision-panel h2 {
-    margin-bottom: 1rem;
+  .route-links a {
+    color: var(--ma-mint);
+    font-family: var(--ma-font-display);
+    font-weight: 700;
+    text-decoration: none;
   }
 
   .faq-section {
@@ -933,13 +1127,21 @@ const faqs = [
   .readiness-cta {
     padding: 6rem 0;
     background:
-      radial-gradient(circle at 50% 20%, rgba(0, 229, 160, 0.12), transparent 26rem),
+      radial-gradient(
+        circle at 50% 20%,
+        rgba(0, 229, 160, 0.12),
+        transparent 26rem
+      ),
       #050509;
     text-align: center;
   }
 
   .readiness-cta-inner {
     max-width: 800px;
+  }
+
+  .readiness-cta-inner .ma-btn + .ma-btn {
+    margin-left: 1rem;
   }
 
   .readiness-cta p {
@@ -951,7 +1153,8 @@ const faqs = [
     .readiness-hero-grid,
     .intro-grid,
     .inspect-grid,
-    .decision-grid,
+    .leadership-grid,
+    .honest-outcome,
     .faq-grid {
       grid-template-columns: 1fr;
     }
@@ -975,7 +1178,7 @@ const faqs = [
     .readiness-copy h1 {
       font-size: 2.35rem;
       line-height: 1;
-      letter-spacing: -0.035em;
+      letter-spacing: 0;
     }
 
     .readiness-copy > p {
@@ -994,6 +1197,8 @@ const faqs = [
 
     .readiness-actions {
       display: grid;
+      justify-content: stretch;
+      width: 100%;
     }
 
     .readiness-stats div {
@@ -1008,6 +1213,11 @@ const faqs = [
     .readiness-cta .ma-btn {
       width: 100%;
       justify-content: center;
+    }
+
+    .readiness-cta-inner .ma-btn + .ma-btn {
+      margin-top: 1rem;
+      margin-left: 0;
     }
 
     .radar-panel {

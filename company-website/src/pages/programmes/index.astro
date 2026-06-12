@@ -2,72 +2,66 @@
 import Header from '../../components/Header.astro';
 import Layout from '../../layouts/Layout.astro';
 
-const bookingUrl =
-  'https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous';
-
 const programmes = [
   {
-    signal: 'Assess',
+    tag: 'Assess · For the organisation',
     title: 'AI Adoption Readiness',
     href: '/programmes/ai-adoption-readiness/',
-    summary:
-      'A one-week view of current AI use, adoption risk, missed value and the next leadership decision.',
-    bestFor: 'When leaders are uncertain what is happening, what is safe, or where to start.',
-    output: 'Current-state map, risk/opportunity readout and recommended next action.',
+    output:
+      'You leave with a current-state map of AI use, a risk and opportunity readout, and one recommended next action.',
+    bestWhen:
+      "Leaders are uncertain what's happening, what's safe, or where to start.",
+    scope: 'One week.',
     cta: 'Start with Readiness',
     featured: true,
   },
   {
-    signal: 'Focus',
+    tag: 'Focus · For the team',
     title: 'AI Foundry',
     href: '/programmes/ai-foundry/',
-    summary:
-      'A practical working group for teams who need to explore useful AI opportunities through real work.',
-    bestFor: 'When the organisation needs team confidence, use-case evidence and a stronger opportunity backlog.',
-    output: 'Working sessions, prioritised experiments, adoption observations and candidate roadmap.',
+    output:
+      'You leave with prioritised experiments, adoption observations and a candidate roadmap backed by evidence from real work.',
+    bestWhen:
+      'The organisation needs team confidence and use-case evidence, not more opinions.',
+    scope: 'Twelve weeks.',
     cta: 'Explore Foundry',
   },
   {
-    signal: 'Lead',
+    tag: 'Lead · For you',
     title: 'Senior Leadership AI Coaching',
     href: '/programmes/leadership-ai-coaching/',
-    summary:
-      'Discreet one-to-one AI and technology support for senior leaders making practical decisions.',
-    bestFor: 'When a leader needs a trusted technical sounding board, translation and private confidence.',
-    output: 'Clearer choices on strategy, vendors, governance, workflows and personal AI use.',
+    output:
+      'You leave with clearer choices on strategy, vendors, governance and your own use of AI, worked through in private, with no internal audience.',
+    bestWhen: 'One leader needs a trusted, confidential sounding board.',
     cta: 'View Coaching',
   },
 ];
 
-const decisionSignals = [
-  'You have AI activity but no shared map of value, risk or ownership.',
-  'Teams are interested in AI, but confidence and practical use cases are uneven.',
-  'Senior leaders need private support before making public commitments.',
-  'The business wants progress without jumping straight into an expensive build.',
-];
-
-const routeSteps = [
+const triageStatements = [
   {
-    label: '01',
-    title: 'Map the current reality',
-    text: 'Readiness shows what is happening, what is risky and which decision is actually needed.',
+    statement:
+      "There's AI activity everywhere, but no shared map of value, risk or ownership.",
+    route: 'Start with Readiness',
   },
   {
-    label: '02',
-    title: 'Build team evidence',
-    text: 'Foundry turns curiosity into grounded opportunities, workflow insight and leadership evidence.',
+    statement:
+      'Teams are curious, but confidence is uneven and ideas outnumber evidence.',
+    route: "That's Foundry",
   },
   {
-    label: '03',
-    title: 'Move only when justified',
-    text: 'The strongest ideas can move into Discovery, PoC, MVP, Pilot and Launch through DTP delivery.',
+    statement: "You're personally expected to have answers you don't have yet.",
+    route: "That's Coaching",
+  },
+  {
+    statement: "The board wants progress, but won't sign a big build on faith.",
+    route: 'Start with Readiness',
   },
 ];
 ---
 
 <Layout
-  title="AI Programmes - Digital Technology Partner"
-  description="Structured DTP programmes for AI readiness, AI working groups and discreet senior leadership coaching."
+  title="AI Programmes: for the organisation, the team, and you | Digital Technology Partner"
+  description="Three focused AI programmes from DTP: a one-week readiness assessment, a hands-on AI Foundry for teams, and private AI coaching for senior leaders."
 >
   <Header />
   <main class="programmes-page">
@@ -75,30 +69,40 @@ const routeSteps = [
       <div class="programmes-grid-bg"></div>
       <div class="ma-container programmes-hero-grid">
         <div class="programmes-copy">
-          <span class="ma-section-tag">// programmes.control_room</span>
-          <h1>Structured ways to assess, focus and lead AI adoption.</h1>
+          <span class="ma-section-tag">// choose_your_door</span>
+          <h1>For the organisation. For the team. For you.</h1>
           <p>
-            Choose a practical route into AI: map the current reality, build confidence through
-            working sessions, or give senior leaders discreet decision support.
+            Three focused programmes: map the organisation's AI reality, build
+            the team's confidence on real work, or give one leader private
+            clarity. Each ends with a decision, not a vague enthusiasm report.
           </p>
           <div class="programmes-actions">
-            <a class="ma-btn ma-btn-mint" href="#compare">Compare programmes</a>
-            <a class="ma-btn ma-btn-outline" href={bookingUrl} target="_blank" rel="noopener noreferrer">
+            <a class="ma-btn ma-btn-mint" href="#compare">Compare the routes</a>
+            <a class="ma-btn ma-btn-outline" href="/contact/">
               Book a Discovery Call
             </a>
           </div>
         </div>
+      </div>
+    </section>
 
-        <aside class="decision-panel" aria-label="Programme decision signals">
-          <span>best starting signal</span>
-          <strong>Most uncertain organisations should start with Readiness.</strong>
-          <p>
-            It gives leadership the map before committing people, budget or political capital.
-          </p>
-          <ul>
-            {decisionSignals.map((signal) => <li>{signal}</li>)}
-          </ul>
-        </aside>
+    <section class="ma-section triage-section">
+      <div class="ma-container">
+        <div class="ma-section-header triage-head">
+          <span class="ma-section-tag">// which_of_these_is_true</span>
+          <h2>Tell us what's true. It points at where to start.</h2>
+        </div>
+        <div class="triage-grid">
+          {
+            triageStatements.map((item, index) => (
+              <article class="triage-card">
+                <span>{index + 1}</span>
+                <p>"{item.statement}"</p>
+                <strong>{item.route}</strong>
+              </article>
+            ))
+          }
+        </div>
       </div>
     </section>
 
@@ -106,33 +110,38 @@ const routeSteps = [
       <div class="ma-container">
         <div class="ma-section-header compare-head">
           <span class="ma-section-tag">// compare_the_routes</span>
-          <h2>Pick the route that matches the decision in front of you.</h2>
-          <p>
-            These are deliberately focused programmes. Each creates a clearer next decision,
-            not a vague enthusiasm report.
-          </p>
+          <h2>Pick the route that matches where you are.</h2>
         </div>
 
         <div class="programme-grid">
-          {programmes.map((programme) => (
-            <article class:list={['programme-card', { featured: programme.featured }]}>
-              <div class="ma-card-line"></div>
-              <span>{programme.signal}</span>
-              <h3>{programme.title}</h3>
-              <p>{programme.summary}</p>
-              <dl>
-                <div>
-                  <dt>Best for</dt>
-                  <dd>{programme.bestFor}</dd>
-                </div>
-                <div>
-                  <dt>Output</dt>
-                  <dd>{programme.output}</dd>
-                </div>
-              </dl>
-              <a href={programme.href}>{programme.cta}</a>
-            </article>
-          ))}
+          {
+            programmes.map((programme) => (
+              <article
+                class:list={[
+                  'programme-card',
+                  { featured: programme.featured },
+                ]}
+              >
+                <div class="ma-card-line" />
+                <span>{programme.tag}</span>
+                <h3>{programme.title}</h3>
+                <p class="programme-output">{programme.output}</p>
+                <dl>
+                  <div>
+                    <dt>Best when</dt>
+                    <dd>{programme.bestWhen}</dd>
+                  </div>
+                  {programme.scope && (
+                    <div>
+                      <dt>Scope</dt>
+                      <dd>{programme.scope}</dd>
+                    </div>
+                  )}
+                </dl>
+                <a href={programme.href}>{programme.cta}</a>
+              </article>
+            ))
+          }
         </div>
       </div>
     </section>
@@ -140,23 +149,17 @@ const routeSteps = [
     <section class="ma-section route-section">
       <div class="ma-container route-grid">
         <div class="route-copy">
-          <span class="ma-section-tag">// recommended_sequence</span>
-          <h2>A calm path from uncertainty to action.</h2>
-          <p>
-            The programmes work independently, but the strongest route is often Readiness,
-            then Foundry, then controlled delivery. That keeps AI adoption grounded in evidence.
-          </p>
+          <span class="ma-section-tag">// why_this_order</span>
+          <h2>They stand alone. They're stronger in order.</h2>
         </div>
-        <div class="route-steps">
-          {routeSteps.map((step) => (
-            <article>
-              <span>{step.label}</span>
-              <div>
-                <h3>{step.title}</h3>
-                <p>{step.text}</p>
-              </div>
-            </article>
-          ))}
+        <div class="route-copy">
+          <p>
+            Readiness shows what's real. Foundry turns what's real into
+            evidence. The strongest evidence earns staged delivery: Discovery,
+            PoC, MVP, Pilot, Launch. Coaching runs alongside any of it, or
+            before everything.
+          </p>
+          <a class="route-link" href="/process/">See how delivery works</a>
         </div>
       </div>
     </section>
@@ -164,15 +167,21 @@ const routeSteps = [
     <section class="programme-proof">
       <div class="ma-container proof-inner">
         <div>
-          <span class="ma-section-tag">// proof_before_commitment</span>
-          <h2>Designed to reduce risk before delivery starts.</h2>
+          <span class="ma-section-tag">// the_smallest_commitment</span>
+          <h2>Still unsure? Then it's one week, by definition.</h2>
         </div>
         <div class="proof-copy">
           <p>
-            DTP programmes help leadership decide what deserves ownership, what should be
-            governed, what needs team confidence and what should move into staged delivery.
+            When the right route isn't obvious, that is the Readiness signal:
+            get the map before committing people, budget or attention.
           </p>
-          <a class="ma-btn ma-btn-mint" href="/programmes/ai-adoption-readiness/">Start with AI Readiness</a>
+          <a
+            class="ma-btn ma-btn-mint"
+            href="/programmes/ai-adoption-readiness/">Start with AI Readiness</a
+          >
+          <a class="ma-btn ma-btn-outline" href="/contact/"
+            >Book a Discovery Call</a
+          >
         </div>
       </div>
     </section>
@@ -183,8 +192,16 @@ const routeSteps = [
   .programmes-page {
     min-height: 100vh;
     background:
-      radial-gradient(circle at 20% 12%, rgba(0, 229, 160, 0.12), transparent 30rem),
-      radial-gradient(circle at 78% 20%, rgba(124, 139, 255, 0.08), transparent 28rem),
+      radial-gradient(
+        circle at 20% 12%,
+        rgba(0, 229, 160, 0.12),
+        transparent 30rem
+      ),
+      radial-gradient(
+        circle at 78% 20%,
+        rgba(124, 139, 255, 0.08),
+        transparent 28rem
+      ),
       #000;
   }
 
@@ -206,20 +223,23 @@ const routeSteps = [
       linear-gradient(rgba(244, 241, 232, 0.06) 1px, transparent 1px),
       linear-gradient(90deg, rgba(244, 241, 232, 0.04) 1px, transparent 1px);
     background-size: 72px 72px;
-    mask-image: radial-gradient(ellipse 74% 70% at 58% 42%, black, transparent 84%);
+    mask-image: radial-gradient(
+      ellipse 74% 70% at 58% 42%,
+      black,
+      transparent 84%
+    );
   }
 
   .programmes-hero-grid {
     position: relative;
     z-index: 1;
     display: grid;
-    grid-template-columns: minmax(0, 1.04fr) minmax(360px, 0.96fr);
-    gap: 4rem;
+    grid-template-columns: minmax(0, 1fr);
     align-items: center;
   }
 
   .programmes-copy h1 {
-    max-width: 780px;
+    max-width: 980px;
     margin-bottom: 1.3rem;
     color: #f4f1e8;
     font-size: 4.6rem;
@@ -228,7 +248,7 @@ const routeSteps = [
   }
 
   .programmes-copy p {
-    max-width: 660px;
+    max-width: 760px;
     color: #d8d6ce;
     font-size: 1.12rem;
     line-height: 1.72;
@@ -241,19 +261,8 @@ const routeSteps = [
     margin-top: 2rem;
   }
 
-  .decision-panel {
-    padding: 1.65rem;
-    border: 1px solid rgba(0, 229, 160, 0.3);
-    border-radius: var(--ma-radius);
-    background:
-      radial-gradient(circle at 18% 15%, rgba(0, 229, 160, 0.12), transparent 18rem),
-      rgba(17, 17, 34, 0.72);
-    box-shadow: 0 28px 90px rgba(0, 0, 0, 0.32);
-  }
-
-  .decision-panel span,
   .programme-card > span,
-  .route-steps article > span {
+  .triage-card span {
     display: block;
     margin-bottom: 0.7rem;
     color: var(--ma-mint);
@@ -263,33 +272,41 @@ const routeSteps = [
     text-transform: uppercase;
   }
 
-  .decision-panel strong {
-    display: block;
+  .triage-section {
+    background: rgba(17, 17, 34, 0.52);
+    border-bottom: 1px solid var(--ma-border);
+  }
+
+  .triage-head {
+    max-width: 820px;
+  }
+
+  .triage-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .triage-card {
+    min-height: 235px;
+    padding: 1.2rem;
+    border: 1px solid rgba(244, 241, 232, 0.13);
+    border-radius: var(--ma-radius);
+    background: rgba(5, 5, 9, 0.58);
+  }
+
+  .triage-card p {
     color: #f4f1e8;
     font-family: var(--ma-font-display);
-    font-size: 1.65rem;
-    line-height: 1.18;
+    font-size: 1.12rem;
+    line-height: 1.34;
   }
 
-  .decision-panel p {
+  .triage-card strong {
+    display: inline-flex;
     margin-top: 1rem;
-    color: #d8d6ce;
-    line-height: 1.65;
-  }
-
-  .decision-panel ul {
-    display: grid;
-    gap: 0.85rem;
-    margin-top: 1.4rem;
-    padding: 0;
-    list-style: none;
-  }
-
-  .decision-panel li {
-    padding-left: 1rem;
-    border-left: 2px solid rgba(0, 229, 160, 0.7);
-    color: var(--ma-text);
-    line-height: 1.52;
+    color: var(--ma-mint);
+    font-family: var(--ma-font-display);
   }
 
   .compare-section {
@@ -304,14 +321,6 @@ const routeSteps = [
   .route-copy h2,
   .proof-inner h2 {
     letter-spacing: 0;
-  }
-
-  .compare-head p {
-    max-width: 720px;
-    margin-top: 0.9rem;
-    color: #d8d6ce;
-    font-size: 1.05rem;
-    line-height: 1.68;
   }
 
   .programme-grid {
@@ -333,7 +342,11 @@ const routeSteps = [
 
   .programme-card.featured {
     border-color: rgba(0, 229, 160, 0.5);
-    background: linear-gradient(145deg, rgba(0, 229, 160, 0.1), rgba(17, 17, 34, 0.86));
+    background: linear-gradient(
+      145deg,
+      rgba(0, 229, 160, 0.1),
+      rgba(17, 17, 34, 0.86)
+    );
   }
 
   .programme-card h3 {
@@ -347,6 +360,13 @@ const routeSteps = [
   .programme-card dd {
     color: var(--ma-text-dim);
     line-height: 1.6;
+  }
+
+  .programme-card .programme-output {
+    color: #f4f1e8;
+    font-family: var(--ma-font-display);
+    font-size: 1.08rem;
+    line-height: 1.45;
   }
 
   .programme-card dl {
@@ -367,13 +387,18 @@ const routeSteps = [
     color: var(--ma-mint);
     font-family: var(--ma-font-display);
     font-weight: 600;
+    text-decoration: none;
   }
 
   .route-section {
     border-top: 1px solid var(--ma-border);
     border-bottom: 1px solid var(--ma-border);
     background:
-      linear-gradient(135deg, rgba(0, 229, 160, 0.08), rgba(124, 139, 255, 0.06)),
+      linear-gradient(
+        135deg,
+        rgba(0, 229, 160, 0.08),
+        rgba(124, 139, 255, 0.06)
+      ),
       #07070c;
   }
 
@@ -391,35 +416,23 @@ const routeSteps = [
     line-height: 1.68;
   }
 
-  .route-steps {
-    display: grid;
-    gap: 1rem;
-  }
-
-  .route-steps article {
-    display: grid;
-    grid-template-columns: 4.5rem minmax(0, 1fr);
-    gap: 1.2rem;
-    padding: 1.2rem;
-    border: 1px solid rgba(244, 241, 232, 0.12);
-    border-radius: var(--ma-radius);
-    background: rgba(5, 5, 9, 0.58);
-  }
-
-  .route-steps h3 {
-    margin-bottom: 0.35rem;
-    font-size: 1.1rem;
-    letter-spacing: 0;
-  }
-
-  .route-steps p {
-    line-height: 1.58;
+  .route-link {
+    display: inline-flex;
+    margin-top: 1.3rem;
+    color: var(--ma-mint);
+    font-family: var(--ma-font-display);
+    font-weight: 700;
+    text-decoration: none;
   }
 
   .programme-proof {
     padding: 5.5rem 0;
     background:
-      radial-gradient(circle at 50% 12%, rgba(0, 229, 160, 0.12), transparent 24rem),
+      radial-gradient(
+        circle at 50% 12%,
+        rgba(0, 229, 160, 0.12),
+        transparent 24rem
+      ),
       #050509;
   }
 
@@ -438,6 +451,16 @@ const routeSteps = [
     line-height: 1.7;
   }
 
+  .proof-copy {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .proof-copy p {
+    flex-basis: 100%;
+  }
+
   @media (max-width: 980px) {
     .programmes-hero {
       min-height: auto;
@@ -445,6 +468,7 @@ const routeSteps = [
     }
 
     .programmes-hero-grid,
+    .triage-grid,
     .programme-grid,
     .route-grid,
     .proof-inner {
@@ -459,14 +483,16 @@ const routeSteps = [
     }
 
     .programmes-copy p,
-    .compare-head p,
     .route-copy p,
     .proof-copy p {
       font-size: 1rem;
     }
 
-    .programmes-actions {
+    .programmes-actions,
+    .proof-copy {
       display: grid;
+      justify-content: stretch;
+      width: 100%;
     }
 
     .programmes-actions .ma-btn,

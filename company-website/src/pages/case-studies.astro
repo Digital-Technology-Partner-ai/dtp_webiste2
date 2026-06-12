@@ -2,55 +2,87 @@
 import Header from '../components/Header.astro';
 import Layout from '../layouts/Layout.astro';
 
-const bookingUrl =
-  'https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous';
-
 const cases = [
   {
     id: 'quotation',
     sector: 'Manufacturing',
+    vignette: 'Someone in the quoting team is measuring PDF drawings by hand.',
     title: 'Technical quotation workflows made faster and more reliable.',
     summary:
       'A protective coating business needed to reduce manual PDF drawing analysis and surface-area calculation effort during quotation preparation.',
     signal: 'manual quotation drag',
     route: 'Workflow automation + custom calculation system',
-    outcomes: ['Hours to minutes', 'Reduced calculation error risk', 'Faster quote turnaround'],
-    proof: 'AI-assisted document and calculation workflows reduced effort around technical quotation work.',
+    outcomes: [
+      'Hours to minutes',
+      'Reduced calculation error risk',
+      'Faster quote turnaround',
+    ],
+    proof:
+      'AI-assisted document and calculation workflows reduced effort around technical quotation work.',
   },
   {
     id: 'maintenance',
     sector: 'Manufacturing operations',
-    title: 'Maintenance visibility brought into the tools engineers already use.',
+    vignette:
+      "The maintenance schedule lives in someone's head and on a whiteboard.",
+    title:
+      'Maintenance visibility brought into the tools engineers already use.',
     summary:
       'A production-floor team needed maintenance reminders, evidence capture and management visibility without forcing engineers into desktop systems.',
     signal: 'missed maintenance risk',
     route: 'Messaging-native operational agent',
-    outcomes: ['Zero missed tasks', 'Real-time visibility', 'Low-friction adoption'],
-    proof: 'A controlled agent kept maintenance work visible, accountable and closer to the production floor.',
+    outcomes: [
+      'Zero missed tasks',
+      'Real-time visibility',
+      'Low-friction adoption',
+    ],
+    proof:
+      'A controlled agent kept maintenance work visible, accountable and closer to the production floor.',
   },
   {
     id: 'infrastructure',
     sector: 'Infrastructure analytics',
+    vignette:
+      "The project needed AI depth the team didn't have, and the client couldn't be allowed to see a seam.",
     title: 'Specialist AI delivery added to an existing client project.',
     summary:
       'A technology consultancy needed AI and machine-learning expertise for infrastructure analytics while retaining the client relationship.',
     signal: 'specialist capability gap',
     route: 'Technical partnership + AI/search architecture',
-    outcomes: ['Expanded capability', 'Accelerated delivery', 'Enhanced client value'],
-    proof: 'DTP provided technical depth as a trusted delivery partner inside an existing project team.',
+    outcomes: [
+      'Expanded capability',
+      'Accelerated delivery',
+      'Enhanced client value',
+    ],
+    proof:
+      'DTP provided technical depth as a trusted delivery partner inside an existing project team.',
+    trust:
+      "When another consultancy hires us inside their own client relationship, that's diligence done for you.",
   },
 ];
 
 const lenses = [
-  { id: 'quotation', label: 'Quotation', value: 'turn complex documents into faster commercial decisions' },
-  { id: 'maintenance', label: 'Maintenance', value: 'make operational work visible where teams already are' },
-  { id: 'infrastructure', label: 'AI/search', value: 'add specialist intelligence to complex data products' },
+  {
+    id: 'quotation',
+    label: 'Quotation',
+    value: 'turn complex documents into faster commercial decisions',
+  },
+  {
+    id: 'maintenance',
+    label: 'Maintenance',
+    value: 'make operational work visible where teams already are',
+  },
+  {
+    id: 'infrastructure',
+    label: 'AI/search',
+    value: 'add specialist intelligence to complex data products',
+  },
 ];
 ---
 
 <Layout
-  title="Case Studies - Digital Technology Partner"
-  description="Outcome-led case studies showing how DTP delivers practical AI, automation, operational agents and bespoke digital systems."
+  title="Case Studies, three patterns from real operations | Digital Technology Partner"
+  description="Workflow drag, missed visibility, missing capability: three real engagements turned into working systems. The industry doesn't need to match. The pattern does."
 >
   <Header />
   <main class="case-page">
@@ -58,21 +90,32 @@ const lenses = [
       <div class="case-grid"></div>
       <div class="ma-container case-hero-inner">
         <div class="case-copy" data-case-reveal>
-          <span class="ma-section-tag">// proof_gallery</span>
-          <h1 id="case-title">Proof that useful AI is built around real operational work.</h1>
+          <span class="ma-section-tag">// your_problem_not_our_trophies</span>
+          <h1 id="case-title">
+            You're not looking for our logo wall. You're looking for your
+            problem.
+          </h1>
           <p>
-            DTP case studies are not technology theatre. They show where workflow drag,
-            missed visibility or specialist complexity was turned into a practical system.
+            Three patterns from real operations: workflow drag, missed
+            visibility, specialist capability. Each built into a system that
+            paid for itself. The industry doesn't need to match. The pattern
+            does.
           </p>
           <div class="case-actions">
-            <a class="ma-btn ma-btn-mint" href={bookingUrl} target="_blank" rel="noopener noreferrer">
-              Discuss a similar problem
-            </a>
-            <a class="ma-btn ma-btn-outline" href="/solutions/">Explore solution routes</a>
+            <a class="ma-btn ma-btn-mint" href="/contact/"
+              >Discuss a similar problem</a
+            >
+            <a class="ma-btn ma-btn-outline" href="/solutions/"
+              >Explore solution routes</a
+            >
           </div>
         </div>
 
-        <aside class="proof-console" aria-label="Animated proof constellation" data-case-reveal>
+        <aside
+          class="proof-console"
+          aria-label="Animated proof constellation"
+          data-case-reveal
+        >
           <div class="proof-console-top">
             <span>proof constellation</span>
             <strong id="proof-console-title">Quotation</strong>
@@ -84,7 +127,9 @@ const lenses = [
             <span class="proof-label proof-label-search">search</span>
           </div>
           <div class="proof-readout" aria-live="polite">
-            <span id="proof-console-value">turn complex documents into faster commercial decisions</span>
+            <span id="proof-console-value"
+              >turn complex documents into faster commercial decisions</span
+            >
           </div>
         </aside>
       </div>
@@ -92,71 +137,104 @@ const lenses = [
 
     <section class="ma-section lens-section">
       <div class="ma-container lens-strip" aria-label="Proof lenses">
-        {lenses.map((lens) => (
-          <button
-            type="button"
-            data-proof-lens={lens.id}
-            data-proof-label={lens.label}
-            data-proof-value={lens.value}
-            class:list={['lens-button', { active: lens.id === 'quotation' }]}
-            aria-pressed={lens.id === 'quotation' ? 'true' : 'false'}
-          >
-            <span>{lens.label}</span>
-            <strong>{lens.value}</strong>
-          </button>
-        ))}
+        {
+          lenses.map((lens) => (
+            <button
+              type="button"
+              data-proof-lens={lens.id}
+              data-proof-label={lens.label}
+              data-proof-value={lens.value}
+              class:list={['lens-button', { active: lens.id === 'quotation' }]}
+              aria-pressed={lens.id === 'quotation' ? 'true' : 'false'}
+            >
+              <span>{lens.label}</span>
+              <strong>{lens.value}</strong>
+            </button>
+          ))
+        }
       </div>
     </section>
 
     <section class="ma-section case-stack-section">
       <div class="ma-container">
         <div class="case-stack-head" data-case-reveal>
-          <span class="ma-section-tag">// outcome_led_examples</span>
-          <h2>Three proof patterns DTP can build from.</h2>
+          <span class="ma-section-tag">// three_patterns</span>
+          <h2>Three patterns, told properly.</h2>
+          <p>
+            Three engagements told properly beat thirty logos told vaguely. Each
+            one is a pattern you can test against your own operation.
+          </p>
         </div>
         <div class="case-stack">
-          {cases.map((item) => (
-            <article class="case-panel" data-case-card data-case-id={item.id}>
-              <div class="case-panel-meta">
-                <span>{item.sector}</span>
-                <strong>{item.signal}</strong>
-              </div>
-              <div class="case-panel-main">
-                <h3>{item.title}</h3>
-                <p>{item.summary}</p>
-                <dl>
-                  <div>
-                    <dt>Route</dt>
-                    <dd>{item.route}</dd>
-                  </div>
-                  <div>
-                    <dt>Proof</dt>
-                    <dd>{item.proof}</dd>
-                  </div>
-                </dl>
-              </div>
-              <ul>
-                {item.outcomes.map((outcome) => <li>{outcome}</li>)}
-              </ul>
-            </article>
-          ))}
+          {
+            cases.map((item) => (
+              <article class="case-panel" data-case-card data-case-id={item.id}>
+                <div class="case-panel-meta">
+                  <span>{item.sector}</span>
+                  <strong>{item.signal}</strong>
+                </div>
+                <div class="case-panel-main">
+                  <p class="case-vignette">{item.vignette}</p>
+                  <h3>{item.title}</h3>
+                  <p>{item.summary}</p>
+                  <dl>
+                    <div>
+                      <dt>Route</dt>
+                      <dd>{item.route}</dd>
+                    </div>
+                    <div>
+                      <dt>Proof</dt>
+                      <dd>{item.proof}</dd>
+                    </div>
+                  </dl>
+                </div>
+                <ul>
+                  {item.outcomes.map((outcome) => (
+                    <li>{outcome}</li>
+                  ))}
+                </ul>
+                {item.trust && <p class="case-trust">{item.trust}</p>}
+              </article>
+            ))
+          }
         </div>
       </div>
     </section>
 
     <section class="case-cta">
       <div class="ma-container case-cta-inner" data-case-reveal>
-        <span class="ma-section-tag">// proof_to_next_step</span>
-        <h2>Recognise one of these patterns in your organisation?</h2>
+        <span class="ma-section-tag">// which_pattern_is_yours</span>
+        <h2>Recognise one of these patterns?</h2>
+        <div class="pattern-match" aria-label="Case study pattern matching">
+          <p>
+            <strong>Time lost to documents</strong><span
+              >the quotation pattern</span
+            >
+          </p>
+          <p>
+            <strong>Work that goes invisible</strong><span
+              >the agent pattern</span
+            >
+          </p>
+          <p>
+            <strong>Capability you don't have in-house</strong><span
+              >the partnership pattern</span
+            >
+          </p>
+        </div>
         <p>
-          Bring the business problem. DTP will help decide whether it needs readiness,
-          Foundry, Discovery or a focused proof of concept.
+          Bring us the symptom. DTP will help decide whether it needs Readiness,
+          Foundry, Discovery or a focused proof of concept. And if you want the
+          unglamorous detail, the gates, the dead ends, the decisions, ask.
+          We'll walk you through any of these properly.
         </p>
         <div class="case-actions">
-          <a class="ma-btn ma-btn-mint ma-btn-lg" href={bookingUrl} target="_blank" rel="noopener noreferrer">
-            Discuss a similar problem
-          </a>
-          <a class="ma-btn ma-btn-outline ma-btn-lg" href="/process/">See the process</a>
+          <a class="ma-btn ma-btn-mint ma-btn-lg" href="/contact/"
+            >Discuss a similar problem</a
+          >
+          <a class="ma-btn ma-btn-outline ma-btn-lg" href="/process/"
+            >See the process</a
+          >
         </div>
       </div>
     </section>
@@ -164,10 +242,16 @@ const lenses = [
 </Layout>
 
 <script>
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const canvas = document.getElementById('proof-constellation-scene') as HTMLCanvasElement | null;
+  const reducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  ).matches;
+  const canvas = document.getElementById(
+    'proof-constellation-scene'
+  ) as HTMLCanvasElement | null;
   const gsapReady = import('gsap');
-  const lensButtons = Array.from(document.querySelectorAll('[data-proof-lens]')) as HTMLButtonElement[];
+  const lensButtons = Array.from(
+    document.querySelectorAll('[data-proof-lens]')
+  ) as HTMLButtonElement[];
   const proofTitle = document.getElementById('proof-console-title');
   const proofValue = document.getElementById('proof-console-value');
 
@@ -191,12 +275,21 @@ const lenses = [
           ease: 'power2.out',
           onComplete: () => {
             proofValue.textContent = button.dataset.proofValue || '';
-            gsap.to(proofValue, { opacity: 1, y: 0, duration: 0.24, ease: 'power3.out' });
+            gsap.to(proofValue, {
+              opacity: 1,
+              y: 0,
+              duration: 0.24,
+              ease: 'power3.out',
+            });
           },
         });
       }
     }
-    document.dispatchEvent(new CustomEvent('proof-lens-focus', { detail: { id: button.dataset.proofLens } }));
+    document.dispatchEvent(
+      new CustomEvent('proof-lens-focus', {
+        detail: { id: button.dataset.proofLens },
+      })
+    );
   };
 
   lensButtons.forEach((button) => {
@@ -208,7 +301,12 @@ const lenses = [
   if (canvas) {
     const [THREE, gsapModule] = await Promise.all([import('three'), gsapReady]);
     const { gsap } = gsapModule;
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance',
+    });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.6));
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 80);
@@ -224,7 +322,12 @@ const lenses = [
     const geometries: THREE.BufferGeometry[] = [];
     const nodes: THREE.Mesh[] = [];
     const lines: THREE.Line[] = [];
-    const focusState = { yaw: -0.16, pitch: -0.18, zoom: 8.4, particleOpacity: 0.66 };
+    const focusState = {
+      yaw: -0.16,
+      pitch: -0.18,
+      zoom: 8.4,
+      particleOpacity: 0.66,
+    };
 
     const points = {
       quotation: [-2.35, 0.8, 0.05],
@@ -234,36 +337,82 @@ const lenses = [
     } as Record<string, [number, number, number]>;
 
     const focusMap = {
-      quotation: { node: 0, yaw: -0.18, pitch: -0.12, zoom: 8.1, particleOpacity: 0.74 },
-      maintenance: { node: 1, yaw: 0.2, pitch: -0.18, zoom: 8.0, particleOpacity: 0.82 },
-      infrastructure: { node: 2, yaw: 0.02, pitch: -0.32, zoom: 7.9, particleOpacity: 0.9 },
+      quotation: {
+        node: 0,
+        yaw: -0.18,
+        pitch: -0.12,
+        zoom: 8.1,
+        particleOpacity: 0.74,
+      },
+      maintenance: {
+        node: 1,
+        yaw: 0.2,
+        pitch: -0.18,
+        zoom: 8.0,
+        particleOpacity: 0.82,
+      },
+      infrastructure: {
+        node: 2,
+        yaw: 0.02,
+        pitch: -0.32,
+        zoom: 7.9,
+        particleOpacity: 0.9,
+      },
     } as const;
 
     const makeMaterial = (color: THREE.Color, opacity: number) => {
-      const material = new THREE.MeshBasicMaterial({ color, transparent: true, opacity, depthWrite: false });
+      const material = new THREE.MeshBasicMaterial({
+        color,
+        transparent: true,
+        opacity,
+        depthWrite: false,
+      });
       materials.push(material);
       return material;
     };
 
-    [points.quotation, points.maintenance, points.infrastructure, points.centre].forEach((point, index) => {
-      const color = index === 0 ? mint : index === 1 ? amber : index === 2 ? blue : ivory;
-      const node = new THREE.Mesh(new THREE.SphereGeometry(index === 3 ? 0.11 : 0.09, 24, 24), makeMaterial(color, index === 3 ? 0.9 : 0.84));
+    [
+      points.quotation,
+      points.maintenance,
+      points.infrastructure,
+      points.centre,
+    ].forEach((point, index) => {
+      const color =
+        index === 0 ? mint : index === 1 ? amber : index === 2 ? blue : ivory;
+      const node = new THREE.Mesh(
+        new THREE.SphereGeometry(index === 3 ? 0.11 : 0.09, 24, 24),
+        makeMaterial(color, index === 3 ? 0.9 : 0.84)
+      );
       node.position.set(...point);
       node.userData.focusScale = index === 0 ? 1.35 : index === 3 ? 1.1 : 0.95;
       group.add(node);
       nodes.push(node);
 
-      const aura = new THREE.Mesh(new THREE.SphereGeometry(index === 3 ? 0.42 : 0.32, 24, 24), makeMaterial(color, index === 0 ? 0.13 : 0.07));
+      const aura = new THREE.Mesh(
+        new THREE.SphereGeometry(index === 3 ? 0.42 : 0.32, 24, 24),
+        makeMaterial(color, index === 0 ? 0.13 : 0.07)
+      );
       aura.position.set(...point);
       aura.userData.focusScale = index === 0 ? 1.2 : 0.9;
       group.add(aura);
       nodes.push(aura);
     });
 
-    const createLine = (a: [number, number, number], b: [number, number, number], color: THREE.Color) => {
-      const geometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...a), new THREE.Vector3(...b)]);
+    const createLine = (
+      a: [number, number, number],
+      b: [number, number, number],
+      color: THREE.Color
+    ) => {
+      const geometry = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(...a),
+        new THREE.Vector3(...b),
+      ]);
       geometries.push(geometry);
-      const material = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.24 });
+      const material = new THREE.LineBasicMaterial({
+        color,
+        transparent: true,
+        opacity: 0.24,
+      });
       materials.push(material);
       const line = new THREE.Line(geometry, material);
       line.userData.focusOpacity = 0.24;
@@ -284,22 +433,36 @@ const lenses = [
       particlePositions[i * 3] = Math.cos(a) * r;
       particlePositions[i * 3 + 1] = Math.sin(a) * r * 0.64;
       particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 1.05;
-      const color = i % 11 === 0 ? amber : i % 7 === 0 ? blue : i % 4 === 0 ? ivory : mint;
+      const color =
+        i % 11 === 0 ? amber : i % 7 === 0 ? blue : i % 4 === 0 ? ivory : mint;
       particleColors[i * 3] = color.r;
       particleColors[i * 3 + 1] = color.g;
       particleColors[i * 3 + 2] = color.b;
     }
     const particleGeometry = new THREE.BufferGeometry();
-    particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-    particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
+    particleGeometry.setAttribute(
+      'position',
+      new THREE.BufferAttribute(particlePositions, 3)
+    );
+    particleGeometry.setAttribute(
+      'color',
+      new THREE.BufferAttribute(particleColors, 3)
+    );
     const particles = new THREE.Points(
       particleGeometry,
-      new THREE.PointsMaterial({ size: 0.023, vertexColors: true, transparent: true, opacity: 0.66, depthWrite: false })
+      new THREE.PointsMaterial({
+        size: 0.023,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.66,
+        depthWrite: false,
+      })
     );
     group.add(particles);
 
     const focusLens = (id: keyof typeof focusMap | string) => {
-      const target = focusMap[id as keyof typeof focusMap] || focusMap.quotation;
+      const target =
+        focusMap[id as keyof typeof focusMap] || focusMap.quotation;
       gsap.to(focusState, {
         yaw: target.yaw,
         pitch: target.pitch,
@@ -336,7 +499,11 @@ const lenses = [
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
-      renderer.setSize(Math.max(rect.width, 1), Math.max(rect.height, 1), false);
+      renderer.setSize(
+        Math.max(rect.width, 1),
+        Math.max(rect.height, 1),
+        false
+      );
       camera.aspect = Math.max(rect.width, 1) / Math.max(rect.height, 1);
       camera.updateProjectionMatrix();
       group.scale.setScalar(window.innerWidth < 760 ? 0.76 : 1);
@@ -345,12 +512,23 @@ const lenses = [
     window.addEventListener('resize', resize, { passive: true });
 
     if (!reducedMotion) {
-      gsap.from('[data-case-reveal]', { opacity: 0, y: 24, duration: 0.84, ease: 'power3.out', stagger: 0.12 });
+      gsap.from('[data-case-reveal]', {
+        opacity: 0,
+        y: 24,
+        duration: 0.84,
+        ease: 'power3.out',
+        stagger: 0.12,
+      });
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (!entry.isIntersecting) return;
-            gsap.to(entry.target, { opacity: 1, y: 0, duration: 0.66, ease: 'power3.out' });
+            gsap.to(entry.target, {
+              opacity: 1,
+              y: 0,
+              duration: 0.66,
+              ease: 'power3.out',
+            });
             observer.unobserve(entry.target);
           });
         },
@@ -372,13 +550,20 @@ const lenses = [
         camera.position.z += (focusState.zoom - camera.position.z) * 0.035;
         particles.rotation.z -= 0.00065;
         (particles.material as THREE.PointsMaterial).opacity +=
-          (focusState.particleOpacity - (particles.material as THREE.PointsMaterial).opacity) * 0.04;
+          (focusState.particleOpacity -
+            (particles.material as THREE.PointsMaterial).opacity) *
+          0.04;
         nodes.forEach((node, index) => {
-          node.scale.setScalar((node.userData.focusScale ?? 1) + Math.sin(t * 1.55 + index * 0.4) * 0.045);
+          node.scale.setScalar(
+            (node.userData.focusScale ?? 1) +
+              Math.sin(t * 1.55 + index * 0.4) * 0.045
+          );
         });
         lines.forEach((line, index) => {
           const material = line.material as THREE.LineBasicMaterial;
-          material.opacity = (line.userData.focusOpacity ?? 0.2) + Math.sin(t * 1.2 + index) * 0.024;
+          material.opacity =
+            (line.userData.focusOpacity ?? 0.2) +
+            Math.sin(t * 1.2 + index) * 0.024;
         });
       }
       renderer.render(scene, camera);
@@ -402,8 +587,16 @@ const lenses = [
   .case-page {
     min-height: 100vh;
     background:
-      radial-gradient(circle at 16% 10%, rgba(0, 229, 160, 0.12), transparent 31rem),
-      radial-gradient(circle at 78% 18%, rgba(124, 139, 255, 0.1), transparent 30rem),
+      radial-gradient(
+        circle at 16% 10%,
+        rgba(0, 229, 160, 0.12),
+        transparent 31rem
+      ),
+      radial-gradient(
+        circle at 78% 18%,
+        rgba(124, 139, 255, 0.1),
+        transparent 30rem
+      ),
       linear-gradient(135deg, #000 0%, #080812 56%, #000 100%);
     color: var(--ma-text);
   }
@@ -426,7 +619,11 @@ const lenses = [
       linear-gradient(rgba(244, 241, 232, 0.045) 1px, transparent 1px),
       linear-gradient(90deg, rgba(244, 241, 232, 0.035) 1px, transparent 1px);
     background-size: 70px 70px;
-    mask-image: radial-gradient(ellipse 78% 74% at 62% 46%, black, transparent 86%);
+    mask-image: radial-gradient(
+      ellipse 78% 74% at 62% 46%,
+      black,
+      transparent 86%
+    );
   }
 
   .case-hero-inner {
@@ -469,7 +666,11 @@ const lenses = [
     border: 1px solid rgba(244, 241, 232, 0.14);
     border-radius: var(--ma-radius);
     background:
-      radial-gradient(circle at 48% 42%, rgba(0, 229, 160, 0.13), transparent 22rem),
+      radial-gradient(
+        circle at 48% 42%,
+        rgba(0, 229, 160, 0.13),
+        transparent 22rem
+      ),
       linear-gradient(145deg, rgba(17, 17, 34, 0.84), rgba(0, 0, 0, 0.5));
     box-shadow: 0 34px 100px rgba(0, 0, 0, 0.32);
   }
@@ -612,6 +813,13 @@ const lenses = [
     letter-spacing: 0;
   }
 
+  .case-stack-head p {
+    margin-top: 0.85rem;
+    color: #d8d6ce;
+    font-size: 1.05rem;
+    line-height: 1.68;
+  }
+
   .case-stack {
     display: grid;
     gap: 1rem;
@@ -619,7 +827,10 @@ const lenses = [
 
   .case-panel {
     display: grid;
-    grid-template-columns: minmax(160px, 0.36fr) minmax(0, 1fr) minmax(180px, 0.38fr);
+    grid-template-columns: minmax(160px, 0.36fr) minmax(0, 1fr) minmax(
+        180px,
+        0.38fr
+      );
     gap: 1.4rem;
     padding: 1.25rem;
     border: 1px solid rgba(244, 241, 232, 0.12);
@@ -657,6 +868,15 @@ const lenses = [
     letter-spacing: 0;
   }
 
+  .case-panel .case-vignette {
+    margin: 0 0 0.8rem;
+    color: #f4f1e8;
+    font-family: var(--ma-font-display);
+    font-size: clamp(1.05rem, 1.8vw, 1.24rem);
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
   .case-panel p,
   .case-panel dd {
     color: #d8d6ce;
@@ -689,11 +909,26 @@ const lenses = [
     line-height: 1.42;
   }
 
+  .case-panel .case-trust {
+    grid-column: 2 / -1;
+    margin: 0;
+    padding: 1rem 1.1rem;
+    border-left: 2px solid rgba(244, 200, 74, 0.74);
+    background: rgba(5, 5, 9, 0.54);
+    color: #f4f1e8;
+    font-family: var(--ma-font-display);
+    font-weight: 700;
+  }
+
   .case-cta {
     padding: 5.8rem 0;
     text-align: center;
     background:
-      radial-gradient(circle at 50% 8%, rgba(0, 229, 160, 0.14), transparent 27rem),
+      radial-gradient(
+        circle at 50% 8%,
+        rgba(0, 229, 160, 0.14),
+        transparent 27rem
+      ),
       #000;
   }
 
@@ -703,6 +938,41 @@ const lenses = [
 
   .case-cta p {
     margin: 1rem auto 0;
+  }
+
+  .pattern-match {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .pattern-match p {
+    display: grid;
+    gap: 0.55rem;
+    min-height: 130px;
+    margin: 0;
+    padding: 1rem;
+    border: 1px solid rgba(244, 241, 232, 0.13);
+    border-radius: var(--ma-radius);
+    background: rgba(17, 17, 34, 0.68);
+    text-align: left;
+  }
+
+  .pattern-match strong {
+    color: #f4f1e8;
+    font-family: var(--ma-font-display);
+    font-size: 1rem;
+    line-height: 1.3;
+  }
+
+  .pattern-match span {
+    color: var(--ma-mint);
+    font-family: var(--ma-font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    line-height: 1.45;
+    text-transform: uppercase;
   }
 
   .case-cta .case-actions {
@@ -715,7 +985,15 @@ const lenses = [
       grid-template-columns: 1fr;
     }
 
+    .case-panel .case-trust {
+      grid-column: auto;
+    }
+
     .lens-strip {
+      grid-template-columns: 1fr;
+    }
+
+    .pattern-match {
       grid-template-columns: 1fr;
     }
   }
@@ -732,12 +1010,19 @@ const lenses = [
     }
 
     .case-copy p,
+    .case-stack-head p,
     .case-cta p {
       font-size: 1rem;
     }
 
     .case-actions {
       display: grid;
+      width: 100%;
+      justify-content: stretch;
+    }
+
+    .case-cta .case-actions {
+      justify-content: stretch;
     }
 
     .case-actions .ma-btn {

@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DTP Phantom Gallery - Stage 2 Planning Board</title>
+  <style>
+    :root {
+      --ink: #142026;
+      --muted: #56656d;
+      --line: #dbe4e7;
+      --bg: #f6f8f8;
+      --white: #ffffff;
+      --blue: #dff1ff;
+      --green: #e1f7df;
+      --gold: #fff1bf;
+      --pink: #ffe1f1;
+      --violet: #eee7ff;
+      --teal: #def8f3;
+      --shadow: 0 18px 38px rgba(20, 32, 38, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+
+    .board {
+      width: min(1800px, calc(100vw - 48px));
+      margin: 24px auto;
+      padding: 42px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: start;
+      margin-bottom: 34px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 24px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 44px;
+      line-height: 1.04;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 0;
+      max-width: 920px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.45;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: #12222a;
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .zone {
+      padding: 26px;
+      border: 1px solid var(--line);
+      margin-bottom: 28px;
+    }
+
+    .zone.confirmed { background: var(--green); }
+    .zone.open { background: var(--gold); }
+    .zone.ownership { background: var(--blue); }
+    .zone.personas { background: var(--violet); }
+    .zone.content { background: var(--teal); }
+
+    .zone-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: baseline;
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .zone-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.45;
+      max-width: 560px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .cards.wide {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card {
+      min-height: 156px;
+      padding: 18px;
+      background: var(--white);
+      border: 1px solid rgba(20, 32, 38, 0.11);
+      border-radius: 8px;
+    }
+
+    .card h3 {
+      margin: 0 0 9px;
+      font-size: 19px;
+      line-height: 1.18;
+      letter-spacing: 0;
+    }
+
+    .card p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.42;
+    }
+
+    .route {
+      display: inline-block;
+      margin-top: 2px;
+      color: #1d5f85;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+    }
+
+    @media (max-width: 1100px) {
+      .cards,
+      .cards.wide { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      header { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      .board {
+        width: calc(100vw - 24px);
+        padding: 20px;
+        margin: 12px auto;
+      }
+      .cards,
+      .cards.wide { grid-template-columns: 1fr; }
+      h1 { font-size: 34px; }
+      .zone { padding: 18px; }
+      .zone-head { display: block; }
+      .zone-note { margin-top: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <header>
+      <div>
+        <h1>Stage 2 Planning Board</h1>
+        <p class="subtitle">What is confirmed, what still needs a decision and what each Phantom Gallery destination must own before page blueprinting begins.</p>
+      </div>
+      <span class="badge">DTP Phantom Gallery</span>
+    </header>
+
+    <section class="zone confirmed">
+      <div class="zone-head">
+        <h2>Confirmed Decisions</h2>
+        <p class="zone-note">Use as green or blue confirmation cards in FigJam.</p>
+      </div>
+      <div class="cards">
+        <article class="card"><h3>Sitemap direction</h3><p>Accepted as a working basis.</p><p>Proceed to page-level planning rather than reopening the full IA.</p></article>
+        <article class="card"><h3>Route names</h3><p>Acceptable for now.</p><p>Use clear SEO-friendly route names while the hub can use more evocative labels.</p></article>
+        <article class="card"><h3>Programmes label</h3><p>Keep Programmes.</p><p>AI Adoption Readiness, AI Foundry and Leadership AI Coaching sit together as packaged offers.</p></article>
+        <article class="card"><h3>FAQ</h3><p>Keep as top-level navigation.</p><p>FAQ remains visible in the main nav and can also be reused contextually.</p><span class="route">/faq/</span></article>
+        <article class="card"><h3>Case studies</h3><p>Keep one Case Studies page in phase one.</p><p>No individual case study page build is required for the first release.</p><span class="route">/case-studies/</span></article>
+        <article class="card"><h3>Phantom Gallery role</h3><p>Treat as ecosystem navigation, not a visual wrapper for the old menu.</p><p>The hub should show relationships between readiness, programmes, solutions, proof and contact.</p></article>
+      </div>
+    </section>
+
+    <section class="zone open">
+      <div class="zone-head">
+        <h2>Open Decisions</h2>
+        <p class="zone-note">Use as gold or pink decision-needed cards.</p>
+      </div>
+      <div class="cards">
+        <article class="card"><h3>Homepage role</h3><p>/ as immersive ecosystem, or /ecosystem/ as hub with / as a conventional entry.</p><p>Test / as the ecosystem if the experience remains fast, accessible and commercially clear.</p></article>
+        <article class="card"><h3>AI Adoption Readiness depth</h3><p>Three child pages immediately, or sections on one parent page.</p><p>Start with one parent page unless each level has enough distinct copy, FAQs and CTAs.</p></article>
+        <article class="card"><h3>Newsroom label</h3><p>Keep Newsroom, or rename to Insights.</p><p>Favour Insights for practical AI guidance and leadership content.</p></article>
+        <article class="card"><h3>About page</h3><p>Restore /about/, or absorb into /why-dtp/.</p><p>Absorb most content into /why-dtp/ unless there is a strong founder/team story.</p></article>
+        <article class="card"><h3>Products area</h3><p>Keep app/product pages as utility routes, or create a future Products area.</p><p>Keep utility routes out of primary navigation for phase one.</p></article>
+      </div>
+    </section>
+
+    <section class="zone ownership">
+      <div class="zone-head">
+        <h2>Hub Destination Ownership</h2>
+        <p class="zone-note">Each destination needs one clear job, not a vague menu label.</p>
+      </div>
+      <div class="cards">
+        <article class="card"><h3>Command Centre</h3><p>Trust, credibility, security and delivery confidence.</p><p>Why DTP is a low-risk, practical partner for serious AI and digital work.</p><span class="route">/why-dtp/</span></article>
+        <article class="card"><h3>Adoption Radar</h3><p>Readiness, risk, current-state clarity and next-step evidence.</p><p>A one-week view of what is happening, where risk sits and what to do next.</p><span class="route">/programmes/ai-adoption-readiness/</span></article>
+        <article class="card"><h3>Foundry Floor</h3><p>Collaborative opportunity discovery and confidence-building.</p><p>A practical working group club, not passive AI training.</p><span class="route">/programmes/ai-foundry/</span></article>
+        <article class="card"><h3>Leadership Suite</h3><p>Discreet senior support, translation and decision confidence.</p><p>Private help for leaders without requiring them to become technical specialists.</p><span class="route">/programmes/leadership-ai-coaching/</span></article>
+        <article class="card"><h3>Solution Engine</h3><p>Practical business problems and DTP solution areas.</p><p>Business systems, reporting, automation, agents and bespoke AI systems.</p><span class="route">/solutions/</span></article>
+        <article class="card"><h3>Delivery Path</h3><p>Method, sequence, validation and risk reduction.</p><p>Discovery to Launch through stage-gated decisions.</p><span class="route">/process/</span></article>
+        <article class="card"><h3>Proof Vault</h3><p>Evidence, outcomes and sector credibility.</p><p>Practical results in operational and technical contexts.</p><span class="route">/case-studies/</span></article>
+        <article class="card"><h3>Signal Feed</h3><p>Thought leadership and practical market guidance.</p><p>AI adoption landscape explained without hype.</p><span class="route">/insights/</span></article>
+        <article class="card"><h3>Question Layer</h3><p>Buying friction, reassurance and practical answers.</p><p>Timelines, security, pricing, support and implementation expectations.</p><span class="route">/faq/</span></article>
+      </div>
+    </section>
+
+    <section class="zone personas">
+      <div class="zone-head">
+        <h2>Persona Journey Priorities</h2>
+        <p class="zone-note">Connect these back to the existing persona-led journey diagram.</p>
+      </div>
+      <div class="cards">
+        <article class="card"><h3>1. Expensive Googlers</h3><p>Adoption Radar -> Foundry Floor -> Solution Engine</p><p>Strong commercial entry because the pain is visible: money has been spent but work has not changed.</p></article>
+        <article class="card"><h3>2. Compliance Hostages</h3><p>Command Centre -> Adoption Radar -> Leadership Suite</p><p>Reassurance, governance and senior confidence should appear before selling delivery.</p></article>
+        <article class="card"><h3>3. Tyre-Kickers</h3><p>Adoption Radar -> Delivery Path</p><p>Convert dabbling into one owned initiative with a number and a decision gate.</p></article>
+        <article class="card"><h3>4. AI Evangelists</h3><p>Foundry Floor -> Solution Engine -> Delivery Path</p><p>Channel energy into prioritisation, governance and practical implementation.</p></article>
+        <article class="card"><h3>5. Agent Cowboys</h3><p>Leadership Suite -> AI Agents -> Command Centre</p><p>Speak to ambition first, then introduce control, ROI visibility and operating-model thinking.</p></article>
+        <article class="card"><h3>6. Doubting Thomas</h3><p>Command Centre -> Adoption Radar -> Proof Vault</p><p>Avoid hype. Lead with proof, risk reduction and a narrow first step.</p></article>
+      </div>
+    </section>
+
+    <section class="zone content">
+      <div class="zone-head">
+        <h2>Content Ownership Notes</h2>
+        <p class="zone-note">Use as page-card prompts for Stage 3 blueprinting.</p>
+      </div>
+      <div class="cards wide">
+        <article class="card"><h3>/</h3><p>Existing homepage value proposition plus Phantom Gallery prototype direction.</p><p>Ecosystem entry copy, hub orientation and fallback conventional navigation copy.</p></article>
+        <article class="card"><h3>/why-dtp/</h3><p>Existing benefits, testimonials, security and delivery confidence content.</p><p>Stronger trust narrative, fit criteria and credibility framing.</p></article>
+        <article class="card"><h3>/programmes/ai-adoption-readiness/</h3><p>User-supplied offer description and six-archetype PDF insight.</p><p>Full commercial page copy, deliverables, levels, timeline, FAQs and CTAs.</p></article>
+        <article class="card"><h3>/programmes/ai-foundry/</h3><p>User-supplied club-not-course positioning.</p><p>Membership/workgroup explanation, outputs, cadence, evidence and leadership benefits.</p></article>
+        <article class="card"><h3>/programmes/leadership-ai-coaching/</h3><p>User-supplied senior support offer and archetype insight.</p><p>Discreet one-to-one positioning, use cases, boundaries, outcomes and enquiry CTA.</p></article>
+        <article class="card"><h3>/solutions/</h3><p>Current use cases and case study references.</p><p>Solution grouping copy and stronger links from problems to measurable outcomes.</p></article>
+        <article class="card"><h3>/process/</h3><p>Existing Discovery, PoC, MVP, Pilot and Launch content.</p><p>Decision gates, client outputs and risk-control language.</p></article>
+        <article class="card"><h3>/case-studies/</h3><p>Current case study assets and testimonials.</p><p>Outcome-led summaries with sector tags and stronger metrics where available.</p></article>
+        <article class="card"><h3>/insights/</h3><p>Current Newsroom content.</p><p>Rename and reorganise around adoption, governance, agents, operations and leadership.</p></article>
+        <article class="card"><h3>/faq/ and /contact/</h3><p>Existing FAQ, contact and booking content.</p><p>Add programme-specific questions and intent-led contact prompts.</p></article>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

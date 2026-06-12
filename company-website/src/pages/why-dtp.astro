@@ -2,115 +2,175 @@
 import Header from '../components/Header.astro';
 import Layout from '../layouts/Layout.astro';
 
-const bookingUrl =
-  'https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous';
-
 const trustSignals = [
   {
-    label: 'Business first',
-    title: 'We start with the work, not the tool.',
-    text: 'The useful question is rarely which AI model to use. It is where decisions are weak, where workflow drag lives and where a system would create measurable value.',
+    label: 'Pillar 1',
+    title: 'Business first',
+    text: "We start with the work, not the tool. The useful question is rarely which model; it's where decisions are weak, where workflow drag lives, and where a system would create measurable value.",
   },
   {
-    label: 'Controlled delivery',
-    title: 'Small commitments before large ones.',
-    text: 'Discovery, PoC, MVP, Pilot and Launch create evidence before scale, so leaders do not need to bet the full programme on a beautiful promise.',
+    label: 'Pillar 2',
+    title: 'Controlled delivery',
+    text: 'Small commitments before large ones. Evidence before scale. Discovery, PoC, MVP, Pilot and Launch mean nobody bets the programme on a beautiful promise.',
   },
   {
-    label: 'Governance aware',
-    title: 'Risk is designed into the route.',
-    text: 'Permissions, data boundaries, review points, escalation paths and human oversight are treated as core design inputs from the start.',
+    label: 'Pillar 3',
+    title: 'Governance aware',
+    text: 'Permissions, data boundaries, review points and human oversight are design inputs, not paperwork added at the end.',
   },
   {
-    label: 'Technical translation',
-    title: 'Senior judgement without theatre.',
-    text: 'DTP connects board-level intent to practical architecture, workflow detail and the reality of building with people, data and systems already in place.',
+    label: 'Pillar 4',
+    title: 'Technical translation',
+    text: 'We speak board, and we speak build, so what leadership intends is what actually ships.',
   },
 ];
 
 const operatingModel = [
   {
-    code: '01',
+    code: '1',
     title: 'See the operating reality',
-    text: 'Map current work, data, tools, adoption signals, blockers and the decision leadership needs to make.',
+    text: 'Map current work, data, tools, adoption signals and the decision leadership actually needs to make.',
   },
   {
-    code: '02',
+    code: '2',
     title: 'Choose the narrowest useful route',
-    text: 'Shape a first step that is small enough to prove, but meaningful enough to change a real workflow.',
+    text: 'Small enough to prove, meaningful enough to change a real workflow.',
   },
   {
-    code: '03',
+    code: '3',
     title: 'Build with controls visible',
-    text: 'Make permissions, reviews, audit trails and support responsibilities visible before the system becomes operational.',
+    text: 'Permissions, reviews, audit trails and support responsibilities on the table before the system goes live.',
   },
   {
-    code: '04',
+    code: '4',
     title: 'Measure what changed',
-    text: 'Focus on reduced effort, faster decisions, fewer missed tasks, better visibility and safer adoption.',
+    text: 'Reduced effort, faster decisions, fewer missed tasks, safer adoption.',
   },
 ];
 
 const proofPoints = [
-  'AI-assisted quotation and document workflows can reduce effort around technical preparation work.',
-  'Messaging-native operational agents can keep production floor tasks visible and accountable.',
-  'Custom AI and search systems can be shaped around security, context and practical use rather than generic demos.',
+  {
+    title: '40% faster quotation preparation',
+    text: 'AI-assisted document and calculation workflows in manufacturing operations.',
+  },
+  {
+    title: 'Zero missed maintenance tasks',
+    text: 'a messaging-native agent coordinating production-floor work.',
+  },
+  {
+    title: 'Controlled technical delivery',
+    text: 'AI/ML architecture, vector search and conversational systems in production.',
+  },
+];
+
+const checklistItems = [
+  {
+    question: '"What\'s the smallest commitment you\'ll accept?"',
+    answer: 'Ours is a one-week readiness review.',
+    href: '/programmes/ai-adoption-readiness/',
+  },
+  {
+    question: '"What happens if the proof of concept fails?"',
+    answer: "It ends there, with the evidence. That's what the gate is for.",
+  },
+  {
+    question: '"Who owns the pilot, and what\'s the number?"',
+    answer: 'No build starts without a named owner and a measurable target.',
+  },
+  {
+    question: '"Where does our data live, and who can see it?"',
+    answer:
+      'Boundaries, permissions and audit are designed in from day one, in-tenant where it matters.',
+  },
+  {
+    question: '"Show us something running."',
+    answer: 'Live systems in real operations.',
+    href: '/case-studies/',
+  },
+  {
+    question: '"Who actually does the work?"',
+    answer: 'The people you meet. No leveraged pyramid.',
+  },
 ];
 
 const trustModes = [
   { id: 'workflow', label: 'Workflow', value: 'where work actually happens' },
-  { id: 'governance', label: 'Governance', value: 'where permission and risk are controlled' },
-  { id: 'delivery', label: 'Delivery', value: 'where evidence earns the next gate' },
+  {
+    id: 'governance',
+    label: 'Governance',
+    value: 'where permission and risk are controlled',
+  },
+  {
+    id: 'delivery',
+    label: 'Delivery',
+    value: 'where evidence earns the next gate',
+  },
 ];
 ---
 
 <Layout
-  title="Why DTP - Digital Technology Partner"
-  description="Why Digital Technology Partner is a practical, low-risk partner for AI adoption, business automation and digital systems delivery."
+  title="Why DTP: Good AI delivery feels calm. That's not an accident."
+  description="Why leadership teams choose Digital Technology Partner: stage-gated delivery, governance designed in, and six questions to ask any AI partner, including us."
 >
   <Header />
   <main class="why-page">
     <section class="why-hero" aria-labelledby="why-title">
-      <canvas id="trust-field-scene" class="trust-field" aria-hidden="true"></canvas>
+      <canvas id="trust-field-scene" class="trust-field" aria-hidden="true"
+      ></canvas>
       <div class="why-grid"></div>
       <div class="ma-container why-hero-inner">
         <div class="why-copy" data-why-reveal>
-          <span class="ma-section-tag">// command_centre</span>
-          <h1 id="why-title">Practical AI and digital systems, delivered with control.</h1>
+          <span class="ma-section-tag">// the_feeling</span>
+          <h1 id="why-title">
+            Good AI delivery feels calm. That's not an accident.
+          </h1>
           <p>
-            DTP helps leaders move from AI noise to governed, useful implementation. We
-            connect business work, people, data and systems so technology earns its place.
+            Calm is what it sounds like when the complexity is being held:
+            workflow, governance, data and delivery managed as one controlled
+            system. DTP exists to hold it.
           </p>
           <div class="why-actions">
-            <a class="ma-btn ma-btn-mint" href={bookingUrl} target="_blank" rel="noopener noreferrer">
+            <a class="ma-btn ma-btn-mint" href="/contact/">
               Talk through your situation
             </a>
-            <a class="ma-btn ma-btn-outline" href="/process/">See how delivery is controlled</a>
+            <a class="ma-btn ma-btn-outline" href="/process/"
+              >See how delivery is controlled</a
+            >
           </div>
         </div>
 
-        <aside class="trust-console" aria-label="DTP trust model" data-why-reveal>
+        <aside
+          class="trust-console"
+          aria-label="DTP trust model"
+          data-why-reveal
+        >
           <div class="trust-console-top">
             <span>trust model</span>
-            <strong>Clarity -> Control -> Useful systems</strong>
+            <strong>Clarity → Control → Useful systems</strong>
           </div>
           <div class="trust-console-core">
-            {trustModes.map((mode) => (
-              <button
-                type="button"
-                data-trust-mode={mode.id}
-                data-trust-value={mode.value}
-                aria-pressed={mode.id === 'workflow' ? 'true' : 'false'}
-                class:list={['trust-mode', { active: mode.id === 'workflow' }]}
-              >
-                <span>{mode.label}</span>
-                <strong>{mode.value}</strong>
-              </button>
-            ))}
+            {
+              trustModes.map((mode) => (
+                <button
+                  type="button"
+                  data-trust-mode={mode.id}
+                  data-trust-value={mode.value}
+                  aria-pressed={mode.id === 'workflow' ? 'true' : 'false'}
+                  class:list={[
+                    'trust-mode',
+                    { active: mode.id === 'workflow' },
+                  ]}
+                >
+                  <span>{mode.label}</span>
+                  <strong>{mode.value}</strong>
+                </button>
+              ))
+            }
           </div>
           <div class="trust-readout" aria-live="polite">
             <span>current focus</span>
-            <strong id="trust-readout-value">where work actually happens</strong>
+            <strong id="trust-readout-value">where work actually happens</strong
+            >
           </div>
         </aside>
       </div>
@@ -119,71 +179,151 @@ const trustModes = [
     <section class="ma-section trust-signal-section">
       <div class="ma-container trust-signal-grid">
         <div class="trust-section-copy" data-why-reveal>
-          <span class="ma-section-tag">// why_organisations_choose_dtp</span>
-          <h2>Good AI delivery feels calm because the complexity is being held.</h2>
+          <span class="ma-section-tag">// what_the_calm_is_made_of</span>
+          <h2>What the calm is made of.</h2>
         </div>
         <div class="trust-signal-stack">
-          {trustSignals.map((signal) => (
-            <article class="trust-signal-card" data-why-card>
-              <span>{signal.label}</span>
-              <h3>{signal.title}</h3>
-              <p>{signal.text}</p>
-            </article>
-          ))}
+          {
+            trustSignals.map((signal) => (
+              <article class="trust-signal-card" data-why-card>
+                <span>{signal.label}</span>
+                <h3>{signal.title}</h3>
+                <p>{signal.text}</p>
+              </article>
+            ))
+          }
         </div>
+      </div>
+    </section>
+
+    <section class="ma-section failure-section">
+      <div class="ma-container failure-inner" data-why-reveal>
+        <span class="ma-section-tag">// designed_against_failure</span>
+        <h2>Most AI projects don't fail loudly. They dissolve.</h2>
+        <p>
+          The pilot that never had an owner or a number. The licences that
+          quietly became an expensive search box. The compliance freeze that
+          locked the best tools out while quieter rivals shipped. We've seen the
+          autopsies, so every DTP engagement is designed against them: every
+          build has a named owner and a measurable target, every rollout starts
+          with the workflow rather than the licence, and governance is
+          architected in so security can say yes safely instead of no
+          permanently.
+        </p>
       </div>
     </section>
 
     <section class="ma-section operating-section">
       <div class="ma-container">
         <div class="operating-head" data-why-reveal>
-          <span class="ma-section-tag">// operating_model</span>
-          <h2>The DTP method is deliberately stage-gated.</h2>
-          <p>
-            Each stage should make the next decision easier. That means fewer vague promises,
-            fewer stranded pilots and a clearer route from intent to operational value.
-          </p>
+          <span class="ma-section-tag">// the_method</span>
+          <h2>
+            Deliberately stage-gated, so each stage makes the next decision
+            easier.
+          </h2>
         </div>
         <div class="operating-path" aria-label="DTP operating model">
-          {operatingModel.map((item) => (
-            <article data-why-card>
-              <span>{item.code}</span>
-              <h3>{item.title}</h3>
-              <p>{item.text}</p>
-            </article>
-          ))}
+          {
+            operatingModel.map((item) => (
+              <article data-why-card>
+                <span>{item.code}</span>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </article>
+            ))
+          }
         </div>
+        <p class="operating-outro">
+          Any stage can end the work honourably. That is a feature, not a
+          failure.
+        </p>
+      </div>
+    </section>
+
+    <section class="ma-section checklist-section">
+      <div class="ma-container">
+        <div class="checklist-head" data-why-reveal>
+          <span class="ma-section-tag"
+            >// six_questions_to_ask_any_ai_partner</span
+          >
+          <h2>Six questions to ask any AI partner. Including us.</h2>
+        </div>
+        <div class="checklist-grid">
+          {
+            checklistItems.map((item, index) => (
+              <article class="checklist-card" data-why-card>
+                <span>{index + 1}</span>
+                <h3>{item.question}</h3>
+                <p>
+                  {item.answer}
+                  {item.href && (
+                    <>
+                      {' '}
+                      <a href={item.href}>→</a>
+                    </>
+                  )}
+                </p>
+              </article>
+            ))
+          }
+        </div>
+        <p class="checklist-outro" data-why-reveal>
+          Ask all six of everyone you're considering. The answers tell you more
+          than any deck.
+        </p>
       </div>
     </section>
 
     <section class="ma-section proof-band">
       <div class="ma-container proof-band-grid">
         <div data-why-reveal>
-          <span class="ma-section-tag">// practical_evidence</span>
+          <span class="ma-section-tag">// proof_layer</span>
           <h2>Proof belongs near the point of doubt.</h2>
-          <p>
-            The buying question is not whether AI can look impressive. It is whether useful
-            systems can be delivered safely around real operations.
-          </p>
         </div>
         <div class="proof-lines">
-          {proofPoints.map((point) => (
-            <p data-why-card>{point}</p>
-          ))}
+          {
+            proofPoints.map((point) => (
+              <p data-why-card>
+                <strong>{point.title}</strong>: {point.text}
+              </p>
+            ))
+          }
+          <a class="proof-link" href="/case-studies/">See the case studies</a>
         </div>
+      </div>
+    </section>
+
+    <section class="ma-section founder-section">
+      <div class="ma-container founder-inner" data-why-reveal>
+        <span class="ma-section-tag">// a_note_from_the_founder</span>
+        <h2>Why this firm exists.</h2>
+        <p>
+          I've spent the lots of time talking with CEOs and leadership across
+          the piece about AI. The same conversation kept repeating: smart
+          leaders, real pressure, no map. The technology has stopped being the
+          hard part: people, change and culture are. DTP is built for that part:
+          the unglamorous work of making AI operational, governed and worth the
+          money.
+        </p>
+        <strong>[founder name], Founder, Digital Technology Partner</strong>
       </div>
     </section>
 
     <section class="why-cta">
       <div class="ma-container why-cta-inner" data-why-reveal>
         <span class="ma-section-tag">// start_with_the_right_question</span>
-        <h2>Bring the uncertainty. We will help turn it into a controlled next step.</h2>
+        <h2>
+          Bring the uncertainty. We'll help turn it into a controlled next step.
+        </h2>
         <div class="why-actions">
-          <a class="ma-btn ma-btn-mint ma-btn-lg" href={bookingUrl} target="_blank" rel="noopener noreferrer">
+          <a class="ma-btn ma-btn-mint ma-btn-lg" href="/contact/">
             Talk through your situation
           </a>
-          <a class="ma-btn ma-btn-outline ma-btn-lg" href="/programmes/ai-adoption-readiness/">
-            Start with readiness
+          <a
+            class="ma-btn ma-btn-outline ma-btn-lg"
+            href="/programmes/ai-adoption-readiness/"
+          >
+            Start with Readiness
           </a>
         </div>
       </div>
@@ -192,10 +332,16 @@ const trustModes = [
 </Layout>
 
 <script>
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const canvas = document.getElementById('trust-field-scene') as HTMLCanvasElement | null;
+  const reducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  ).matches;
+  const canvas = document.getElementById(
+    'trust-field-scene'
+  ) as HTMLCanvasElement | null;
   const gsapReady = import('gsap');
-  const trustButtons = Array.from(document.querySelectorAll('[data-trust-mode]')) as HTMLButtonElement[];
+  const trustButtons = Array.from(
+    document.querySelectorAll('[data-trust-mode]')
+  ) as HTMLButtonElement[];
   const readout = document.getElementById('trust-readout-value');
 
   const setTrustMode = async (button: HTMLButtonElement) => {
@@ -217,13 +363,22 @@ const trustModes = [
           ease: 'power2.out',
           onComplete: () => {
             readout.textContent = button.dataset.trustValue || '';
-            gsap.to(readout, { opacity: 1, y: 0, duration: 0.26, ease: 'power3.out' });
+            gsap.to(readout, {
+              opacity: 1,
+              y: 0,
+              duration: 0.26,
+              ease: 'power3.out',
+            });
           },
         });
       }
     }
 
-    document.dispatchEvent(new CustomEvent('trust-field-mode', { detail: { id: button.dataset.trustMode } }));
+    document.dispatchEvent(
+      new CustomEvent('trust-field-mode', {
+        detail: { id: button.dataset.trustMode },
+      })
+    );
   };
 
   trustButtons.forEach((button) => {
@@ -271,9 +426,27 @@ const trustModes = [
     ] as Array<[number, number, number]>;
 
     const modeTargets = {
-      workflow: { node: 1, yaw: -0.18, pitch: -0.16, zoom: 8.35, intensity: 0.78 },
-      governance: { node: 4, yaw: 0.2, pitch: -0.28, zoom: 8.05, intensity: 0.88 },
-      delivery: { node: 5, yaw: 0.02, pitch: -0.08, zoom: 8.15, intensity: 0.94 },
+      workflow: {
+        node: 1,
+        yaw: -0.18,
+        pitch: -0.16,
+        zoom: 8.35,
+        intensity: 0.78,
+      },
+      governance: {
+        node: 4,
+        yaw: 0.2,
+        pitch: -0.28,
+        zoom: 8.05,
+        intensity: 0.88,
+      },
+      delivery: {
+        node: 5,
+        yaw: 0.02,
+        pitch: -0.08,
+        zoom: 8.15,
+        intensity: 0.94,
+      },
     } as const;
 
     const createNodeMaterial = (color: THREE.Color, opacity: number) => {
@@ -288,7 +461,14 @@ const trustModes = [
     };
 
     positions.forEach((position, index) => {
-      const color = index === 0 ? mint : index % 3 === 0 ? amber : index % 2 === 0 ? blue : ivory;
+      const color =
+        index === 0
+          ? mint
+          : index % 3 === 0
+            ? amber
+            : index % 2 === 0
+              ? blue
+              : ivory;
       const core = new THREE.Mesh(
         new THREE.SphereGeometry(index === 0 ? 0.13 : 0.075, 24, 24),
         createNodeMaterial(color, index === 0 ? 1 : 0.86)
@@ -308,7 +488,11 @@ const trustModes = [
       nodeMeshes.push(aura);
     });
 
-    const createLine = (a: [number, number, number], b: [number, number, number], color = mint) => {
+    const createLine = (
+      a: [number, number, number],
+      b: [number, number, number],
+      color = mint
+    ) => {
       const material = new THREE.LineBasicMaterial({
         color,
         transparent: true,
@@ -316,7 +500,10 @@ const trustModes = [
       });
       materials.push(material);
       const line = new THREE.Line(
-        new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...a), new THREE.Vector3(...b)]),
+        new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(...a),
+          new THREE.Vector3(...b),
+        ]),
         material
       );
       line.userData.focusOpacity = 0.18;
@@ -327,7 +514,9 @@ const trustModes = [
 
     const geometries: THREE.BufferGeometry[] = [];
     positions.slice(1).forEach((position, index) => {
-      geometries.push(createLine(positions[0], position, index % 2 === 0 ? mint : ivory));
+      geometries.push(
+        createLine(positions[0], position, index % 2 === 0 ? mint : ivory)
+      );
     });
     geometries.push(createLine(positions[1], positions[4], blue));
     geometries.push(createLine(positions[2], positions[3], amber));
@@ -344,15 +533,22 @@ const trustModes = [
       particlePositions[i * 3 + 1] = Math.sin(a) * r * 0.64;
       particlePositions[i * 3 + 2] = z;
 
-      const color = i % 13 === 0 ? amber : i % 7 === 0 ? blue : i % 5 === 0 ? ivory : mint;
+      const color =
+        i % 13 === 0 ? amber : i % 7 === 0 ? blue : i % 5 === 0 ? ivory : mint;
       particleColors[i * 3] = color.r;
       particleColors[i * 3 + 1] = color.g;
       particleColors[i * 3 + 2] = color.b;
     }
 
     const particleGeometry = new THREE.BufferGeometry();
-    particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-    particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
+    particleGeometry.setAttribute(
+      'position',
+      new THREE.BufferAttribute(particlePositions, 3)
+    );
+    particleGeometry.setAttribute(
+      'color',
+      new THREE.BufferAttribute(particleColors, 3)
+    );
     const particles = new THREE.Points(
       particleGeometry,
       new THREE.PointsMaterial({
@@ -374,7 +570,10 @@ const trustModes = [
         depthWrite: false,
       });
       materials.push(material);
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.007, 12, 180), material);
+      const ring = new THREE.Mesh(
+        new THREE.TorusGeometry(radius, 0.007, 12, 180),
+        material
+      );
       ring.rotation.x = Math.PI / 2 + index * 0.18;
       ring.rotation.y = index * 0.22;
       group.add(ring);
@@ -382,7 +581,8 @@ const trustModes = [
     });
 
     const focusField = (id: keyof typeof modeTargets | string) => {
-      const target = modeTargets[id as keyof typeof modeTargets] || modeTargets.workflow;
+      const target =
+        modeTargets[id as keyof typeof modeTargets] || modeTargets.workflow;
       gsap.to(focusState, {
         yaw: target.yaw,
         pitch: target.pitch,
@@ -405,7 +605,8 @@ const trustModes = [
 
       lines.forEach((line, index) => {
         gsap.to(line.userData, {
-          focusOpacity: index === target.node - 1 ? 0.54 : index < 6 ? 0.2 : 0.13,
+          focusOpacity:
+            index === target.node - 1 ? 0.54 : index < 6 ? 0.2 : 0.13,
           duration: reducedMotion ? 0 : 0.4,
           ease: 'power2.out',
         });
@@ -474,13 +675,17 @@ const trustModes = [
     const render = () => {
       const t = (window.performance.now() - start) / 1000;
       if (!reducedMotion) {
-        group.rotation.y += (focusState.yaw + pointer.x - group.rotation.y) * 0.025;
-        group.rotation.x += (focusState.pitch + pointer.y - group.rotation.x) * 0.024;
+        group.rotation.y +=
+          (focusState.yaw + pointer.x - group.rotation.y) * 0.025;
+        group.rotation.x +=
+          (focusState.pitch + pointer.y - group.rotation.x) * 0.024;
         camera.position.z += (focusState.zoom - camera.position.z) * 0.035;
         particles.rotation.z -= 0.00065;
         particles.rotation.y += 0.00038;
         (particles.material as THREE.PointsMaterial).opacity +=
-          (focusState.intensity - (particles.material as THREE.PointsMaterial).opacity) * 0.035;
+          (focusState.intensity -
+            (particles.material as THREE.PointsMaterial).opacity) *
+          0.035;
         rings.forEach((ring, index) => {
           ring.rotation.z = t * (0.045 + index * 0.018);
         });
@@ -490,7 +695,9 @@ const trustModes = [
         });
         lines.forEach((line, index) => {
           const material = line.material as THREE.LineBasicMaterial;
-          material.opacity = (line.userData.focusOpacity ?? 0.18) + Math.sin(t * 1.2 + index) * 0.025;
+          material.opacity =
+            (line.userData.focusOpacity ?? 0.18) +
+            Math.sin(t * 1.2 + index) * 0.025;
         });
       }
       renderer.render(scene, camera);
@@ -515,8 +722,16 @@ const trustModes = [
   .why-page {
     min-height: 100vh;
     background:
-      radial-gradient(circle at 18% 14%, rgba(0, 229, 160, 0.12), transparent 30rem),
-      radial-gradient(circle at 82% 18%, rgba(124, 139, 255, 0.1), transparent 30rem),
+      radial-gradient(
+        circle at 18% 14%,
+        rgba(0, 229, 160, 0.12),
+        transparent 30rem
+      ),
+      radial-gradient(
+        circle at 82% 18%,
+        rgba(124, 139, 255, 0.1),
+        transparent 30rem
+      ),
       linear-gradient(135deg, #000 0%, #080812 56%, #000 100%);
     color: var(--ma-text);
   }
@@ -548,7 +763,11 @@ const trustModes = [
       linear-gradient(rgba(244, 241, 232, 0.05) 1px, transparent 1px),
       linear-gradient(90deg, rgba(244, 241, 232, 0.04) 1px, transparent 1px);
     background-size: 74px 74px;
-    mask-image: radial-gradient(ellipse 78% 70% at 62% 45%, black, transparent 86%);
+    mask-image: radial-gradient(
+      ellipse 78% 70% at 62% 45%,
+      black,
+      transparent 86%
+    );
   }
 
   .why-hero-inner {
@@ -590,7 +809,11 @@ const trustModes = [
     border: 1px solid rgba(244, 241, 232, 0.14);
     border-radius: var(--ma-radius);
     background:
-      radial-gradient(circle at 30% 18%, rgba(0, 229, 160, 0.12), transparent 16rem),
+      radial-gradient(
+        circle at 30% 18%,
+        rgba(0, 229, 160, 0.12),
+        transparent 16rem
+      ),
       rgba(5, 5, 9, 0.68);
     box-shadow: 0 28px 90px rgba(0, 0, 0, 0.34);
     backdrop-filter: blur(14px);
@@ -708,7 +931,10 @@ const trustModes = [
 
   .trust-section-copy h2,
   .operating-head h2,
+  .failure-inner h2,
+  .checklist-head h2,
   .proof-band h2,
+  .founder-inner h2,
   .why-cta h2 {
     color: #f4f1e8;
     letter-spacing: 0;
@@ -755,8 +981,36 @@ const trustModes = [
 
   .operating-section {
     background:
-      radial-gradient(circle at 84% 12%, rgba(0, 229, 160, 0.1), transparent 28rem),
+      radial-gradient(
+        circle at 84% 12%,
+        rgba(0, 229, 160, 0.1),
+        transparent 28rem
+      ),
       #050509;
+  }
+
+  .failure-section {
+    border-bottom: 1px solid var(--ma-border);
+    background:
+      radial-gradient(
+        circle at 18% 30%,
+        rgba(124, 139, 255, 0.08),
+        transparent 28rem
+      ),
+      #000;
+  }
+
+  .failure-inner,
+  .founder-inner {
+    max-width: 920px;
+  }
+
+  .failure-inner p,
+  .founder-inner p {
+    margin-top: 1rem;
+    color: #d8d6ce;
+    font-size: 1.08rem;
+    line-height: 1.78;
   }
 
   .operating-head {
@@ -798,9 +1052,74 @@ const trustModes = [
     letter-spacing: 0;
   }
 
+  .operating-outro,
+  .checklist-outro {
+    max-width: 760px;
+    margin: 2rem 0 0;
+    color: #f4f1e8;
+    font-family: var(--ma-font-display);
+    font-size: clamp(1.28rem, 2vw, 1.75rem);
+    line-height: 1.22;
+  }
+
+  .checklist-section {
+    background: rgba(17, 17, 34, 0.52);
+    border-top: 1px solid var(--ma-border);
+  }
+
+  .checklist-head {
+    max-width: 820px;
+    margin-bottom: 2rem;
+  }
+
+  .checklist-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .checklist-card {
+    min-height: 250px;
+    padding: 1.25rem;
+    border: 1px solid rgba(244, 241, 232, 0.13);
+    border-radius: var(--ma-radius);
+    background:
+      linear-gradient(180deg, rgba(244, 241, 232, 0.035), transparent 44%),
+      rgba(5, 5, 9, 0.58);
+  }
+
+  .checklist-card span {
+    display: inline-flex;
+    width: 2rem;
+    height: 2rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(0, 229, 160, 0.4);
+    border-radius: 50%;
+    color: var(--ma-mint);
+    font-family: var(--ma-font-mono);
+    font-size: 0.78rem;
+  }
+
+  .checklist-card h3 {
+    margin: 1rem 0 0.7rem;
+    color: #f4f1e8;
+    font-size: 1.1rem;
+    letter-spacing: 0;
+  }
+
+  .checklist-card p {
+    color: #d8d6ce;
+    line-height: 1.6;
+  }
+
   .proof-band {
     background:
-      linear-gradient(135deg, rgba(0, 229, 160, 0.08), rgba(124, 139, 255, 0.05)),
+      linear-gradient(
+        135deg,
+        rgba(0, 229, 160, 0.08),
+        rgba(124, 139, 255, 0.05)
+      ),
       var(--ma-bg);
     border-top: 1px solid var(--ma-border);
     border-bottom: 1px solid var(--ma-border);
@@ -825,11 +1144,45 @@ const trustModes = [
     background: rgba(5, 5, 9, 0.54);
   }
 
+  .proof-lines strong {
+    color: #f4f1e8;
+    font-family: var(--ma-font-display);
+  }
+
+  .checklist-card a,
+  .proof-link {
+    color: var(--ma-mint);
+    font-family: var(--ma-font-display);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .proof-link {
+    justify-self: start;
+  }
+
+  .founder-section {
+    background: #050509;
+    border-bottom: 1px solid var(--ma-border);
+  }
+
+  .founder-inner strong {
+    display: block;
+    margin-top: 1.5rem;
+    color: #f4f1e8;
+    font-family: var(--ma-font-display);
+    font-size: 1.08rem;
+  }
+
   .why-cta {
     padding: 5.8rem 0;
     text-align: center;
     background:
-      radial-gradient(circle at 50% 8%, rgba(0, 229, 160, 0.14), transparent 27rem),
+      radial-gradient(
+        circle at 50% 8%,
+        rgba(0, 229, 160, 0.14),
+        transparent 27rem
+      ),
       #000;
   }
 
@@ -853,6 +1206,10 @@ const trustModes = [
     }
 
     .operating-path {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .checklist-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
@@ -882,6 +1239,12 @@ const trustModes = [
 
     .why-actions {
       display: grid;
+      justify-content: stretch;
+      width: 100%;
+    }
+
+    .why-cta .why-actions {
+      justify-content: stretch;
     }
 
     .why-actions .ma-btn {
@@ -894,6 +1257,10 @@ const trustModes = [
     }
 
     .operating-path {
+      grid-template-columns: 1fr;
+    }
+
+    .checklist-grid {
       grid-template-columns: 1fr;
     }
 
