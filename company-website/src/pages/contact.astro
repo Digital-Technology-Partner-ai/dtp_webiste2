@@ -13,6 +13,9 @@ const openers = [
   "We don't know what our teams are already using.",
 ];
 
+const emailHref = (subject: string) =>
+  `mailto:${emailAddress}?subject=${encodeURIComponent(subject)}`;
+
 const doors = [
   {
     title: 'A discovery call',
@@ -69,7 +72,13 @@ const doors = [
           <p>Start anywhere. We'll ask the useful questions.</p>
         </div>
         <div class="opener-grid" aria-label="Example openers">
-          {openers.map((opener) => <blockquote>{opener}</blockquote>)}
+          {
+            openers.map((opener) => (
+              <a class="opener-option" href={emailHref(opener)}>
+                {opener}
+              </a>
+            ))
+          }
         </div>
       </div>
     </section>
@@ -298,7 +307,8 @@ const doors = [
     gap: 1rem;
   }
 
-  .opener-grid blockquote {
+  .opener-option {
+    display: block;
     margin: 0;
     padding: 1rem 1.1rem;
     border-left: 2px solid rgba(0, 229, 160, 0.68);
@@ -309,6 +319,25 @@ const doors = [
     font-size: 1rem;
     font-weight: 600;
     line-height: 1.45;
+    text-decoration: none;
+    transition:
+      background 180ms ease,
+      border-color 180ms ease,
+      color 180ms ease,
+      transform 180ms ease;
+  }
+
+  .opener-option:hover,
+  .opener-option:focus-visible {
+    border-left-color: var(--ma-mint);
+    background: rgba(0, 229, 160, 0.08);
+    color: var(--ma-white);
+    transform: translateX(3px);
+  }
+
+  .opener-option:focus-visible {
+    outline: 2px solid rgba(0, 229, 160, 0.72);
+    outline-offset: 3px;
   }
 
   .doors-section {
