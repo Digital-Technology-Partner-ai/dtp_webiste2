@@ -149,31 +149,32 @@ html, body {
   z-index: 8;
   transform: translate(-50%, -50%);
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 12.5px;
   letter-spacing: 0.24em;
   color: var(--ink-dim);
   background: rgba(7, 9, 13, 0.55);
   border: 1px solid transparent;
-  padding: 7px 12px;
+  border-radius: 999px;
+  padding: 8.75px 15px;
   cursor: pointer;
   pointer-events: auto;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   white-space: nowrap;
   transition: color 0.25s, border-color 0.25s, box-shadow 0.25s;
   will-change: transform, opacity;
 }
 .ring-item::before {
-  content: "";
-  width: 4px; height: 4px;
-  border-radius: 50%;
-  background: var(--mint);
-  opacity: 0.7;
+  content: none;
 }
 .ring-item:hover {
   color: var(--ink);
   border-color: var(--line);
+}
+.ring-item-a11y {
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 /* ============ hover node panel ============ */

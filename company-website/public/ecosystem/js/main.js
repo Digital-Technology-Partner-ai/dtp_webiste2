@@ -10,9 +10,12 @@ import * as THREE from 'three';
    node to travel into that section.
    ============================================================ */
 
-const RADIUS = 36;
+const RADIUS = 20;
+const RING_RADIUS = RADIUS;
 const NODE_W = Math.PI * (23 / 180); // angular width at equator (rad)
 const NODE_H = 0.28;          // angular height (rad)
+const BAND_ELEVATION = Math.PI * (20 / 180);
+const RING_ITEM_H = 0.049;
 const MINT = 0x05cc90;
 const MINT_GLSL = 'vec3(0.020, 0.800, 0.565)';
 const ACTIVE_ARC = Math.PI;
@@ -200,10 +203,12 @@ scene.add(universeGroup);
 
 const VERT = /* glsl */ `
   uniform float uHover;
+  uniform vec3 uCenter;
   varying vec2 vUv;
   void main() {
     vUv = uv;
-    vec3 p = position * (1.0 - uHover * 0.045);
+    vec3 p = uCenter + (position - uCenter) * (1.0 + uHover * 0.2);
+    p *= (1.0 - uHover * 0.045);
     gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
   }
 `;
@@ -268,6 +273,50 @@ function curvedPanelGeometry(theta0, lat0, angW, angH, radius) {
   geo.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
   geo.setIndex(indices);
   return geo;
+}
+
+function trackedTextWidth(ctx, text, tracking) {
+  return [...text].reduce((width, char, index) => (
+    width + ctx.measureText(char).width + (index < text.length - 1 ? tracking : 0)
+  ), 0);
+}
+
+function drawTrackedText(ctx, text, x, y, tracking) {
+  let cursor = x;
+  for (const char of text) {
+    ctx.fillText(char, cursor, y);
+    cursor += ctx.measureText(char).width + tracking;
+  }
+}
+
+function makeRingItemTexture(label) {
+  const c = document.createElement('canvas');
+  c.width = 640;
+  c.height = 128;
+  const x = c.getContext('2d');
+  x.clearRect(0, 0, c.width, c.height);
+
+  x.fillStyle = 'rgba(7, 9, 13, 0.72)';
+  x.strokeStyle = 'rgba(242, 241, 236, 0.18)';
+  x.lineWidth = 2;
+  x.beginPath();
+  x.roundRect(10, 18, c.width - 20, c.height - 36, 46);
+  x.fill();
+  x.stroke();
+
+  x.font = '500 30px "IBM Plex Mono", monospace';
+  x.fillStyle = 'rgba(242, 241, 236, 0.72)';
+  const tracking = 7.2;
+  const textWidth = trackedTextWidth(x, label, tracking);
+  drawTrackedText(x, label, (c.width - textWidth) / 2, 75, tracking);
+
+  const tex = new THREE.CanvasTexture(c);
+  tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  return tex;
+}
+
+function ringItemWidth(label) {
+  return clamp(0.24 + label.length * 0.022, 0.34, 0.64) * 0.7;
 }
 
 /* ---------------- node texture (canvas) ---------------- */
@@ -400,6 +449,7 @@ function buildNodes() {
         uMap: { value: card.map },
         uDescMask: { value: card.descMask },
         uHover: { value: 0 },
+        uCenter: { value: sph(RADIUS, theta, lat) },
         uOpacity: { value: 0 },
       };
       const mat = new THREE.ShaderMaterial({
@@ -418,8 +468,8 @@ function buildNodes() {
       nodes.push(node);
     });
   };
-  place(upper, Math.PI * (18 / 180), 0);
-  place(lower, -Math.PI * (18 / 180), 0);
+  place(upper, BAND_ELEVATION, 0);
+  place(lower, -BAND_ELEVATION, 0);
 }
 
 /* ---------------- environment: graticule, ring, arcs, dust ---------------- */
@@ -660,13 +710,13 @@ function buildEnvironment() {
   // equator ring + ticks — the navigation belt
   const ringMat = registerAmbient(new THREE.LineBasicMaterial({ color: MINT }), 0.30);
   envGroup.add(new THREE.LineLoop(
-    new THREE.BufferGeometry().setFromPoints(circlePoints(29.8, 0, 256).slice(0, 256)), ringMat));
+    new THREE.BufferGeometry().setFromPoints(circlePoints(RING_RADIUS, 0, 256).slice(0, 256)), ringMat));
 
   const tickMat = registerAmbient(new THREE.LineBasicMaterial({ color: MINT }), 0.16);
   const tickPts = [];
   for (let k = 0; k < 120; k++) {
     const th = (k / 120) * Math.PI * 2;
-    tickPts.push(sph(29.8, th, -0.013), sph(29.8, th, 0.013));
+    tickPts.push(sph(RING_RADIUS, th, -0.013), sph(RING_RADIUS, th, 0.013));
   }
   envGroup.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(tickPts), tickMat));
 
@@ -803,10 +853,6 @@ window.addEventListener('pointermove', (e) => {
   tilt.ty = -mouseNdc.y;
   panelX(Math.min(e.clientX, window.innerWidth - 300));
   panelY(e.clientY);
-  const ringItemAtPointer = findRingItemAt(e.clientX, e.clientY);
-  pointerRingItem = ringItemAtPointer;
-  setRingHovered(ringItemAtPointer);
-
   if (!state.dragging || state.locked) return;
   const dx = e.movementX ?? 0;
   const dy = e.movementY ?? 0;
@@ -825,7 +871,10 @@ function endDrag() {
   state.velY = clamp(lastDx * 0.9, -0.09, 0.09);
   state.velX = clamp(lastDy * 0.9, -0.05, 0.05);
   lastInteract = performance.now();
-  if (moved < 6 && hovered && !state.locked) openSection(hovered);
+  if (moved < 6 && !state.locked) {
+    if (hoveredRingItem) activateRingItem(hoveredRingItem);
+    else if (hovered) openSection(hovered);
+  }
 }
 window.addEventListener('pointerup', endDrag);
 window.addEventListener('pointercancel', endDrag);
@@ -878,7 +927,7 @@ function setRingHovered(item) {
 const ringNav = document.getElementById('ringNav');
 const ringEls = [];
 const ringPickMeshes = [];
-const ringPickGeo = new THREE.SphereGeometry(0.28, 12, 8);
+const ringPickGeo = new THREE.SphereGeometry(0.35, 12, 8);
 const ringPickMat = new THREE.MeshBasicMaterial({
   color: 0xffffff,
   transparent: true,
@@ -896,40 +945,62 @@ function findRingItemAt(x, y) {
   }) || null;
 }
 
+function activateRingItem(item) {
+  if (!item || state.locked || menuOpen) return;
+  if (item.node) {
+    openSection(item.node);
+  } else {
+    gsap.to(state, {
+      tarY: nearestAngle(0, state.curY), tarX: 0,
+      duration: 1.4, ease: 'power3.inOut',
+    });
+  }
+}
+
 function buildRingNav() {
   RING_ITEMS.forEach((item, i) => {
     const theta = arcTheta(i, RING_ITEMS.length, 0);
     const beltLat = i % 2 === 0 ? 0.075 : -0.075;
     const el = document.createElement('button');
-    el.className = 'ring-item';
+    el.className = 'ring-item ring-item-a11y';
     el.textContent = item.label;
-    el.addEventListener('click', () => {
-      if (state.locked || menuOpen) return;
-      if (item.id) {
-        const node = nodes.find(n => n.dest.id === item.id);
-        if (node) openSection(node);
-      } else {
-        // HOME — glide back to the resting view
-        gsap.to(state, {
-          tarY: nearestAngle(0, state.curY), tarX: 0,
-          duration: 1.4, ease: 'power3.inOut',
-        });
-      }
-    });
     ringNav.appendChild(el);
+
+    const node = item.id ? nodes.find(n => n.dest.id === item.id) : null;
+    const labelTex = makeRingItemTexture(item.label);
+    const labelMat = new THREE.MeshBasicMaterial({
+      map: labelTex,
+      transparent: true,
+      opacity: 0,
+      depthTest: false,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+    });
+    const labelMesh = new THREE.Mesh(
+      curvedPanelGeometry(theta, beltLat, ringItemWidth(item.label), RING_ITEM_H, RING_RADIUS),
+      labelMat
+    );
+    labelMesh.userData.ringIndex = i;
+    labelMesh.renderOrder = 7;
+    sphereGroup.add(labelMesh);
+    ringPickMeshes.push(labelMesh);
+
     const pick = new THREE.Mesh(ringPickGeo, ringPickMat);
     pick.userData.ringIndex = i;
     pick.visible = false;
-    pick.position.copy(sph(1, theta, beltLat)).multiplyScalar(29.8);
+    pick.position.copy(sph(1, theta, beltLat)).multiplyScalar(RING_RADIUS);
     sphereGroup.add(pick);
     ringPickMeshes.push(pick);
     const ringItem = {
       el,
       anchor: sph(1, theta, beltLat),
+      mesh: labelMesh,
+      mat: labelMat,
       pick,
-      node: item.id ? nodes.find(n => n.dest.id === item.id) : null,
+      node,
       visible: false,
     };
+    el.addEventListener('click', () => activateRingItem(ringItem));
     el.addEventListener('pointerenter', () => {
       if (state.locked || menuOpen || !ringItem.visible) return;
       pointerRingItem = ringItem;
@@ -951,7 +1022,7 @@ function updateRingNav() {
   camera.getWorldPosition(_camPos);
   camera.getWorldDirection(_camDir);
   for (const item of ringEls) {
-    _v.copy(item.anchor).multiplyScalar(29.8).applyMatrix4(sphereGroup.matrixWorld);
+    _v.copy(item.anchor).multiplyScalar(RING_RADIUS).applyMatrix4(sphereGroup.matrixWorld);
     const toItem = _v.clone().sub(_camPos).normalize();
     const facing = toItem.dot(_camDir);
     const ndc = _v.project(camera);
@@ -961,7 +1032,10 @@ function updateRingNav() {
     item.el.style.opacity = alpha.toFixed(3);
     item.el.style.pointerEvents = isInteractive ? 'auto' : 'none';
     item.visible = isInteractive;
+    item.mesh.visible = isInteractive;
     item.pick.visible = isInteractive;
+    item.mat.opacity = alpha * (item === hoveredRingItem ? 1 : 0.78);
+    item.mat.color.setHex(item === hoveredRingItem ? 0xffffff : 0xd7ddd8);
     if (!behind) {
       const x = (ndc.x + 1) / 2 * window.innerWidth;
       const y = (-ndc.y + 1) / 2 * window.innerHeight;
