@@ -1,7 +1,9 @@
 ---
 import Footer from '../components/Footer.astro';
 import CommandPalette from '../components/CommandPalette.astro';
+import StudioFrame from '../components/studio/StudioFrame.astro';
 import '../styles/v2-design-system.css';
+import '../styles/studio.css';
 
 export interface Props {
 	title: string;
@@ -69,6 +71,7 @@ const { title, description = DEFAULT_DESC, image = DEFAULT_IMAGE } = Astro.props
 		})()}
 	</head>
 	<body>
+		<StudioFrame />
 		<slot />
     <Footer />
     <CommandPalette />

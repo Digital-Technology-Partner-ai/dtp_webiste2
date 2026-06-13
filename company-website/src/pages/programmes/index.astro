@@ -66,6 +66,16 @@ const triageStatements = [
   <Header />
   <main class="programmes-page">
     <section class="programmes-hero">
+      <div class="st-backdrop" aria-hidden="true">
+        <img
+          src="/images/studio/neuralmesh-2400.webp"
+          srcset="/images/studio/neuralmesh-1280.webp 1280w, /images/studio/neuralmesh-2400.webp 2400w"
+          sizes="100vw"
+          alt=""
+          loading="eager"
+          fetchpriority="high"
+        />
+      </div>
       <div class="programmes-grid-bg"></div>
       <div class="ma-container programmes-hero-grid">
         <div class="programmes-copy">
@@ -194,15 +204,14 @@ const triageStatements = [
     background:
       radial-gradient(
         circle at 20% 12%,
-        rgba(0, 229, 160, 0.12),
+        rgba(5, 204, 144, 0.1),
         transparent 30rem
       ),
       radial-gradient(
         circle at 78% 20%,
-        rgba(124, 139, 255, 0.08),
+        rgba(124, 139, 255, 0.06),
         transparent 28rem
-      ),
-      #000;
+      );
   }
 
   .programmes-hero {
@@ -273,7 +282,7 @@ const triageStatements = [
   }
 
   .triage-section {
-    background: rgba(17, 17, 34, 0.52);
+    background: rgba(11, 16, 26, 0.45);
     border-bottom: 1px solid var(--ma-border);
   }
 
@@ -290,9 +299,14 @@ const triageStatements = [
   .triage-card {
     min-height: 235px;
     padding: 1.2rem;
-    border: 1px solid rgba(244, 241, 232, 0.13);
-    border-radius: var(--ma-radius);
-    background: rgba(5, 5, 9, 0.58);
+    border: 1px solid var(--ma-border);
+    background: var(--st-panel-glass);
+    backdrop-filter: blur(6px);
+    transition: border-color var(--ma-transition);
+  }
+
+  .triage-card:hover {
+    border-color: rgba(5, 204, 144, 0.45);
   }
 
   .triage-card p {
@@ -310,7 +324,7 @@ const triageStatements = [
   }
 
   .compare-section {
-    background: var(--ma-bg);
+    background: transparent;
   }
 
   .compare-head {
@@ -335,17 +349,22 @@ const triageStatements = [
     padding: 1.45rem;
     display: flex;
     flex-direction: column;
-    border: 1px solid rgba(244, 241, 232, 0.13);
-    border-radius: var(--ma-radius);
-    background: var(--ma-surface);
+    border: 1px solid var(--ma-border);
+    background: var(--st-panel-glass);
+    backdrop-filter: blur(6px);
+    transition: border-color var(--ma-transition);
+  }
+
+  .programme-card:hover {
+    border-color: rgba(5, 204, 144, 0.45);
   }
 
   .programme-card.featured {
-    border-color: rgba(0, 229, 160, 0.5);
+    border-color: rgba(5, 204, 144, 0.5);
     background: linear-gradient(
       145deg,
-      rgba(0, 229, 160, 0.1),
-      rgba(17, 17, 34, 0.86)
+      rgba(5, 204, 144, 0.1),
+      rgba(11, 16, 26, 0.86)
     );
   }
 
@@ -393,13 +412,11 @@ const triageStatements = [
   .route-section {
     border-top: 1px solid var(--ma-border);
     border-bottom: 1px solid var(--ma-border);
-    background:
-      linear-gradient(
-        135deg,
-        rgba(0, 229, 160, 0.08),
-        rgba(124, 139, 255, 0.06)
-      ),
-      #07070c;
+    background: linear-gradient(
+      135deg,
+      rgba(5, 204, 144, 0.07),
+      rgba(124, 139, 255, 0.05)
+    );
   }
 
   .route-grid {
@@ -426,14 +443,12 @@ const triageStatements = [
   }
 
   .programme-proof {
-    padding: 5.5rem 0;
-    background:
-      radial-gradient(
-        circle at 50% 12%,
-        rgba(0, 229, 160, 0.12),
-        transparent 24rem
-      ),
-      #050509;
+    padding: 6.5rem 0;
+    background: radial-gradient(
+      circle at 50% 12%,
+      rgba(5, 204, 144, 0.1),
+      transparent 24rem
+    );
   }
 
   .proof-inner {

@@ -530,15 +530,14 @@ const cleanCopy = (value: string) =>
     background:
       radial-gradient(
         circle at 16% 10%,
-        rgba(0, 229, 160, 0.12),
+        rgba(5, 204, 144, 0.12),
         transparent 31rem
       ),
       radial-gradient(
         circle at 78% 18%,
         rgba(124, 139, 255, 0.1),
         transparent 30rem
-      ),
-      linear-gradient(135deg, #000 0%, #080812 56%, #000 100%);
+      );
     color: var(--ma-text);
   }
 
@@ -608,10 +607,10 @@ const cleanCopy = (value: string) =>
     background:
       radial-gradient(
         circle at 48% 42%,
-        rgba(0, 229, 160, 0.13),
+        rgba(5, 204, 144, 0.13),
         transparent 22rem
       ),
-      linear-gradient(145deg, rgba(17, 17, 34, 0.84), rgba(0, 0, 0, 0.5));
+      linear-gradient(145deg, rgba(11, 16, 26, 0.86), rgba(4, 6, 9, 0.55));
     box-shadow: 0 34px 100px rgba(0, 0, 0, 0.32);
   }
 
@@ -689,7 +688,7 @@ const cleanCopy = (value: string) =>
   .theme-section {
     padding-top: 2rem;
     padding-bottom: 2rem;
-    background: rgba(17, 17, 34, 0.52);
+    background: rgba(11, 16, 26, 0.45);
     border-bottom: 1px solid var(--ma-border);
   }
 
@@ -708,7 +707,7 @@ const cleanCopy = (value: string) =>
     padding: 1rem;
     border: 1px solid rgba(244, 241, 232, 0.13);
     border-radius: var(--ma-radius);
-    background: rgba(5, 5, 9, 0.52);
+    background: rgba(11, 16, 26, 0.78);
     color: #d8d6ce;
     text-align: left;
   }
@@ -739,14 +738,14 @@ const cleanCopy = (value: string) =>
   .theme-button:hover,
   .theme-button:focus-visible,
   .theme-button.active {
-    border-color: rgba(0, 229, 160, 0.62);
-    background: rgba(0, 229, 160, 0.1);
+    border-color: rgba(5, 204, 144, 0.62);
+    background: rgba(5, 204, 144, 0.1);
     transform: translateY(-3px);
     outline: none;
   }
 
   .editorial-section {
-    background: #050509;
+    background: rgba(7, 9, 13, 0.5);
   }
 
   .editorial-grid {
@@ -788,8 +787,8 @@ const cleanCopy = (value: string) =>
     border: 1px solid rgba(244, 241, 232, 0.12);
     border-radius: var(--ma-radius);
     background:
-      linear-gradient(90deg, rgba(0, 229, 160, 0.055), transparent 46%),
-      rgba(17, 17, 34, 0.68);
+      linear-gradient(90deg, rgba(5, 204, 144, 0.055), transparent 46%),
+      rgba(11, 16, 26, 0.7);
   }
 
   .featured-article {
@@ -856,7 +855,7 @@ const cleanCopy = (value: string) =>
 
   .article-tags span {
     padding: 0.35rem 0.55rem;
-    border: 1px solid rgba(0, 229, 160, 0.24);
+    border: 1px solid rgba(5, 204, 144, 0.24);
     border-radius: 999px;
     color: var(--ma-mint);
     font-size: 0.74rem;
@@ -866,10 +865,9 @@ const cleanCopy = (value: string) =>
     background:
       linear-gradient(
         135deg,
-        rgba(0, 229, 160, 0.08),
+        rgba(5, 204, 144, 0.08),
         rgba(124, 139, 255, 0.05)
-      ),
-      var(--ma-bg);
+      );
     border-top: 1px solid var(--ma-border);
   }
 
@@ -884,10 +882,9 @@ const cleanCopy = (value: string) =>
     background:
       radial-gradient(
         circle at 50% 8%,
-        rgba(0, 229, 160, 0.14),
+        rgba(5, 204, 144, 0.14),
         transparent 27rem
-      ),
-      #000;
+      );
   }
 
   .insights-cta-inner {

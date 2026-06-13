@@ -1,8 +1,9 @@
 ---
-// V2: Midnight Authority Footer
+// STUDIO: ecosystem footer — quiet signal chrome
 ---
 
 <footer class="ma-footer">
+  <div class="st-stardivider" aria-hidden="true"><i></i></div>
   <div class="ma-container ma-footer-inner">
     <p class="ma-footer-copy">&copy; 2025 Digital Technology Partner. All Rights Reserved.</p>
     <div class="ma-footer-links">
@@ -15,9 +16,14 @@
 
 <style>
   .ma-footer {
-    background: var(--ma-bg);
-    border-top: 1px solid var(--ma-border);
-    padding: 2rem 0;
+    position: relative;
+    z-index: 1;
+    background: transparent;
+    padding: 3.2rem 0 2.4rem;
+  }
+
+  .ma-footer .st-stardivider {
+    margin-bottom: 2.6rem;
   }
 
   .ma-footer-inner {
@@ -28,29 +34,53 @@
 
   .ma-footer-copy {
     color: var(--ma-text-dim);
-    font-size: 0.85rem;
+    font-family: var(--ma-font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
   }
 
   .ma-footer-links {
     display: flex;
-    gap: 1.5rem;
+    gap: 1.8rem;
   }
 
   .ma-footer-links a {
     color: var(--ma-text-dim);
-    font-size: 0.85rem;
+    font-family: var(--ma-font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
     text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     transition: color 200ms ease;
   }
 
-  .ma-footer-links a:hover { color: var(--ma-mint); }
+  .ma-footer-links a::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--ma-mint);
+    opacity: 0.55;
+    transition: opacity 200ms ease, box-shadow 200ms ease;
+  }
+
+  .ma-footer-links a:hover {
+    color: var(--ma-mint);
+  }
+
+  .ma-footer-links a:hover::before {
+    opacity: 1;
+    box-shadow: 0 0 10px var(--ma-mint-glow);
+  }
 
   @media (max-width: 768px) {
     .ma-footer-inner {
       flex-direction: column;
-      gap: 1rem;
+      gap: 1.2rem;
       text-align: center;
     }
   }
 </style>
-

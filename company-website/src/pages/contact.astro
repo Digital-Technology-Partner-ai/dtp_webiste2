@@ -45,6 +45,16 @@ const doors = [
   <Header />
   <main>
     <section class="ma-hero">
+      <div class="st-backdrop st-backdrop--right" aria-hidden="true">
+        <img
+          src="/images/studio/pcb-blackhole-2400.webp"
+          srcset="/images/studio/pcb-blackhole-1280.webp 1280w, /images/studio/pcb-blackhole-2400.webp 2400w"
+          sizes="100vw"
+          alt=""
+          loading="eager"
+          fetchpriority="high"
+        />
+      </div>
       <div class="ma-grid-bg"></div>
       <div class="ma-scan-line"></div>
       <div class="ma-container ma-hero-content">
@@ -213,8 +223,12 @@ const doors = [
 <style>
   .ma-hero {
     position: relative;
+    min-height: 78vh;
+    display: flex;
+    align-items: center;
     padding: 11rem 0 6rem;
     overflow: hidden;
+    border-bottom: 1px solid var(--ma-border);
   }
 
   .ma-hero-content {
@@ -277,7 +291,7 @@ const doors = [
   }
 
   .one-sentence-section {
-    background: rgba(17, 17, 34, 0.42);
+    background: rgba(11, 16, 26, 0.4);
     border-top: 1px solid var(--ma-border);
     border-bottom: 1px solid var(--ma-border);
   }
@@ -301,9 +315,8 @@ const doors = [
     gap: 1rem;
     margin: 0;
     padding: 1rem 1.1rem;
-    border-left: 2px solid rgba(0, 229, 160, 0.68);
-    border-radius: var(--ma-radius);
-    background: rgba(5, 5, 9, 0.54);
+    border-left: 2px solid rgba(5, 204, 144, 0.68);
+    background: var(--st-panel-glass);
     color: var(--ma-text);
     font-family: var(--ma-font-display);
     font-size: 1rem;
@@ -320,13 +333,13 @@ const doors = [
   .opener-option:hover,
   .opener-option:focus-visible {
     border-left-color: var(--ma-mint);
-    background: rgba(0, 229, 160, 0.08);
+    background: rgba(5, 204, 144, 0.08);
     color: var(--ma-white);
     transform: translateX(3px);
   }
 
   .opener-option:focus-visible {
-    outline: 2px solid rgba(0, 229, 160, 0.72);
+    outline: 2px solid rgba(5, 204, 144, 0.72);
     outline-offset: 3px;
   }
 
@@ -345,7 +358,7 @@ const doors = [
   }
 
   .doors-section {
-    background: var(--ma-bg);
+    background: transparent;
   }
 
   .doors-grid {
@@ -475,11 +488,11 @@ const doors = [
   }
 
   .ma-cta {
-    padding: 6rem 0;
-    background: linear-gradient(
-      135deg,
-      var(--ma-surface) 0%,
-      var(--ma-bg) 100%
+    padding: 7rem 0;
+    background: radial-gradient(
+      circle at 50% 10%,
+      rgba(5, 204, 144, 0.1),
+      transparent 26rem
     );
     border-top: 1px solid var(--ma-border);
   }

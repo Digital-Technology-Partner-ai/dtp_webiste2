@@ -94,6 +94,16 @@ const noSellItems = [
   <Header />
   <main class="home-page">
     <section class="home-hero" aria-labelledby="home-title">
+      <div class="st-backdrop st-backdrop--right" aria-hidden="true">
+        <img
+          src="/images/studio/datacore-2400.webp"
+          srcset="/images/studio/datacore-1280.webp 1280w, /images/studio/datacore-2400.webp 2400w"
+          sizes="100vw"
+          alt=""
+          loading="eager"
+          fetchpriority="high"
+        />
+      </div>
       <div class="home-grid-bg"></div>
       <div class="ma-container home-layout">
         <div class="home-copy">
@@ -117,7 +127,7 @@ const noSellItems = [
           </div>
         </div>
 
-        <aside class="home-console" aria-label="DTP route overview">
+        <aside class="home-console st-brackets" aria-label="DTP route overview">
           <span class="console-kicker">Current operating map</span>
           <strong>Readiness → confidence → delivery</strong>
           <p>
@@ -279,24 +289,13 @@ const noSellItems = [
 <style>
   .home-page {
     min-height: 100vh;
-    background:
-      radial-gradient(
-        circle at 24% 20%,
-        rgba(0, 229, 160, 0.11),
-        transparent 30rem
-      ),
-      radial-gradient(
-        circle at 74% 28%,
-        rgba(124, 139, 255, 0.09),
-        transparent 28rem
-      ),
-      #000;
+    background: transparent;
   }
 
   .home-hero {
     position: relative;
-    min-height: 86vh;
-    padding: 8.25rem 0 4rem;
+    min-height: 92vh;
+    padding: 8.25rem 0 4.5rem;
     display: flex;
     align-items: center;
     overflow: hidden;
@@ -306,7 +305,8 @@ const noSellItems = [
   .home-grid-bg {
     position: absolute;
     inset: 0;
-    opacity: 0.14;
+    z-index: 0;
+    opacity: 0.1;
     background-image:
       linear-gradient(rgba(244, 241, 232, 0.05) 1px, transparent 1px),
       linear-gradient(90deg, rgba(244, 241, 232, 0.04) 1px, transparent 1px);
@@ -354,17 +354,17 @@ const noSellItems = [
   }
 
   .home-console {
-    padding: 1.5rem;
-    border: 1px solid rgba(244, 241, 232, 0.13);
-    border-radius: var(--ma-radius);
+    padding: 1.7rem;
+    border: 1px solid var(--ma-border);
     background:
       radial-gradient(
         circle at 24% 20%,
-        rgba(0, 229, 160, 0.14),
+        rgba(5, 204, 144, 0.12),
         transparent 14rem
       ),
-      rgba(5, 5, 9, 0.7);
-    box-shadow: 0 34px 100px rgba(0, 0, 0, 0.34);
+      var(--st-panel-glass);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 34px 100px rgba(0, 0, 0, 0.4);
   }
 
   .console-kicker,
@@ -400,7 +400,7 @@ const noSellItems = [
 
   .familiar-section,
   .pathway-section {
-    background: var(--ma-bg);
+    background: transparent;
   }
 
   .ma-section-header p {
@@ -420,10 +420,15 @@ const noSellItems = [
   .path-card {
     display: block;
     min-height: 178px;
-    padding: 1.25rem;
-    border: 1px solid rgba(244, 241, 232, 0.13);
-    border-radius: var(--ma-radius);
-    background: var(--ma-surface);
+    padding: 1.4rem;
+    border: 1px solid var(--ma-border);
+    background: var(--st-panel-glass);
+    backdrop-filter: blur(6px);
+    transition: border-color var(--ma-transition);
+  }
+
+  .state-card:hover {
+    border-color: rgba(5, 204, 144, 0.45);
   }
 
   .path-card {
@@ -530,7 +535,7 @@ const noSellItems = [
 
   .leader-section {
     border-top: 1px solid var(--ma-border);
-    background: #050509;
+    background: rgba(7, 9, 13, 0.55);
   }
 
   .leader-grid,
@@ -559,13 +564,11 @@ const noSellItems = [
   .proof-section {
     border-top: 1px solid var(--ma-border);
     border-bottom: 1px solid var(--ma-border);
-    background:
-      linear-gradient(
-        135deg,
-        rgba(0, 229, 160, 0.08),
-        rgba(124, 139, 255, 0.06)
-      ),
-      #07070c;
+    background: linear-gradient(
+      135deg,
+      rgba(5, 204, 144, 0.07),
+      rgba(124, 139, 255, 0.05)
+    );
   }
 
   .proof-grid {
@@ -581,9 +584,8 @@ const noSellItems = [
 
   .proof-points article {
     padding: 1.2rem;
-    border: 1px solid rgba(244, 241, 232, 0.12);
-    border-radius: var(--ma-radius);
-    background: rgba(5, 5, 9, 0.58);
+    border: 1px solid var(--ma-border);
+    background: var(--st-panel-glass);
   }
 
   .proof-points strong {
@@ -600,7 +602,7 @@ const noSellItems = [
   }
 
   .wont-sell-section {
-    background: var(--ma-bg);
+    background: transparent;
   }
 
   .wont-sell-list {
@@ -611,8 +613,8 @@ const noSellItems = [
   .wont-sell-list p {
     margin: 0;
     padding: 1rem 1.1rem;
-    border-left: 3px solid rgba(0, 229, 160, 0.72);
-    background: rgba(244, 241, 232, 0.04);
+    border-left: 2px solid rgba(5, 204, 144, 0.72);
+    background: rgba(11, 16, 26, 0.66);
     color: #f4f1e8;
     line-height: 1.52;
   }
@@ -627,15 +629,13 @@ const noSellItems = [
   }
 
   .home-cta {
-    padding: 6rem 0;
+    padding: 7rem 0;
     text-align: center;
-    background:
-      radial-gradient(
-        circle at 50% 14%,
-        rgba(0, 229, 160, 0.12),
-        transparent 26rem
-      ),
-      #050509;
+    background: radial-gradient(
+      circle at 50% 14%,
+      rgba(5, 204, 144, 0.1),
+      transparent 26rem
+    );
   }
 
   .home-cta-inner {

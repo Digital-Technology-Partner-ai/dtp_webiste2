@@ -94,6 +94,16 @@ const routeLinks = [
   <Header />
   <main class="process-page">
     <section class="process-hero" aria-labelledby="process-title">
+      <div class="st-backdrop st-backdrop--right" aria-hidden="true">
+        <img
+          src="/images/studio/signalriver-2400.webp"
+          srcset="/images/studio/signalriver-1280.webp 1280w, /images/studio/signalriver-2400.webp 2400w"
+          sizes="100vw"
+          alt=""
+          loading="eager"
+          fetchpriority="high"
+        />
+      </div>
       <div class="process-grid"></div>
       <div class="ma-container process-hero-inner">
         <div class="process-copy" data-process-reveal>
@@ -118,7 +128,7 @@ const routeLinks = [
         </div>
 
         <aside
-          class="delivery-console"
+          class="delivery-console st-brackets"
           aria-label="Animated DTP delivery corridor"
           data-process-reveal
         >
@@ -620,10 +630,9 @@ const routeLinks = [
       ),
       radial-gradient(
         circle at 78% 18%,
-        rgba(124, 139, 255, 0.1),
+        rgba(124, 139, 255, 0.07),
         transparent 30rem
-      ),
-      linear-gradient(135deg, #000 0%, #080812 56%, #000 100%);
+      );
     color: var(--ma-text);
   }
 
@@ -687,27 +696,17 @@ const routeLinks = [
 
   .delivery-console {
     position: relative;
-    overflow: hidden;
     padding: 1.25rem;
-    border: 1px solid rgba(244, 241, 232, 0.14);
-    border-radius: var(--ma-radius);
+    border: 1px solid var(--ma-border);
     background:
       radial-gradient(
         circle at 48% 42%,
-        rgba(0, 229, 160, 0.13),
+        rgba(5, 204, 144, 0.12),
         transparent 22rem
       ),
-      linear-gradient(145deg, rgba(17, 17, 34, 0.84), rgba(0, 0, 0, 0.5));
-    box-shadow: 0 34px 100px rgba(0, 0, 0, 0.32);
-  }
-
-  .delivery-console::before {
-    content: '';
-    position: absolute;
-    inset: 1rem;
-    border: 1px solid rgba(0, 229, 160, 0.08);
-    border-radius: 6px;
-    pointer-events: none;
+      linear-gradient(145deg, rgba(11, 16, 26, 0.86), rgba(4, 6, 9, 0.55));
+    backdrop-filter: blur(8px);
+    box-shadow: 0 34px 100px rgba(0, 0, 0, 0.38);
   }
 
   .delivery-console-top,
@@ -783,7 +782,7 @@ const routeLinks = [
   }
 
   .phase-section {
-    background: #050509;
+    background: rgba(7, 9, 13, 0.5);
   }
 
   .phase-layout {
@@ -843,8 +842,8 @@ const routeLinks = [
     border: 1px solid rgba(244, 241, 232, 0.12);
     border-radius: var(--ma-radius);
     background:
-      linear-gradient(90deg, rgba(0, 229, 160, 0.055), transparent 46%),
-      rgba(17, 17, 34, 0.68);
+      linear-gradient(90deg, rgba(5, 204, 144, 0.05), transparent 46%),
+      rgba(11, 16, 26, 0.7);
     transition:
       border-color 220ms ease,
       box-shadow 260ms ease,
@@ -922,13 +921,11 @@ const routeLinks = [
   }
 
   .safeguard-section {
-    background:
-      linear-gradient(
-        135deg,
-        rgba(0, 229, 160, 0.08),
-        rgba(124, 139, 255, 0.05)
-      ),
-      var(--ma-bg);
+    background: linear-gradient(
+      135deg,
+      rgba(5, 204, 144, 0.07),
+      rgba(124, 139, 255, 0.04)
+    );
     border-top: 1px solid var(--ma-border);
     border-bottom: 1px solid var(--ma-border);
   }
@@ -948,8 +945,8 @@ const routeLinks = [
   .safeguard-list p {
     margin: 0;
     padding: 1.1rem 1.2rem;
-    border-left: 2px solid rgba(0, 229, 160, 0.68);
-    background: rgba(5, 5, 9, 0.54);
+    border-left: 2px solid rgba(5, 204, 144, 0.68);
+    background: var(--st-panel-glass);
   }
 
   .safeguard-list .safeguard-note {
@@ -960,7 +957,7 @@ const routeLinks = [
   }
 
   .route-section {
-    background: #050509;
+    background: transparent;
   }
 
   .route-head {
@@ -979,9 +976,9 @@ const routeLinks = [
     gap: 0.65rem;
     min-height: 170px;
     padding: 1.25rem;
-    border: 1px solid rgba(244, 241, 232, 0.13);
-    border-radius: var(--ma-radius);
-    background: rgba(17, 17, 34, 0.68);
+    border: 1px solid var(--ma-border);
+    background: var(--st-panel-glass);
+    backdrop-filter: blur(6px);
     text-decoration: none;
     transition:
       border-color 180ms ease,
@@ -1009,15 +1006,13 @@ const routeLinks = [
   }
 
   .process-cta {
-    padding: 5.8rem 0;
+    padding: 7rem 0;
     text-align: center;
-    background:
-      radial-gradient(
-        circle at 50% 8%,
-        rgba(0, 229, 160, 0.14),
-        transparent 27rem
-      ),
-      #000;
+    background: radial-gradient(
+      circle at 50% 8%,
+      rgba(5, 204, 144, 0.11),
+      transparent 27rem
+    );
   }
 
   .process-cta-inner {

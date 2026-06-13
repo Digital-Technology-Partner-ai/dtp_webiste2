@@ -1,0 +1,529 @@
+/* ============================================================
+   STUDIO — cinematic layer for DTP internal pages
+   Extends the Ecosystem Gallery's visual language inward:
+   near-black canvas, mint signal accent, mono interface
+   labels, square panels, scanlines, starfield atmosphere.
+   Loaded after v2-design-system.css — token-level re-skin.
+   ============================================================ */
+
+:root {
+  /* gallery-aligned tokens */
+  --ma-bg: #07090d;
+  --ma-surface: #0b101a;
+  --ma-surface-alt: #090d15;
+  --ma-border: rgba(242, 241, 236, 0.12);
+  --ma-border-hover: rgba(242, 241, 236, 0.3);
+  --ma-mint: #05cc90;
+  --ma-mint-dim: rgba(5, 204, 144, 0.12);
+  --ma-mint-glow: rgba(5, 204, 144, 0.35);
+  --ma-text: #c9cfd6;
+  --ma-text-dim: #9aa3ad;
+  --ma-white: #f2f1ec;
+  --ma-radius: 0px;
+  --ma-radius-lg: 0px;
+
+  /* studio additions */
+  --st-ink-faint: rgba(242, 241, 236, 0.38);
+  --st-panel-glass: rgba(11, 16, 26, 0.78);
+  --st-star-mint: #00e5a0;
+  --st-star-blue: #7c8bff;
+  --st-star-ivory: #f4f1e8;
+  --st-star-amber: #f4c84a;
+}
+
+/* ---------- base atmosphere ---------- */
+
+body {
+  background: var(--ma-bg);
+}
+
+/* fixed three.js starfield behind all content */
+.st-stars {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  pointer-events: none;
+}
+
+/* CRT scanlines + vignette above content, below chrome */
+.st-scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 70;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 3px,
+    rgba(255, 255, 255, 0.012) 3px,
+    rgba(255, 255, 255, 0.012) 4px
+  );
+}
+
+.st-vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 69;
+  background: radial-gradient(
+    ellipse 120% 90% at 50% 50%,
+    transparent 55%,
+    rgba(4, 5, 8, 0.55) 100%
+  );
+}
+
+/* page-enter wipe — receives the gallery's travel transition.
+   Hidden until JS confirms it can animate it away. */
+.st-wipe {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 240;
+  background: var(--ma-bg);
+  pointer-events: none;
+}
+
+html.st-js .st-wipe {
+  display: block;
+}
+
+.st-wipe::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--ma-mint), transparent);
+  opacity: 0.8;
+  box-shadow: 0 0 24px var(--ma-mint-glow);
+}
+
+
+/* content sits above the starfield */
+main {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- typography scale-up ---------- */
+
+h1 {
+  font-size: clamp(2.7rem, 6.6vw, 5.6rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.0;
+}
+
+h2 {
+  font-size: clamp(1.9rem, 3.8vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.08;
+}
+
+::selection {
+  background: rgba(5, 204, 144, 0.28);
+  color: var(--ma-white);
+}
+
+/* mono interface kicker */
+.ma-section-tag {
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  opacity: 1;
+  color: var(--ma-mint);
+}
+
+.ma-section-tag::after {
+  content: '';
+  display: inline-block;
+  width: 34px;
+  height: 1px;
+  margin-left: 14px;
+  vertical-align: middle;
+  background: linear-gradient(90deg, var(--ma-mint), transparent);
+  opacity: 0.55;
+}
+
+/* ---------- buttons: square signal controls ---------- */
+
+.ma-btn {
+  border-radius: 0;
+  font-family: var(--ma-font-mono);
+  font-weight: 500;
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  padding: 0.95rem 1.7rem;
+  position: relative;
+}
+
+.ma-btn-mint {
+  background: var(--ma-mint);
+  color: #04130d;
+}
+
+.ma-btn-mint:hover {
+  background: #06e6a2;
+  transform: translateY(-2px);
+  box-shadow: 0 0 28px var(--ma-mint-glow);
+}
+
+.ma-btn-outline {
+  border: 1px solid rgba(5, 204, 144, 0.55);
+  color: var(--ma-mint);
+  background: rgba(5, 204, 144, 0.02);
+}
+
+.ma-btn-outline:hover {
+  background: var(--ma-mint);
+  border-color: var(--ma-mint);
+  color: #04130d;
+}
+
+.ma-btn-lg {
+  font-size: 0.86rem;
+  padding: 1.05rem 2.1rem;
+}
+
+/* ---------- cards: glass panels with corner brackets ---------- */
+
+.ma-card {
+  border-radius: 0;
+  background: var(--st-panel-glass);
+  backdrop-filter: blur(6px);
+}
+
+.ma-card:hover {
+  box-shadow:
+    0 0 0 1px rgba(5, 204, 144, 0.65),
+    0 18px 50px rgba(5, 204, 144, 0.07);
+}
+
+/* mint corner brackets — the gallery node framing, as a utility */
+.st-brackets {
+  position: relative;
+}
+
+.st-brackets::before,
+.st-brackets::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  border: 0 solid rgba(5, 204, 144, 0.55);
+  transition: border-color 0.3s;
+}
+
+.st-brackets::before {
+  top: -1px;
+  left: -1px;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+
+.st-brackets::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom-width: 1px;
+  border-right-width: 1px;
+}
+
+.st-brackets:hover::before,
+.st-brackets:hover::after {
+  border-color: var(--ma-mint);
+}
+
+/* ---------- hero backdrop art (4K panels) ---------- */
+
+.st-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.st-backdrop img {
+  position: absolute;
+  inset: -6% -3%;
+  width: 106%;
+  height: 112%;
+  max-width: none;
+  object-fit: cover;
+  opacity: 0.3;
+  filter: saturate(0.96) brightness(0.8) contrast(1.1);
+  will-change: transform;
+}
+
+/* grade the art into the page: darken edges, keep the glow core */
+.st-backdrop::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(7, 9, 13, 0.94) 0%, rgba(7, 9, 13, 0.46) 26%, rgba(7, 9, 13, 0.52) 62%, var(--ma-bg) 98%),
+    radial-gradient(ellipse 90% 70% at 50% 44%, transparent 30%, rgba(7, 9, 13, 0.72) 100%);
+}
+
+/* art pushed right, copy side kept dark */
+.st-backdrop--right img {
+  object-position: 70% 50%;
+}
+
+.st-backdrop--right::before {
+  background:
+    linear-gradient(90deg, rgba(7, 9, 13, 0.94) 6%, rgba(7, 9, 13, 0.3) 52%, rgba(7, 9, 13, 0.5) 100%),
+    linear-gradient(180deg, rgba(7, 9, 13, 0.9) 0%, rgba(7, 9, 13, 0.3) 30%, rgba(7, 9, 13, 0.4) 68%, var(--ma-bg) 98%);
+}
+
+/* full-bleed band for mid-page or CTA sections */
+.st-backdrop--band img {
+  opacity: 0.24;
+}
+
+.st-backdrop--band::before {
+  background:
+    linear-gradient(180deg, var(--ma-bg) 0%, rgba(7, 9, 13, 0.42) 24%, rgba(7, 9, 13, 0.42) 72%, var(--ma-bg) 100%),
+    radial-gradient(ellipse 80% 80% at 50% 50%, transparent 26%, rgba(7, 9, 13, 0.6) 100%);
+}
+
+.st-backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(4, 6, 9, 0.16) 2px,
+    rgba(4, 6, 9, 0.16) 4px
+  );
+  opacity: 0.5;
+}
+
+/* ---------- star glyph dividers ---------- */
+
+.st-stardivider {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 0 auto;
+  border: 0;
+  width: min(420px, 70%);
+  opacity: 0.7;
+}
+
+.st-stardivider::before,
+.st-stardivider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(242, 241, 236, 0.22));
+}
+
+.st-stardivider::after {
+  background: linear-gradient(90deg, rgba(242, 241, 236, 0.22), transparent);
+}
+
+.st-stardivider i {
+  width: 5px;
+  height: 5px;
+  background: var(--ma-mint);
+  transform: rotate(45deg);
+  box-shadow: 0 0 12px var(--ma-mint-glow);
+}
+
+/* ---------- HUD micro-labels ---------- */
+
+.st-hud {
+  font-family: var(--ma-font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+  color: var(--st-ink-faint);
+  text-transform: uppercase;
+}
+
+.st-hud--mint {
+  color: var(--ma-mint);
+}
+
+/* pulse dot, from the gallery status line */
+.st-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ma-mint);
+  animation: st-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes st-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.55); opacity: 0.45; }
+}
+
+/* ---------- scroll progress beam ---------- */
+
+.st-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  z-index: 210;
+  transform-origin: 0 0;
+  transform: scaleX(0);
+  background: linear-gradient(90deg, var(--ma-mint), rgba(5, 204, 144, 0.35));
+  box-shadow: 0 0 16px var(--ma-mint-glow);
+  pointer-events: none;
+}
+
+/* ---------- ecosystem index overlay ---------- */
+
+.st-index {
+  position: fixed;
+  inset: 0;
+  z-index: 220;
+  background: var(--ma-bg);
+  display: flex;
+  flex-direction: column;
+  padding: 26px 36px;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.st-index-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6vh;
+}
+
+.st-index-title {
+  font-family: var(--ma-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--ma-text-dim);
+}
+
+.st-index-close {
+  background: none;
+  border: none;
+  color: var(--ma-white);
+  font-family: var(--ma-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  cursor: pointer;
+  padding: 10px 0;
+}
+
+.st-index-close:hover {
+  color: var(--ma-mint);
+}
+
+.st-index-list {
+  list-style: none;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+}
+
+.st-index-list li {
+  border-bottom: 1px solid var(--ma-border);
+}
+
+.st-index-list a {
+  display: flex;
+  align-items: baseline;
+  gap: 26px;
+  padding: 18px 6px;
+  text-decoration: none;
+  color: var(--ma-white);
+  transition: padding-left 0.25s;
+}
+
+.st-index-list a:hover,
+.st-index-list a:focus-visible {
+  padding-left: 18px;
+  outline: none;
+}
+
+.st-index-num {
+  font-family: var(--ma-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--ma-mint);
+}
+
+.st-index-name {
+  font-family: var(--ma-font-display);
+  font-size: clamp(20px, 3vw, 34px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+
+.st-index-desc {
+  font-family: var(--ma-font-body);
+  font-weight: 300;
+  font-size: 13px;
+  color: var(--ma-text-dim);
+  margin-left: auto;
+  text-align: right;
+  max-width: 320px;
+}
+
+.st-index-foot {
+  margin-top: 4vh;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.st-index-foot a:not(.ma-btn) {
+  color: var(--ma-mint);
+  font-family: var(--ma-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-decoration: none;
+}
+
+@media (max-width: 760px) {
+  .st-index {
+    padding: 20px 22px;
+  }
+
+  .st-index-desc {
+    display: none;
+  }
+
+  .st-index-list a {
+    padding: 14px 4px;
+  }
+}
+
+/* ---------- reveal initial states (JS adds .st-anim) ---------- */
+
+html.st-anim [data-sr] {
+  opacity: 0;
+}
+
+/* ---------- reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .st-dot {
+    animation: none;
+  }
+
+  html.st-anim [data-sr] {
+    opacity: 1;
+  }
+}

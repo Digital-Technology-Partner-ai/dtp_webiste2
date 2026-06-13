@@ -140,7 +140,7 @@ const trustModes = [
         </div>
 
         <aside
-          class="trust-console"
+          class="trust-console st-brackets"
           aria-label="DTP trust model"
           data-why-reveal
         >
@@ -197,6 +197,15 @@ const trustModes = [
     </section>
 
     <section class="ma-section failure-section">
+      <div class="st-backdrop st-backdrop--band" aria-hidden="true">
+        <img
+          src="/images/studio/synapse-2400.webp"
+          srcset="/images/studio/synapse-1280.webp 1280w, /images/studio/synapse-2400.webp 2400w"
+          sizes="100vw"
+          alt=""
+          loading="lazy"
+        />
+      </div>
       <div class="ma-container failure-inner" data-why-reveal>
         <span class="ma-section-tag">// designed_against_failure</span>
         <h2>Most AI projects don't fail loudly. They dissolve.</h2>
@@ -305,7 +314,7 @@ const trustModes = [
           the unglamorous work of making AI operational, governed and worth the
           money.
         </p>
-        <strong>[founder name], Founder, Digital Technology Partner</strong>
+        <strong>Steve Shearman, Founder, Digital Technology Partner</strong>
       </div>
     </section>
 
@@ -724,15 +733,14 @@ const trustModes = [
     background:
       radial-gradient(
         circle at 18% 14%,
-        rgba(0, 229, 160, 0.12),
+        rgba(5, 204, 144, 0.1),
         transparent 30rem
       ),
       radial-gradient(
         circle at 82% 18%,
-        rgba(124, 139, 255, 0.1),
+        rgba(124, 139, 255, 0.07),
         transparent 30rem
-      ),
-      linear-gradient(135deg, #000 0%, #080812 56%, #000 100%);
+      );
     color: var(--ma-text);
   }
 
@@ -804,28 +812,17 @@ const trustModes = [
 
   .trust-console {
     position: relative;
-    overflow: hidden;
     padding: 1.2rem;
-    border: 1px solid rgba(244, 241, 232, 0.14);
-    border-radius: var(--ma-radius);
+    border: 1px solid var(--ma-border);
     background:
       radial-gradient(
         circle at 30% 18%,
-        rgba(0, 229, 160, 0.12),
+        rgba(5, 204, 144, 0.1),
         transparent 16rem
       ),
-      rgba(5, 5, 9, 0.68);
-    box-shadow: 0 28px 90px rgba(0, 0, 0, 0.34);
+      var(--st-panel-glass);
+    box-shadow: 0 28px 90px rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(14px);
-  }
-
-  .trust-console::before {
-    content: '';
-    position: absolute;
-    inset: 1rem;
-    border: 1px solid rgba(0, 229, 160, 0.08);
-    border-radius: 6px;
-    pointer-events: none;
   }
 
   .trust-console-top {
@@ -860,8 +857,7 @@ const trustModes = [
     min-height: 82px;
     padding: 0.9rem;
     border: 1px solid rgba(244, 241, 232, 0.12);
-    border-radius: var(--ma-radius);
-    background: rgba(17, 17, 34, 0.6);
+    background: rgba(11, 16, 26, 0.6);
     color: #d8d6ce;
     cursor: pointer;
     text-align: left;
@@ -912,7 +908,7 @@ const trustModes = [
   }
 
   .trust-signal-section {
-    background: rgba(17, 17, 34, 0.52);
+    background: rgba(11, 16, 26, 0.45);
     border-bottom: 1px solid var(--ma-border);
   }
 
@@ -948,10 +944,10 @@ const trustModes = [
   .trust-signal-card {
     position: relative;
     padding: 1.35rem 1.45rem;
-    border-left: 2px solid rgba(0, 229, 160, 0.66);
+    border-left: 2px solid rgba(5, 204, 144, 0.66);
     background:
-      linear-gradient(90deg, rgba(0, 229, 160, 0.09), transparent 62%),
-      rgba(5, 5, 9, 0.54);
+      linear-gradient(90deg, rgba(5, 204, 144, 0.08), transparent 62%),
+      var(--st-panel-glass);
   }
 
   .trust-signal-card span,
@@ -980,24 +976,23 @@ const trustModes = [
   }
 
   .operating-section {
-    background:
-      radial-gradient(
-        circle at 84% 12%,
-        rgba(0, 229, 160, 0.1),
-        transparent 28rem
-      ),
-      #050509;
+    background: radial-gradient(
+      circle at 84% 12%,
+      rgba(5, 204, 144, 0.08),
+      transparent 28rem
+    );
   }
 
   .failure-section {
+    position: relative;
     border-bottom: 1px solid var(--ma-border);
-    background:
-      radial-gradient(
-        circle at 18% 30%,
-        rgba(124, 139, 255, 0.08),
-        transparent 28rem
-      ),
-      #000;
+    padding: 8rem 0;
+    overflow: hidden;
+  }
+
+  .failure-inner {
+    position: relative;
+    z-index: 1;
   }
 
   .failure-inner,
@@ -1038,7 +1033,7 @@ const trustModes = [
     border-right: 1px solid rgba(244, 241, 232, 0.12);
     background:
       linear-gradient(180deg, rgba(244, 241, 232, 0.035), transparent 44%),
-      rgba(17, 17, 34, 0.62);
+      rgba(11, 16, 26, 0.66);
   }
 
   .operating-path article:last-child {
@@ -1063,7 +1058,7 @@ const trustModes = [
   }
 
   .checklist-section {
-    background: rgba(17, 17, 34, 0.52);
+    background: rgba(11, 16, 26, 0.45);
     border-top: 1px solid var(--ma-border);
   }
 
@@ -1081,11 +1076,15 @@ const trustModes = [
   .checklist-card {
     min-height: 250px;
     padding: 1.25rem;
-    border: 1px solid rgba(244, 241, 232, 0.13);
-    border-radius: var(--ma-radius);
+    border: 1px solid var(--ma-border);
     background:
       linear-gradient(180deg, rgba(244, 241, 232, 0.035), transparent 44%),
-      rgba(5, 5, 9, 0.58);
+      var(--st-panel-glass);
+    transition: border-color var(--ma-transition);
+  }
+
+  .checklist-card:hover {
+    border-color: rgba(5, 204, 144, 0.45);
   }
 
   .checklist-card span {
@@ -1114,13 +1113,11 @@ const trustModes = [
   }
 
   .proof-band {
-    background:
-      linear-gradient(
-        135deg,
-        rgba(0, 229, 160, 0.08),
-        rgba(124, 139, 255, 0.05)
-      ),
-      var(--ma-bg);
+    background: linear-gradient(
+      135deg,
+      rgba(5, 204, 144, 0.07),
+      rgba(124, 139, 255, 0.04)
+    );
     border-top: 1px solid var(--ma-border);
     border-bottom: 1px solid var(--ma-border);
   }
@@ -1139,9 +1136,8 @@ const trustModes = [
   .proof-lines p {
     margin: 0;
     padding: 1.1rem 1.2rem;
-    border: 1px solid rgba(244, 241, 232, 0.13);
-    border-radius: var(--ma-radius);
-    background: rgba(5, 5, 9, 0.54);
+    border: 1px solid var(--ma-border);
+    background: var(--st-panel-glass);
   }
 
   .proof-lines strong {
@@ -1162,7 +1158,7 @@ const trustModes = [
   }
 
   .founder-section {
-    background: #050509;
+    background: rgba(7, 9, 13, 0.55);
     border-bottom: 1px solid var(--ma-border);
   }
 
@@ -1175,15 +1171,13 @@ const trustModes = [
   }
 
   .why-cta {
-    padding: 5.8rem 0;
+    padding: 7rem 0;
     text-align: center;
-    background:
-      radial-gradient(
-        circle at 50% 8%,
-        rgba(0, 229, 160, 0.14),
-        transparent 27rem
-      ),
-      #000;
+    background: radial-gradient(
+      circle at 50% 8%,
+      rgba(5, 204, 144, 0.11),
+      transparent 27rem
+    );
   }
 
   .why-cta-inner {
