@@ -210,6 +210,7 @@ const VERT = /* glsl */ `
 
 const FRAG = /* glsl */ `
   uniform sampler2D uMap;
+  uniform sampler2D uDescMask;
   uniform float uHover;
   uniform float uOpacity;
   varying vec2 vUv;
@@ -218,7 +219,10 @@ const FRAG = /* glsl */ `
     float bx = min(vUv.x, 1.0 - vUv.x);
     float by = min(vUv.y, 1.0 - vUv.y);
     float edge = 1.0 - smoothstep(0.0, 0.055, min(bx, by));
-    vec3 col = tex.rgb * (1.0 + uHover * 0.22);
+    // tint the subtitle toward mint on hover, matching the card border colour
+    float descMask = texture2D(uDescMask, vUv).a;
+    vec3 base = mix(tex.rgb, ${MINT_GLSL}, descMask * uHover);
+    vec3 col = base * (1.0 + uHover * 0.22);
     col += ${MINT_GLSL} * edge * uHover * 0.5;
     float a = tex.a * uOpacity;
     a = max(a, edge * uHover * 0.3 * uOpacity);
@@ -321,25 +325,61 @@ function makeNodeTexture(dest, index) {
   x.font = '500 40px "IBM Plex Mono", monospace';
   x.fillText(`0${index + 1}`, 64, 124);
 
-  // title (wraps if needed)
-  x.fillStyle = '#F2F1EC';
-  x.font = '600 84px "Space Grotesk", sans-serif';
-  const titleLines = wrapText(x, dest.title, 880);
-  const titleY = titleLines.length > 1 ? 300 : 348;
-  titleLines.forEach((ln, i) => x.fillText(ln, 64, titleY + i * 94));
+  // card copy — hook title + outcome line, falling back to nav title/desc
+  const cardTitle = dest.cardTitle || dest.title;
+  const cardDesc = dest.cardDesc || dest.desc;
 
-  // descriptor
+  // adaptive title sizing: short labels stay bold, longer hooks step down to breathe
+  const titleSizes = [84, 68, 58, 50];
+  let titlePx = titleSizes[0];
+  let titleLines = [];
+  for (const px of titleSizes) {
+    x.font = `600 ${px}px "Space Grotesk", sans-serif`;
+    titleLines = wrapText(x, cardTitle, 896);
+    titlePx = px;
+    if (titleLines.length <= 2) break;
+  }
+  const titleLH = Math.round(titlePx * 1.14);
+
+  // outcome / support line
+  x.font = '300 32px "IBM Plex Sans", sans-serif';
+  const descLines = wrapText(x, cardDesc, 900);
+  const descLH = 42;
+
+  // vertically centre the title + desc block in the card body
+  const gap = 36;
+  const blockH = titleLines.length * titleLH + gap + descLines.length * descLH;
+  const areaTop = 168, areaBot = 540;
+  const blockTop = areaTop + Math.max(0, ((areaBot - areaTop) - blockH) / 2);
+
+  x.fillStyle = '#F2F1EC';
+  x.font = `600 ${titlePx}px "Space Grotesk", sans-serif`;
+  titleLines.forEach((ln, i) => x.fillText(ln, 64, blockTop + titleLH * i + titlePx * 0.78));
+
+  const descTop = blockTop + titleLines.length * titleLH + gap;
+  const descFont = '300 32px "IBM Plex Sans", sans-serif';
   x.fillStyle = '#9AA3AD';
-  x.font = '300 33px "IBM Plex Sans", sans-serif';
-  wrapText(x, dest.desc, 880).forEach((ln, i) => x.fillText(ln, 64, 520 + i * 44));
+  x.font = descFont;
+  descLines.forEach((ln, i) => x.fillText(ln, 64, descTop + descLH * i + 24));
 
   // mint signature mark
   x.fillStyle = 'rgba(5, 204, 144, 0.85)';
-  x.fillRect(64, 558, 56, 3);
+  x.fillRect(64, 566, 56, 3);
+
+  // subtitle mask — same glyphs, white on transparent — lets the shader tint
+  // just the subtitle mint on hover (matching the card border colour)
+  const maskCanvas = document.createElement('canvas');
+  maskCanvas.width = c.width; maskCanvas.height = c.height;
+  const mx = maskCanvas.getContext('2d');
+  mx.fillStyle = '#ffffff';
+  mx.font = descFont;
+  descLines.forEach((ln, i) => mx.fillText(ln, 64, descTop + descLH * i + 24));
 
   const tex = new THREE.CanvasTexture(c);
   tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
-  return tex;
+  const descMask = new THREE.CanvasTexture(maskCanvas);
+  descMask.anisotropy = tex.anisotropy;
+  return { map: tex, descMask };
 }
 
 /* ---------------- build nodes ---------------- */
@@ -355,8 +395,10 @@ function buildNodes() {
       const index = DESTINATIONS.indexOf(dest);
       const effW = NODE_W / Math.cos(lat);
       const geo = curvedPanelGeometry(theta, lat, effW, NODE_H, RADIUS);
+      const card = makeNodeTexture(dest, index);
       const uniforms = {
-        uMap: { value: makeNodeTexture(dest, index) },
+        uMap: { value: card.map },
+        uDescMask: { value: card.descMask },
         uHover: { value: 0 },
         uOpacity: { value: 0 },
       };
