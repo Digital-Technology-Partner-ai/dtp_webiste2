@@ -35,11 +35,60 @@
         letter-spacing: 0.08em;
         text-transform: uppercase;
       }
+
+      @media (hover: hover) and (pointer: fine) {
+        body.gallery-starfield-cursor-ready,
+        body.gallery-starfield-cursor-ready a,
+        body.gallery-starfield-cursor-ready button,
+        body.gallery-starfield-cursor-ready #starfield {
+          cursor: none !important;
+        }
+
+        .gallery-starfield-cursor,
+        .gallery-starfield-cursor-ring {
+          position: fixed;
+          top: 0;
+          left: 0;
+          z-index: 20;
+          border-radius: 50%;
+          pointer-events: none;
+          opacity: 0;
+          mix-blend-mode: difference;
+        }
+
+        .gallery-starfield-cursor {
+          width: 6px;
+          height: 6px;
+          margin: -3px 0 0 -3px;
+          background: #f2f1ec;
+        }
+
+        .gallery-starfield-cursor-ring {
+          width: 34px;
+          height: 34px;
+          margin: -17px 0 0 -17px;
+          border: 1px solid rgba(242, 241, 236, 0.5);
+          transition:
+            width 220ms ease,
+            height 220ms ease,
+            margin 220ms ease,
+            border-color 220ms ease;
+        }
+
+        .gallery-starfield-cursor-ring.is-hover {
+          width: 56px;
+          height: 56px;
+          margin: -28px 0 0 -28px;
+          border-color: rgba(5, 204, 144, 0.9);
+        }
+      }
     </style>
   </head>
   <body>
     <canvas id="starfield"></canvas>
     <div class="label">universeGroup / portrait universeParticles</div>
+    <div class="gallery-starfield-cursor" id="galleryStarfieldCursor" aria-hidden="true"></div>
+    <div class="gallery-starfield-cursor-ring" id="galleryStarfieldCursorRing" aria-hidden="true"></div>
 
     <script is:inline type="module">
       import * as THREE from 'three';
@@ -191,6 +240,67 @@
       }
 
       animate();
+    </script>
+    <script is:inline>
+      (() => {
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+        if (reduceMotion || !finePointer) return;
+
+        const dot = document.getElementById('galleryStarfieldCursor');
+        const ring = document.getElementById('galleryStarfieldCursorRing');
+        if (!dot || !ring) return;
+
+        document.body.classList.add('gallery-starfield-cursor-ready');
+
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let ringX = mouseX;
+        let ringY = mouseY;
+
+        const setTransform = (element, x, y) => {
+          element.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+        };
+
+        document.addEventListener('mousemove', (event) => {
+          mouseX = event.clientX;
+          mouseY = event.clientY;
+          dot.style.opacity = '1';
+          ring.style.opacity = '1';
+          setTransform(dot, mouseX, mouseY);
+        });
+
+        document.addEventListener('mouseover', (event) => {
+          if (event.target instanceof Element && event.target.closest('a, button, [role="button"]')) {
+            ring.classList.add('is-hover');
+          }
+        });
+
+        document.addEventListener('mouseout', (event) => {
+          if (event.target instanceof Element && event.target.closest('a, button, [role="button"]')) {
+            ring.classList.remove('is-hover');
+          }
+        });
+
+        document.addEventListener('mouseleave', () => {
+          dot.style.opacity = '0';
+          ring.style.opacity = '0';
+        });
+
+        document.addEventListener('mouseenter', () => {
+          dot.style.opacity = '1';
+          ring.style.opacity = '1';
+        });
+
+        const tick = () => {
+          ringX += (mouseX - ringX) * 0.18;
+          ringY += (mouseY - ringY) * 0.18;
+          setTransform(ring, ringX, ringY);
+          requestAnimationFrame(tick);
+        };
+
+        tick();
+      })();
     </script>
   </body>
 </html>

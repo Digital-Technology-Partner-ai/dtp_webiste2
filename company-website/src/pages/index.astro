@@ -212,6 +212,55 @@ const ecosystemAssetVersion = '20260613-dtp-ecosystem-band-20-11';
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href={`/ecosystem/css/style.css?v=${ecosystemAssetVersion}`} />
+    <style>
+      @media (hover: hover) and (pointer: fine) {
+        body.gallery-cursor-ready,
+        body.gallery-cursor-ready a,
+        body.gallery-cursor-ready button,
+        body.gallery-cursor-ready #scene,
+        body.gallery-cursor-ready .ring-item {
+          cursor: none !important;
+        }
+
+        .gallery-cursor,
+        .gallery-cursor-ring {
+          position: fixed;
+          top: 0;
+          left: 0;
+          z-index: 99999;
+          border-radius: 50%;
+          pointer-events: none;
+          opacity: 0;
+          mix-blend-mode: difference;
+        }
+
+        .gallery-cursor {
+          width: 6px;
+          height: 6px;
+          margin: -3px 0 0 -3px;
+          background: #f2f1ec;
+        }
+
+        .gallery-cursor-ring {
+          width: 34px;
+          height: 34px;
+          margin: -17px 0 0 -17px;
+          border: 1px solid rgba(242, 241, 236, 0.5);
+          transition:
+            width 220ms ease,
+            height 220ms ease,
+            margin 220ms ease,
+            border-color 220ms ease;
+        }
+
+        .gallery-cursor-ring.is-hover {
+          width: 56px;
+          height: 56px;
+          margin: -28px 0 0 -28px;
+          border-color: rgba(5, 204, 144, 0.9);
+        }
+      }
+    </style>
     <script type="importmap">
       { "imports": { "three": "/ecosystem/libs/three.module.js" } }
     </script>
@@ -262,9 +311,81 @@ const ecosystemAssetVersion = '20260613-dtp-ecosystem-band-20-11';
       <span class="loader-status">INITIALISING ECOSYSTEM</span>
     </div>
 
+    <div class="gallery-cursor" id="galleryCursor" aria-hidden="true"></div>
+    <div class="gallery-cursor-ring" id="galleryCursorRing" aria-hidden="true"></div>
+
     <script type="application/json" id="ecosystem-destinations" set:html={JSON.stringify(destinations)}></script>
     <script type="application/json" id="ecosystem-ring-items" set:html={JSON.stringify(ringItems)}></script>
     <script is:inline src="/ecosystem/libs/gsap.min.js"></script>
     <script is:inline type="module" src={`/ecosystem/js/main.js?v=${ecosystemAssetVersion}`}></script>
+    <script is:inline>
+      (() => {
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+        if (reduceMotion || !finePointer) return;
+
+        const dot = document.getElementById('galleryCursor');
+        const ring = document.getElementById('galleryCursorRing');
+        if (!dot || !ring) return;
+
+        document.body.classList.add('gallery-cursor-ready');
+
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let ringX = mouseX;
+        let ringY = mouseY;
+
+        const setTransform = (element, x, y) => {
+          element.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+        };
+
+        document.addEventListener('mousemove', (event) => {
+          mouseX = event.clientX;
+          mouseY = event.clientY;
+          dot.style.opacity = '1';
+          ring.style.opacity = '1';
+          setTransform(dot, mouseX, mouseY);
+        });
+
+        const interactiveSelector = [
+          'a',
+          'button',
+          '.ring-item',
+          '.node-panel',
+          '[role="button"]',
+        ].join(',');
+
+        document.addEventListener('mouseover', (event) => {
+          if (event.target instanceof Element && event.target.closest(interactiveSelector)) {
+            ring.classList.add('is-hover');
+          }
+        });
+
+        document.addEventListener('mouseout', (event) => {
+          if (event.target instanceof Element && event.target.closest(interactiveSelector)) {
+            ring.classList.remove('is-hover');
+          }
+        });
+
+        document.addEventListener('mouseleave', () => {
+          dot.style.opacity = '0';
+          ring.style.opacity = '0';
+        });
+
+        document.addEventListener('mouseenter', () => {
+          dot.style.opacity = '1';
+          ring.style.opacity = '1';
+        });
+
+        const tick = () => {
+          ringX += (mouseX - ringX) * 0.18;
+          ringY += (mouseY - ringY) * 0.18;
+          setTransform(ring, ringX, ringY);
+          requestAnimationFrame(tick);
+        };
+
+        tick();
+      })();
+    </script>
   </body>
 </html>
