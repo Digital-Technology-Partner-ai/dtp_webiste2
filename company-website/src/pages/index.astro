@@ -197,7 +197,7 @@ const ringItems = [
   { label: 'CONTACT', id: 'contact' },
 ];
 
-const ecosystemAssetVersion = '20260613-dtp-ecosystem-band-20-11';
+const ecosystemAssetVersion = '20260614-gallery-brand-lockup';
 ---
 
 <!doctype html>
@@ -213,6 +213,44 @@ const ecosystemAssetVersion = '20260613-dtp-ecosystem-band-20-11';
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href={`/ecosystem/css/style.css?v=${ecosystemAssetVersion}`} />
     <style>
+      .ui-header .brand,
+      .ui-header .brand:link,
+      .ui-header .brand:visited,
+      .ui-header .brand:hover,
+      .ui-header .brand:active {
+        display: inline-flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 14px !important;
+        color: #f2f1ec !important;
+        text-decoration: none !important;
+      }
+
+      .ui-header .brand img {
+        display: block !important;
+        height: 32px !important;
+        width: auto !important;
+      }
+
+      .ui-header .brand-wordmark {
+        display: block !important;
+        color: #f2f1ec !important;
+        font-family: "Space Grotesk", "Helvetica Neue", Arial, sans-serif !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        line-height: 1 !important;
+        letter-spacing: 0.01em !important;
+        text-decoration: none !important;
+        transform: none !important;
+        white-space: nowrap !important;
+      }
+
+      @media (max-width: 760px) {
+        .ui-header .brand { gap: 10px !important; }
+        .ui-header .brand img { height: 26px !important; }
+        .ui-header .brand-wordmark { font-size: 11px !important; }
+      }
+
       @media (hover: hover) and (pointer: fine) {
         body.gallery-cursor-ready,
         body.gallery-cursor-ready a,
@@ -272,8 +310,9 @@ const ecosystemAssetVersion = '20260613-dtp-ecosystem-band-20-11';
     <div class="scanlines"></div>
 
     <header class="ui-header">
-      <a class="brand" href="/">
-        <img src="/ecosystem/img/dtp-logo-white.png" alt="Digital Technology Partner" />
+      <a class="brand" href="/" aria-label="Digital Technology Partner">
+        <img src="/ecosystem/img/dtp-logo-white.png" alt="" />
+        <span class="brand-wordmark">Digital Technology Partner</span>
       </a>
       <div class="header-right">
         <span class="status-line"><i class="status-dot"></i>ECOSYSTEM&nbsp;ONLINE</span>
