@@ -590,13 +590,30 @@ let videoBackdropEl = null;
 function buildVideoBackdrop() {
   const video = document.createElement('video');
   videoBackdropEl = video;
+  video.autoplay = true;
+  video.defaultMuted = true;
   video.muted = true;
   video.loop = true;
   video.playsInline = true;
+  video.controls = false;
+  video.disablePictureInPicture = true;
+  video.setAttribute('autoplay', '');
   video.setAttribute('playsinline', '');
+  video.setAttribute('webkit-playsinline', '');
   video.setAttribute('muted', '');
+  video.setAttribute('aria-hidden', 'true');
   video.preload = 'auto';
   video.src = VIDEO_BACKDROP_SRC;
+  Object.assign(video.style, {
+    position: 'fixed',
+    width: '1px',
+    height: '1px',
+    left: '-9999px',
+    top: '0',
+    opacity: '0',
+    pointerEvents: 'none',
+  });
+  document.body.appendChild(video);
 
   const tex = new THREE.VideoTexture(video);
   tex.colorSpace = THREE.SRGBColorSpace;
@@ -636,10 +653,16 @@ function buildVideoBackdrop() {
       video.currentTime = 0.1; // hold a single graded frame
       return;
     }
-    video.play().catch(() => {
-      window.addEventListener('pointerdown', () => video.play().catch(() => {}), { once: true });
+    const tryPlay = () => video.play().catch(() => {});
+    tryPlay();
+    for (const eventName of ['pointerdown', 'touchstart', 'click', 'keydown']) {
+      window.addEventListener(eventName, tryPlay, { once: true, passive: true });
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && video.paused) tryPlay();
     });
   };
+  video.load();
   if (video.readyState >= 2) start();
   else video.addEventListener('canplay', start, { once: true });
 

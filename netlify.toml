@@ -11,6 +11,30 @@
 
 # Removed legacy redirect from /location to avoid stale 301 caches on mobile
 
+[[redirects]]
+  from = "/phantom-gallery"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/phantom-gallery/"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/phantom-gallery/index.html"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/phantom-gallery/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
 # Cache-control: revalidate HTML quickly; cache static assets long-term
 [[headers]]
   for = "/*"
