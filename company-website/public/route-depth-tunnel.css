@@ -8,10 +8,6 @@
   text-decoration: none;
 }
 
-.news-v2-tunnel-link {
-  display: inline-flex !important;
-}
-
 .dtp-depth-tunnel {
   position: fixed;
   inset: 0;
