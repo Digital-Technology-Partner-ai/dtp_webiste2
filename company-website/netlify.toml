@@ -9,6 +9,30 @@
   NPM_VERSION = "10.9.0"
 
 [[redirects]]
+  from = "/phantom-gallery"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/phantom-gallery/"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/phantom-gallery/index.html"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/phantom-gallery/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
