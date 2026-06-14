@@ -135,12 +135,21 @@ const indexDestinations = [
   /* ============ ecosystem index overlay ============ */
   const indexOverlay = document.getElementById('st-index');
   const indexClose = document.getElementById('st-index-close');
+  const indexOpenButtons = Array.from(document.querySelectorAll<HTMLElement>('[data-st-index-open]'));
   let indexOpen = false;
+
+  function setIndexButtonsOpen(open: boolean) {
+    indexOpenButtons.forEach((button) => {
+      button.classList.toggle('is-open', open);
+      button.setAttribute('aria-expanded', String(open));
+    });
+  }
 
   function openIndex() {
     if (!indexOverlay || indexOpen) return;
     indexOpen = true;
     indexOverlay.setAttribute('aria-hidden', 'false');
+    setIndexButtonsOpen(true);
     lenis?.stop();
     gsap.to(indexOverlay, { autoAlpha: 1, duration: 0.4, ease: 'power2.out' });
     gsap.fromTo(
@@ -154,11 +163,12 @@ const indexDestinations = [
     if (!indexOverlay || !indexOpen) return;
     indexOpen = false;
     indexOverlay.setAttribute('aria-hidden', 'true');
+    setIndexButtonsOpen(false);
     lenis?.start();
     gsap.to(indexOverlay, { autoAlpha: 0, duration: 0.3, ease: 'power2.in' });
   }
 
-  document.querySelectorAll('[data-st-index-open]').forEach((btn) => {
+  indexOpenButtons.forEach((btn) => {
     btn.addEventListener('click', openIndex);
   });
   indexClose?.addEventListener('click', closeIndex);
