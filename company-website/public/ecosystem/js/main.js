@@ -1048,7 +1048,14 @@ function updateRingNav() {
 
 const menuOverlay = document.getElementById('menuOverlay');
 const menuList = document.getElementById('menuList');
+const menuBtn = document.getElementById('menuBtn');
 let menuOpen = false;
+
+function setMenuButtonOpen(open) {
+  if (!menuBtn) return;
+  menuBtn.classList.toggle('is-open', open);
+  menuBtn.setAttribute('aria-expanded', String(open));
+}
 
 function buildMenu() {
   DESTINATIONS.forEach((dest, i) => {
@@ -1065,18 +1072,20 @@ function buildMenu() {
     li.appendChild(btn);
     menuList.appendChild(li);
   });
-  document.getElementById('menuBtn').addEventListener('click', openMenu);
+  menuBtn.addEventListener('click', openMenu);
   document.getElementById('menuClose').addEventListener('click', closeMenu);
 }
 
 function openMenu() {
   menuOpen = true;
+  setMenuButtonOpen(true);
   gsap.to(menuOverlay, { autoAlpha: 1, duration: 0.4, ease: 'power2.out' });
   gsap.fromTo('.menu-list li', { y: 26, autoAlpha: 0 },
     { y: 0, autoAlpha: 1, duration: 0.55, stagger: 0.05, ease: 'power3.out', delay: 0.1 });
 }
 function closeMenu() {
   menuOpen = false;
+  setMenuButtonOpen(false);
   gsap.to(menuOverlay, { autoAlpha: 0, duration: 0.3, ease: 'power2.in' });
 }
 
