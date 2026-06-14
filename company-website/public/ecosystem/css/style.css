@@ -533,7 +533,22 @@ html, body {
   align-items: center;
   justify-content: center;
   gap: 28px;
+  clip-path: inset(0 0 0% 0);
+  will-change: clip-path;
 }
+
+.loader::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--mint), transparent);
+  opacity: 0.86;
+  box-shadow: 0 0 24px rgba(0, 255, 178, 0.35);
+}
+
 .loader-logo { height: 40px; }
 .loader-bar {
   width: 200px;

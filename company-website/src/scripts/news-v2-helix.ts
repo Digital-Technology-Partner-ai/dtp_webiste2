@@ -69,9 +69,6 @@ function setupHelix(items: NewsItem[]) {
   setupCursor();
 
   const glRoot = byId<HTMLDivElement>('newsV2Gl');
-  const preloader = byId<HTMLDivElement>('newsV2Preloader');
-  const preloaderCount = byId<HTMLDivElement>('newsV2PreloaderCount');
-  const preloaderBar = byId<HTMLSpanElement>('newsV2PreloaderBar');
   const hero = byId<HTMLDivElement>('newsV2Hero');
   const workLabel = byId<HTMLDivElement>('newsV2WorkLabel');
   const workIndexEl = byId<HTMLSpanElement>('newsV2WorkIndex');
@@ -81,9 +78,6 @@ function setupHelix(items: NewsItem[]) {
 
   if (
     !glRoot ||
-    !preloader ||
-    !preloaderCount ||
-    !preloaderBar ||
     !hero ||
     !workLabel ||
     !workIndexEl ||
@@ -121,7 +115,6 @@ function setupHelix(items: NewsItem[]) {
 
   const geometry = new THREE.PlaneGeometry(planeW, planeH, 24, 32);
   const meshes: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>[] = [];
-  let realProgress = 1;
 
   const vertexShader = `
     uniform float uVel;
@@ -155,6 +148,22 @@ function setupHelix(items: NewsItem[]) {
 
       vec3 col = mix(acc.rgb, acc.rgb + vec3(0.03, 0.05, 0.04), uHover);
       col *= uDim;
+
+      vec2 panelMin = vec2(0.03125, 0.04194);
+      vec2 panelMax = vec2(0.96875, 0.95806);
+      float insidePanel = step(panelMin.x, vUv.x) *
+        step(vUv.x, panelMax.x) *
+        step(panelMin.y, vUv.y) *
+        step(vUv.y, panelMax.y);
+      float edgeDist = min(
+        min(vUv.x - panelMin.x, panelMax.x - vUv.x),
+        min(vUv.y - panelMin.y, panelMax.y - vUv.y)
+      );
+      float hoverAmount = smoothstep(0.08, 0.62, uHover);
+      float border = insidePanel * (1.0 - smoothstep(0.0035, 0.011, edgeDist));
+      float glow = insidePanel * (1.0 - smoothstep(0.008, 0.045, edgeDist));
+      col = mix(col, vec3(0.02, 0.92, 0.66), border * hoverAmount);
+      col += vec3(0.0, 0.12, 0.08) * glow * hoverAmount;
 
       vec2 r = vec2(0.045, 0.034);
       vec2 q = abs(vUv - 0.5) - (vec2(0.5) - r);
@@ -427,26 +436,9 @@ function setupHelix(items: NewsItem[]) {
   onResize();
   tick();
 
-  let displayed = 0;
   let introPlayed = false;
 
-  function preloaderTick() {
-    if (introPlayed) return;
-    displayed += (realProgress * 100 - displayed) * 0.06;
-    if (realProgress >= 1 && displayed > 99.2) displayed = 100;
-    preloaderCount!.textContent = String(Math.round(displayed));
-    preloaderBar!.style.transform = `scaleX(${displayed / 100})`;
-    if (displayed >= 100) {
-      playIntro();
-      return;
-    }
-    requestAnimationFrame(preloaderTick);
-  }
-
-  preloaderTick();
-  window.setTimeout(() => {
-    realProgress = 1;
-  }, 4500);
+  requestAnimationFrame(playIntro);
 
   function playIntro() {
     if (introPlayed) return;
@@ -460,25 +452,18 @@ function setupHelix(items: NewsItem[]) {
       },
     });
 
-    tl.to(preloader, {
-      yPercent: -100,
-      duration: 0.9,
-      ease: 'power4.inOut',
-      onComplete: () => preloader!.remove(),
-    });
-
     meshes.forEach((mesh, index) => {
-      tl.to(mesh.userData, { intro: 1, duration: 1.2, ease: 'expo.out' }, 0.45 + index * 0.045);
+      tl.to(mesh.userData, { intro: 1, duration: 1.2, ease: 'expo.out' }, index * 0.045);
     });
 
     tl.fromTo(
       hero,
       { autoAlpha: 0, y: 20 },
       { autoAlpha: 1, y: 0, duration: 0.8 },
-      0.72
+      0.24
     )
-      .to(workLabel, { opacity: 1, duration: 0.7 }, 0.9)
-      .to(scrollHint, { opacity: 1, duration: 0.7 }, 1.05);
+      .to(workLabel, { opacity: 1, duration: 0.7 }, 0.42)
+      .to(scrollHint, { opacity: 1, duration: 0.7 }, 0.58);
   }
 }
 

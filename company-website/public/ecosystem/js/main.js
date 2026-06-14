@@ -1161,9 +1161,10 @@ async function boot() {
   gsap.killTweensOf(loaderBar);
   loaderBar.style.width = '100%';
   gsap.to('#loader', {
-    autoAlpha: 0,
+    clipPath: 'inset(0 0 100% 0)',
     pointerEvents: 'none',
-    duration: 0.35,
+    duration: 0.85,
+    ease: 'power3.inOut',
     delay: 0.05,
     onComplete: () => gsap.set('#loader', { display: 'none' }),
   });
