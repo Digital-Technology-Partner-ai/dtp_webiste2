@@ -18,6 +18,18 @@
   force = true
 
 [[redirects]]
+  from = "/phantom-gallery/"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/phantom-gallery/index.html"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
   from = "/phantom-gallery/*"
   to = "/404.html"
   status = 404
