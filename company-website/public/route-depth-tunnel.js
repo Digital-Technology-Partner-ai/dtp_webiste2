@@ -49,6 +49,11 @@
   function setActive(active) {
     const tunnel = createOverlay();
     tunnel.classList.toggle('is-active', active);
+    if (active) {
+      document.documentElement.classList.remove('dtp-depth-tunnel-preload');
+    } else {
+      document.documentElement.classList.remove('dtp-depth-tunnel-arrival', 'dtp-depth-tunnel-preload');
+    }
   }
 
   async function runExit() {

@@ -29,11 +29,31 @@ const { title, description = DEFAULT_DESC, image = DEFAULT_IMAGE } = Astro.props
 		<link rel="shortcut icon" href="/favicon-32x32.png" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<script is:inline>
+			(() => {
+				try {
+					if (window.sessionStorage.getItem('dtpDepthTunnelArrival') === '1') {
+						document.documentElement.classList.add('dtp-depth-tunnel-arrival', 'dtp-depth-tunnel-preload');
+					}
+				} catch {}
+			})();
+		</script>
+		<style>
+			html.dtp-depth-tunnel-preload::before {
+				content: "";
+				position: fixed;
+				inset: 0;
+				z-index: 2147482999;
+				background: #000;
+				pointer-events: none;
+			}
+		</style>
 
 		<!-- V2: Midnight Authority Fonts -->
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+		<link rel="stylesheet" href="/route-depth-tunnel.css?v=20260614-all-equator" />
 		<style>
 			@media (hover: hover) and (pointer: fine) {
 				body.site-cursor-ready,
@@ -126,6 +146,7 @@ const { title, description = DEFAULT_DESC, image = DEFAULT_IMAGE } = Astro.props
 		<slot />
     <Footer />
     <CommandPalette />
+		<script src="/route-depth-tunnel.js?v=20260614-no-arrival-flash" defer></script>
 		<div class="site-cursor" id="siteCursor" aria-hidden="true"></div>
 		<div class="site-cursor-ring" id="siteCursorRing" aria-hidden="true"></div>
 		<script is:inline>

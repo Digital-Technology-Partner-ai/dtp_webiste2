@@ -945,17 +945,13 @@ function findRingItemAt(x, y) {
   }) || null;
 }
 
-function isNewsDestination(node) {
-  return node?.dest?.id === 'news';
-}
-
-function enterNewsRoute(node) {
+function enterDestinationRoute(node) {
   state.locked = true;
   state.velY = 0; state.velX = 0;
   setInfoNode(null);
   canvas.classList.remove('hovering');
 
-  const route = node?.dest?.route || '/news/';
+  const route = node?.dest?.route || '/';
   if (window.DTPDepthTunnel?.navigate) {
     window.DTPDepthTunnel.navigate(route);
   } else {
@@ -966,11 +962,7 @@ function enterNewsRoute(node) {
 function activateRingItem(item) {
   if (!item || state.locked || menuOpen) return;
   if (item.node) {
-    if (isNewsDestination(item.node)) {
-      enterNewsRoute(item.node);
-      return;
-    }
-    openSection(item.node);
+    enterDestinationRoute(item.node);
   } else {
     gsap.to(state, {
       tarY: nearestAngle(0, state.curY), tarX: 0,
@@ -1114,37 +1106,7 @@ function closeMenu() {
 /* ---------------- destination page entry ---------------- */
 
 function openSection(node) {
-  if (isNewsDestination(node)) {
-    enterNewsRoute(node);
-    return;
-  }
-
-  state.locked = true;
-  currentNode = node;
-  state.velY = 0; state.velX = 0;
-  setInfoNode(null);
-  canvas.classList.remove('hovering');
-
-  const tY = nearestAngle(Math.PI - node.theta, state.curY);
-  const tX = -node.lat;
-  const others = nodes.filter(n => n !== node).map(n => n.uniforms.uOpacity);
-
-  gsap.timeline({
-    onComplete: () => {
-      window.location.assign(node.dest.route || '/');
-    },
-  })
-    .to(state, { curY: tY, curX: tX, tarY: tY, tarX: tX, duration: 1.2, ease: 'power3.inOut' }, 0)
-    .to(camera.position, { z: -16, duration: 1.2, ease: 'power3.inOut' }, 0)
-    .to(camera, {
-      fov: 52, duration: 1.2, ease: 'power3.inOut',
-      onUpdate: () => camera.updateProjectionMatrix(),
-    }, 0)
-    .to(ambientFade, { v: 0, duration: 0.7, ease: 'power2.out' }, 0)
-    .to(others, { value: 0, duration: 0.7, ease: 'power2.out' }, 0)
-    .to(node.uniforms.uHover, { value: 1, duration: 0.7, ease: 'power2.out' }, 0)
-    .to(['.ui-footer', '.ui-header', '.ring-item'], { autoAlpha: 0, duration: 0.5 }, 0.1)
-    .to('#scene', { autoAlpha: 0.35, duration: 0.55, ease: 'power2.inOut' }, 0.78);
+  enterDestinationRoute(node);
 }
 
 function closeSection() {
