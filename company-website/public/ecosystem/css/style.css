@@ -276,8 +276,8 @@ html, body {
   font-weight: 300;
   font-size: 12.5px;
   line-height: 1.55;
-  color: rgba(242, 241, 236, 0.82);
-  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.82);
+  color: var(--mint);
+  text-shadow: 0 0 14px rgba(5, 204, 144, 0.46), 0 1px 12px rgba(0, 0, 0, 0.82);
 }
 .np-enter {
   font-family: var(--mono);
