@@ -1,0 +1,503 @@
+---
+/* STUDIO FRAME — shared cinematic layer for internal pages.
+   Starfield (the gallery's Astral particle system, adapted),
+   scanlines, vignette, page-enter wipe, scroll progress and
+   the full-screen ECOSYSTEM INDEX overlay. Injected by
+   Layout.astro so every internal page shares one atmosphere. */
+
+const indexDestinations = [
+  { num: '01', title: 'HOME', route: '/home/', desc: 'The landing narrative for AI that works.' },
+  { num: '02', title: 'WHY DTP', route: '/why-dtp/', desc: 'Risk, governance and delivery confidence.' },
+  { num: '03', title: 'PROGRAMMES', route: '/programmes/', desc: 'Assessment, foundry work and leadership coaching.' },
+  { num: '04', title: 'SOLUTIONS', route: '/solutions/', desc: 'Business systems, agents and automation.' },
+  { num: '05', title: 'PROCESS', route: '/process/', desc: 'How delivery stays controlled.' },
+  { num: '06', title: 'CASE STUDIES', route: '/case-studies/', desc: 'Evidence from real client outcomes.' },
+  { num: '07', title: 'INSIGHTS', route: '/insights/', desc: 'Signal on AI adoption and implementation.' },
+  { num: '08', title: 'NEWS', route: '/news/', desc: 'Updates from DTP and the AI landscape.' },
+  { num: '09', title: 'AI READINESS', route: '/programmes/ai-adoption-readiness/', desc: 'A one-week adoption and risk view.' },
+  { num: '10', title: 'AI FOUNDRY', route: '/programmes/ai-foundry/', desc: 'Opportunity discovery with working groups.' },
+  { num: '11', title: 'LEADERSHIP AI', route: '/programmes/leadership-ai-coaching/', desc: 'Private AI support for senior leaders.' },
+  { num: '12', title: 'CONTACT', route: '/contact/', desc: 'Start the conversation.' },
+];
+---
+
+<script is:inline>
+  document.documentElement.classList.add('st-js', 'st-anim');
+</script>
+
+<canvas class="st-stars" id="st-stars" aria-hidden="true"></canvas>
+<div class="st-vignette" aria-hidden="true"></div>
+<div class="st-scanlines" aria-hidden="true"></div>
+<div class="st-progress" id="st-progress" aria-hidden="true"></div>
+<div class="st-wipe" id="st-wipe" aria-hidden="true"></div>
+
+<nav class="st-index" id="st-index" aria-label="ecosystem index" aria-hidden="true">
+  <div class="st-index-head">
+    <span class="st-index-title">ECOSYSTEM INDEX</span>
+    <button class="st-index-close" id="st-index-close">CLOSE &times;</button>
+  </div>
+  <ul class="st-index-list">
+    {indexDestinations.map((d) => (
+      <li>
+        <a href={d.route}>
+          <span class="st-index-num">{d.num}</span>
+          <span class="st-index-name">{d.title}</span>
+          <span class="st-index-desc">{d.desc}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+  <div class="st-index-foot">
+    <a href="/">&lsaquo; Return to Gallery Sphere</a>
+    <a
+      href="https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="ma-btn ma-btn-mint">Book a Call</a
+    >
+  </div>
+</nav>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import Lenis from 'lenis';
+  import * as THREE from 'three';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isTouch = window.matchMedia('(pointer: coarse)').matches;
+  const depthTunnelArrival = window.sessionStorage.getItem('dtpDepthTunnelArrival') === '1';
+  if (depthTunnelArrival) {
+    document.documentElement.classList.add('dtp-depth-tunnel-arrival');
+  }
+
+  /* ============ smooth scroll ============ */
+  let lenis: Lenis | null = null;
+  if (!reduceMotion) {
+    lenis = new Lenis({ lerp: 0.12, smoothWheel: true });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => lenis!.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
+    (window as any).__stLenis = lenis;
+  }
+
+  /* ============ page-enter wipe ============ */
+  const wipe = document.getElementById('st-wipe');
+  if (wipe) {
+    if (reduceMotion || depthTunnelArrival) {
+      wipe.remove();
+    } else {
+      gsap.to(wipe, {
+        clipPath: 'inset(0 0 100% 0)',
+        duration: 0.85,
+        ease: 'power3.inOut',
+        delay: 0.08,
+        onComplete: () => wipe.remove(),
+      });
+      gsap.set(wipe, { clipPath: 'inset(0 0 0% 0)' });
+    }
+  }
+
+  /* exit wipe for internal navigation — keeps travel cinematic */
+  if (!reduceMotion) {
+    document.addEventListener('click', (e) => {
+      const a = (e.target as HTMLElement).closest('a');
+      if (!a) return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      if (a.target === '_blank' || a.hasAttribute('download')) return;
+      const href = a.getAttribute('href') || '';
+      if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+      const url = new URL(a.href, location.href);
+      if (url.origin !== location.origin) return;
+      if (url.pathname === location.pathname && url.hash) return;
+      e.preventDefault();
+      const out = document.createElement('div');
+      out.className = 'st-wipe';
+      out.style.clipPath = 'inset(100% 0 0 0)';
+      document.body.appendChild(out);
+      gsap.to(out, {
+        clipPath: 'inset(0% 0 0 0)',
+        duration: 0.45,
+        ease: 'power3.in',
+        onComplete: () => location.assign(url.href),
+      });
+    });
+  }
+
+  /* ============ scroll progress beam ============ */
+  const progress = document.getElementById('st-progress');
+  if (progress) {
+    gsap.to(progress, {
+      scaleX: 1,
+      ease: 'none',
+      scrollTrigger: { start: 0, end: 'max', scrub: 0.4 },
+    });
+  }
+
+  /* ============ ecosystem index overlay ============ */
+  const indexOverlay = document.getElementById('st-index');
+  const indexClose = document.getElementById('st-index-close');
+  const indexOpenButtons = Array.from(document.querySelectorAll<HTMLElement>('[data-st-index-open]'));
+  let indexOpen = false;
+
+  function setIndexButtonsOpen(open: boolean) {
+    indexOpenButtons.forEach((button) => {
+      button.classList.toggle('is-open', open);
+      button.setAttribute('aria-expanded', String(open));
+    });
+  }
+
+  function openIndex() {
+    if (!indexOverlay || indexOpen) return;
+    indexOpen = true;
+    indexOverlay.setAttribute('aria-hidden', 'false');
+    setIndexButtonsOpen(true);
+    lenis?.stop();
+    gsap.to(indexOverlay, { autoAlpha: 1, duration: 0.4, ease: 'power2.out' });
+    gsap.fromTo(
+      indexOverlay.querySelectorAll('.st-index-list li'),
+      { y: 26, autoAlpha: 0 },
+      { y: 0, autoAlpha: 1, duration: 0.55, stagger: 0.04, ease: 'power3.out', delay: 0.08 }
+    );
+  }
+
+  function closeIndex() {
+    if (!indexOverlay || !indexOpen) return;
+    indexOpen = false;
+    indexOverlay.setAttribute('aria-hidden', 'true');
+    setIndexButtonsOpen(false);
+    lenis?.start();
+    gsap.to(indexOverlay, { autoAlpha: 0, duration: 0.3, ease: 'power2.in' });
+  }
+
+  indexOpenButtons.forEach((btn) => {
+    btn.addEventListener('click', openIndex);
+  });
+  indexClose?.addEventListener('click', closeIndex);
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && indexOpen) closeIndex();
+  });
+
+  /* ============ header scroll state ============ */
+  const header = document.querySelector('.ma-header');
+  if (header) {
+    ScrollTrigger.create({
+      start: 24,
+      onUpdate: () => {},
+      onToggle: (self) => header.classList.toggle('st-scrolled', self.isActive),
+    });
+  }
+
+  /* ============ reveal engine ============ */
+  /* Marks shared patterns for entrance choreography. Pages that
+     run their own reveal systems are skipped via local attrs. */
+  const SKIP = [
+    '[data-why-reveal]',
+    '[data-why-card]',
+    '[data-reveal]',
+    '[data-reveal-card]',
+    '[data-solution-reveal]',
+    '[data-solution-card]',
+    '[data-readiness-reveal]',
+    '[data-process-reveal]',
+    '[data-process-card]',
+    '[data-case-reveal]',
+    '[data-case-card]',
+    '[data-insights-reveal]',
+    '[data-insights-card]',
+    '[data-delivery-step]',
+    '[data-step]',
+    '[data-st-static]',
+  ].join(',');
+
+  function markRevealTargets() {
+    const main = document.querySelector('main');
+    if (!main) return [] as HTMLElement[];
+    const targets: HTMLElement[] = [];
+    const seen = new Set<Element>();
+    const selectors = [
+      '.ma-section-tag',
+      'h1',
+      'h2',
+      'section article',
+      'section dl',
+      '.ma-card',
+    ];
+    main.querySelectorAll<HTMLElement>(selectors.join(',')).forEach((el) => {
+      if (seen.has(el)) return;
+      if (el.closest(SKIP)) return;
+      // never nest reveal targets — keep the outermost article only
+      if (el.parentElement?.closest('article')) return;
+      seen.add(el);
+      targets.push(el);
+    });
+    return targets;
+  }
+
+  if (!reduceMotion) {
+    const targets = markRevealTargets();
+    const fold = window.innerHeight * 0.92;
+    const entrance: HTMLElement[] = [];
+    const scrollers: HTMLElement[] = [];
+    targets.forEach((el) => {
+      el.setAttribute('data-sr', '');
+      if (el.getBoundingClientRect().top < fold) entrance.push(el);
+      else scrollers.push(el);
+    });
+    gsap.set(targets, { y: 30, autoAlpha: 0 });
+
+    /* hero entrance — choreographed with the page wipe */
+    if (entrance.length) {
+      gsap.to(entrance, {
+        y: 0,
+        autoAlpha: 1,
+        duration: 1.05,
+        ease: 'power3.out',
+        stagger: 0.09,
+        delay: 0.42,
+        overwrite: true,
+      });
+    }
+
+    if (scrollers.length) {
+      ScrollTrigger.batch(scrollers, {
+        start: 'top 88%',
+        once: true,
+        batchMax: 8,
+        onEnter: (batch) =>
+          gsap.to(batch, {
+            y: 0,
+            autoAlpha: 1,
+            duration: 0.9,
+            ease: 'power3.out',
+            stagger: 0.07,
+            overwrite: true,
+          }),
+      });
+    }
+
+    window.addEventListener('load', () => ScrollTrigger.refresh());
+
+    /* safety net: never leave content hidden if a trigger misfires */
+    const rescue = () => {
+      targets.forEach((el) => {
+        if (Number(gsap.getProperty(el, 'autoAlpha')) < 0.05) {
+          const r = el.getBoundingClientRect();
+          if (r.top < window.innerHeight && r.bottom > 0) {
+            gsap.to(el, { y: 0, autoAlpha: 1, duration: 0.7, ease: 'power3.out', overwrite: true });
+          }
+        }
+      });
+    };
+    setInterval(rescue, 1800);
+  } else {
+    document.documentElement.classList.remove('st-anim');
+  }
+
+  /* ============ backdrop parallax ============ */
+  if (!reduceMotion) {
+    document.querySelectorAll<HTMLElement>('.st-backdrop img').forEach((img) => {
+      gsap.fromTo(
+        img,
+        { yPercent: -5, scale: 1.06 },
+        {
+          yPercent: 6,
+          scale: 1,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: img.closest('section') || img,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 0.6,
+          },
+        }
+      );
+    });
+  }
+
+  /* ============ starfield — the Astral element, site-wide ============ */
+  const canvas = document.getElementById('st-stars') as HTMLCanvasElement | null;
+
+  if (canvas) {
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+    renderer.setClearColor(0x000000, 0);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(62, 1, 0.1, 60);
+    camera.position.z = 10;
+    scene.add(camera);
+
+    const field = new THREE.Group();
+    scene.add(field);
+
+    /* soft round star sprite */
+    function makeStarTexture() {
+      const c = document.createElement('canvas');
+      c.width = 64;
+      c.height = 64;
+      const x = c.getContext('2d')!;
+      const g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
+      g.addColorStop(0, 'rgba(255,255,255,1)');
+      g.addColorStop(0.35, 'rgba(255,255,255,0.55)');
+      g.addColorStop(1, 'rgba(255,255,255,0)');
+      x.fillStyle = g;
+      x.fillRect(0, 0, 64, 64);
+      return new THREE.CanvasTexture(c);
+    }
+
+    const starTex = makeStarTexture();
+    const mint = new THREE.Color(0x00e5a0);
+    const blue = new THREE.Color(0x7c8bff);
+    const ivory = new THREE.Color(0xf4f1e8);
+    const amber = new THREE.Color(0xf4c84a);
+
+    const COUNT = isTouch ? 320 : 620;
+    const positions = new Float32Array(COUNT * 3);
+    const colors = new Float32Array(COUNT * 3);
+    const SPREAD_X = 30;
+    const SPREAD_Y = 20;
+    const DEPTH = 14;
+
+    for (let i = 0; i < COUNT; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * SPREAD_X;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * SPREAD_Y;
+      positions[i * 3 + 2] = -Math.random() * DEPTH;
+      const color = i % 13 === 0 ? amber : i % 7 === 0 ? blue : i % 5 === 0 ? ivory : mint;
+      colors[i * 3] = color.r;
+      colors[i * 3 + 1] = color.g;
+      colors[i * 3 + 2] = color.b;
+    }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    const stars = new THREE.Points(
+      geo,
+      new THREE.PointsMaterial({
+        size: 0.055,
+        map: starTex,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.85,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+      })
+    );
+    field.add(stars);
+
+    /* constellation — a sparse set of brighter anchor stars,
+       faintly linked, echoing the gallery's signal arcs */
+    const ANCHORS = 9;
+    const anchorPos = new Float32Array(ANCHORS * 3);
+    const anchorPts: THREE.Vector3[] = [];
+    for (let i = 0; i < ANCHORS; i++) {
+      const v = new THREE.Vector3(
+        (Math.random() - 0.5) * SPREAD_X * 0.7,
+        (Math.random() - 0.5) * SPREAD_Y * 0.7,
+        -2 - Math.random() * 6
+      );
+      anchorPts.push(v);
+      anchorPos[i * 3] = v.x;
+      anchorPos[i * 3 + 1] = v.y;
+      anchorPos[i * 3 + 2] = v.z;
+    }
+    const anchorGeo = new THREE.BufferGeometry();
+    anchorGeo.setAttribute('position', new THREE.BufferAttribute(anchorPos, 3));
+    const anchors = new THREE.Points(
+      anchorGeo,
+      new THREE.PointsMaterial({
+        size: 0.16,
+        map: starTex,
+        color: 0x05cc90,
+        transparent: true,
+        opacity: 0.9,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+      })
+    );
+    field.add(anchors);
+
+    const linePts: THREE.Vector3[] = [];
+    for (let i = 0; i < ANCHORS; i++) {
+      let nearest = -1;
+      let nearestD = Infinity;
+      for (let j = 0; j < ANCHORS; j++) {
+        if (i === j) continue;
+        const d = anchorPts[i].distanceToSquared(anchorPts[j]);
+        if (d < nearestD) {
+          nearestD = d;
+          nearest = j;
+        }
+      }
+      if (nearest > i) linePts.push(anchorPts[i], anchorPts[nearest]);
+      else if (nearest >= 0 && nearest < i) linePts.push(anchorPts[i], anchorPts[nearest]);
+    }
+    const lineGeo = new THREE.BufferGeometry().setFromPoints(linePts);
+    field.add(
+      new THREE.LineSegments(
+        lineGeo,
+        new THREE.LineBasicMaterial({
+          color: 0x05cc90,
+          transparent: true,
+          opacity: 0.1,
+          depthWrite: false,
+        })
+      )
+    );
+
+    function resize() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const pointer = { x: 0, y: 0, cx: 0, cy: 0 };
+    if (!isTouch) {
+      window.addEventListener('pointermove', (e) => {
+        pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+        pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+      });
+    }
+
+    let scrollY = window.scrollY;
+    window.addEventListener('scroll', () => (scrollY = window.scrollY), { passive: true });
+    lenis?.on('scroll', (e: { scroll: number }) => (scrollY = e.scroll));
+
+    let running = !reduceMotion;
+    document.addEventListener('visibilitychange', () => {
+      running = !document.hidden && !reduceMotion;
+      if (running) requestAnimationFrame(tick);
+    });
+
+    const start = performance.now();
+    function tick(now: number) {
+      if (!running) {
+        renderer.render(scene, camera);
+        return;
+      }
+      const t = (now - start) / 1000;
+      pointer.cx += (pointer.x - pointer.cx) * 0.04;
+      pointer.cy += (pointer.y - pointer.cy) * 0.04;
+      field.rotation.y = Math.sin(t * 0.05) * 0.05 + pointer.cx * 0.04;
+      field.rotation.x = Math.cos(t * 0.04) * 0.03 + pointer.cy * 0.03;
+      /* scroll parallax: stars drift up slowly as the page scrolls */
+      field.position.y = scrollY * 0.0012;
+      stars.rotation.z = t * 0.004;
+      renderer.render(scene, camera);
+      requestAnimationFrame(tick);
+    }
+
+    if (reduceMotion) {
+      renderer.render(scene, camera);
+    } else {
+      requestAnimationFrame(tick);
+    }
+  }
+</script>

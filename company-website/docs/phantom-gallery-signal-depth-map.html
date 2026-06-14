@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Phantom Gallery Signal Depth Map</title>
+  <style>
+    :root {
+      --bg: #07090d;
+      --panel: #0d1218;
+      --ink: #f4f1e8;
+      --muted: #9aa3ad;
+      --line: rgba(244, 241, 232, 0.24);
+      --faint: rgba(244, 241, 232, 0.08);
+      --mint: #05cc90;
+      --blue: #7c8bff;
+      --amber: #f4c84a;
+      --red: #ff6b6b;
+      --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --body: "Space Grotesk", Avenir Next, Helvetica, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--ink); font-family: var(--body); }
+    body {
+      background:
+        radial-gradient(circle at 50% 45%, rgba(5, 204, 144, 0.12), transparent 34%),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,0.025) 1px, transparent 1px),
+        var(--bg);
+      background-size: auto, 32px 32px, 32px 32px, auto;
+    }
+
+    .shell { max-width: 1440px; margin: 0 auto; padding: 28px; }
+    header { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 22px; }
+    h1 { margin: 0; font-size: clamp(28px, 4vw, 52px); line-height: 0.92; letter-spacing: 0; }
+    .subtitle { max-width: 780px; color: var(--muted); line-height: 1.55; font-size: 15px; margin: 12px 0 0; }
+    .status { font-family: var(--mono); color: var(--mint); font-size: 12px; letter-spacing: 0.18em; white-space: nowrap; }
+
+    .grid { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(360px, 0.75fr); gap: 18px; }
+    .panel { background: rgba(9, 13, 19, 0.86); border: 1px solid var(--line); box-shadow: 0 18px 70px rgba(0,0,0,0.42); }
+    .stage { min-height: 760px; overflow: hidden; }
+    svg { display: block; width: 100%; height: 760px; }
+
+    .controls { padding: 22px; display: flex; flex-direction: column; gap: 18px; }
+    .control { display: grid; gap: 8px; }
+    .control label { display: flex; justify-content: space-between; gap: 12px; font-family: var(--mono); font-size: 12px; color: var(--ink); letter-spacing: 0.08em; }
+    .control span { color: var(--mint); }
+    input[type="range"] { width: 100%; accent-color: var(--mint); }
+    .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .metric { background: rgba(255,255,255,0.04); border: 1px solid var(--faint); padding: 12px; }
+    .metric small { display: block; color: var(--muted); font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; }
+    .metric strong { display: block; margin-top: 6px; font-size: 22px; color: var(--ink); }
+    .note { border-top: 1px solid var(--line); padding-top: 16px; color: var(--muted); font-size: 14px; line-height: 1.55; }
+    .terms { display: grid; gap: 10px; border-top: 1px solid var(--line); padding-top: 16px; }
+    .term { display: grid; grid-template-columns: 126px 1fr; gap: 12px; font-size: 13px; line-height: 1.4; }
+    .term b { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--ink); }
+    .term span { color: var(--muted); }
+
+    .label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.11em; fill: var(--ink); }
+    .muted { fill: var(--muted); }
+    .tiny { font-size: 9px; letter-spacing: 0.08em; }
+    .sphere { fill: rgba(255,255,255,0.018); stroke: rgba(244,241,232,0.24); stroke-width: 1.4; }
+    .gridline { fill: none; stroke: rgba(244,241,232,0.10); stroke-width: 1; }
+    .axis { stroke: rgba(244,241,232,0.28); stroke-width: 1; stroke-dasharray: 5 6; }
+    .active { fill: rgba(5,204,144,0.08); stroke: rgba(5,204,144,0.55); stroke-width: 2; }
+    .entry-field { fill: rgba(5,204,144,0.08); stroke: rgba(5,204,144,0.44); stroke-width: 2; }
+    .card { fill: rgba(5,204,144,0.20); stroke: rgba(244,241,232,0.82); stroke-width: 1.4; }
+    .boundary { fill: rgba(255,107,107,0.16); stroke: rgba(255,107,107,0.82); stroke-width: 1.4; stroke-dasharray: 5 5; }
+    .user { fill: var(--ink); stroke: var(--mint); stroke-width: 2; }
+    .arrow { stroke: var(--mint); stroke-width: 2; marker-end: url(#arrow); }
+    .callout { fill: rgba(9,13,19,0.92); stroke: var(--line); }
+    .signal-front { fill: var(--mint); stroke: rgba(244,241,232,0.34); stroke-width: 1; filter: drop-shadow(0 0 8px rgba(5,204,144,0.75)); }
+    .signal-back { fill: var(--blue); stroke: rgba(244,241,232,0.18); stroke-width: 1; opacity: 0.28; }
+    .start { fill: var(--amber); stroke: var(--bg); stroke-width: 2; }
+    .legend-line { stroke-width: 4; stroke-linecap: round; }
+
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+      header { flex-direction: column; align-items: start; }
+      .stage, svg { min-height: 680px; height: 680px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <h1>Signal Cube<br />Depth Map</h1>
+        <p class="subtitle">A tuning board for describing how the floating green cubes enter the forward view. It separates entry angle, entry spread, card boundary, front depth, rear depth, fade strength, randomness and repetition.</p>
+      </div>
+      <div class="status">NOT SITE CODE</div>
+    </header>
+
+    <section class="grid">
+      <div class="panel stage">
+        <svg id="diagram" viewBox="0 0 980 760" aria-label="Signal cube depth terminology map">
+          <defs>
+            <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L0,6 L7,3 z" fill="#05cc90"></path>
+            </marker>
+          </defs>
+
+          <g id="plan" transform="translate(490 370)">
+            <circle class="sphere" r="270"></circle>
+            <circle class="gridline" r="210"></circle>
+            <circle class="gridline" r="145"></circle>
+            <line class="axis" x1="-310" y1="0" x2="310" y2="0"></line>
+            <line class="axis" x1="0" y1="-310" x2="0" y2="310"></line>
+            <path id="activeArc" class="active"></path>
+            <g id="cardZones"></g>
+            <path id="entryField" class="entry-field"></path>
+            <g id="signals"></g>
+            <circle class="user" r="10"></circle>
+            <line class="arrow" x1="0" y1="0" x2="0" y2="-82"></line>
+            <text class="label" text-anchor="middle" x="0" y="-102">FORWARD VIEW</text>
+            <circle id="startPoint" class="start" r="8"></circle>
+            <text id="startLabel" class="label tiny">START POINT</text>
+
+            <rect class="callout" x="-448" y="-332" width="236" height="70"></rect>
+            <text class="label" x="-432" y="-304">PLAN VIEW</text>
+            <text class="label muted tiny" x="-432" y="-284">Top-down random entry field around card boundaries</text>
+
+            <g transform="translate(-448 282)">
+              <rect x="0" y="-7" width="14" height="14" fill="#05cc90"></rect>
+              <text class="label muted" x="26" y="4">front-depth cube stays bright</text>
+              <rect x="244" y="-7" width="14" height="14" fill="#7c8bff" opacity="0.35"></rect>
+              <text class="label muted" x="270" y="4">rear-depth cube fades at boundaries</text>
+              <rect x="548" y="-7" width="14" height="14" fill="rgba(5,204,144,0.30)" stroke="rgba(244,241,232,0.82)"></rect>
+              <text class="label muted" x="574" y="4">card boundary width</text>
+              <rect x="742" y="-7" width="14" height="14" fill="rgba(255,107,107,0.22)" stroke="rgba(255,107,107,0.82)" stroke-dasharray="4 3"></rect>
+              <text class="label muted" x="768" y="4">padding fade zone</text>
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <aside class="panel controls">
+        <div class="control">
+          <label for="cubeCount">Signal Cubes <span id="cubeCountValue">30</span></label>
+          <input id="cubeCount" type="range" min="6" max="36" value="30" />
+        </div>
+        <div class="control">
+          <label for="entrySpread">Entry Spread <span id="entrySpreadValue">220 deg</span></label>
+          <input id="entrySpread" type="range" min="60" max="220" value="220" />
+        </div>
+        <div class="control">
+          <label for="depthTravel">Depth Travel <span id="depthTravelValue">18 units</span></label>
+          <input id="depthTravel" type="range" min="4" max="18" value="18" />
+        </div>
+        <div class="control">
+          <label for="motionSpeed">Motion Speed <span id="motionSpeedValue">150%</span></label>
+          <input id="motionSpeed" type="range" min="40" max="220" value="150" />
+        </div>
+        <div class="control">
+          <label for="behindRatio">Rear Depth Ratio <span id="behindRatioValue">70%</span></label>
+          <input id="behindRatio" type="range" min="0" max="100" value="70" />
+        </div>
+        <div class="control">
+          <label for="fadeStrength">Rear Fade Strength <span id="fadeStrengthValue">81%</span></label>
+          <input id="fadeStrength" type="range" min="0" max="95" value="81" />
+        </div>
+        <div class="control">
+          <label for="boundaryPadding">Card Boundary Padding <span id="boundaryPaddingValue">0 deg</span></label>
+          <input id="boundaryPadding" type="range" min="0" max="24" value="0" />
+        </div>
+        <div class="control">
+          <label for="randomness">Randomness <span id="randomnessValue">100%</span></label>
+          <input id="randomness" type="range" min="0" max="100" value="100" />
+        </div>
+        <div class="control">
+          <label for="phaseOffset">Entry Phase <span id="phaseOffsetValue">90%</span></label>
+          <input id="phaseOffset" type="range" min="0" max="100" value="90" />
+        </div>
+        <div class="control">
+          <label for="cardWidth">Card Boundary Width <span id="cardWidthValue">23 deg</span></label>
+          <input id="cardWidth" type="range" min="12" max="42" value="23" />
+        </div>
+
+        <div class="row">
+          <div class="metric">
+            <small>FRONT DEPTH</small>
+            <strong id="frontCount">9</strong>
+          </div>
+          <div class="metric">
+            <small>REAR DEPTH</small>
+            <strong id="rearCount">21</strong>
+          </div>
+          <div class="metric">
+            <small>FADED OPACITY</small>
+            <strong id="fadedOpacity">19%</strong>
+          </div>
+          <div class="metric">
+            <small>REPETITION</small>
+            <strong id="repetition">medium</strong>
+          </div>
+        </div>
+
+        <div class="note">
+          Card Boundary means the visible green outline of the card. A rear-depth cube should fade when it crosses into that outline and return to normal when it crosses back out. Cubes should continue travelling until they leave the active card field and reach the empty zone before restarting.
+        </div>
+
+        <div class="terms">
+          <div class="term"><b>SIGNAL CUBES</b><span>The total number of green cubes active in the forward field.</span></div>
+          <div class="term"><b>ENTRY SPREAD</b><span>The angular range where cubes can appear. A wider spread lets cubes enter from more side angles.</span></div>
+          <div class="term"><b>DEPTH TRAVEL</b><span>How far cubes move through depth as they enter, cross and leave the scene.</span></div>
+          <div class="term"><b>MOTION SPEED</b><span>How quickly cubes drift across the field before restarting in the empty zone.</span></div>
+          <div class="term"><b>REAR DEPTH RATIO</b><span>The percentage of cubes assigned to behind-card behavior. The rest are counted as Front Depth.</span></div>
+          <div class="term"><b>REAR FADE STRENGTH</b><span>How strongly rear-depth cubes fade when crossing a card boundary.</span></div>
+          <div class="term"><b>CARD BOUNDARY PADDING</b><span>Optional extra margin outside the visible green card outline. At 0 degrees, fading starts exactly at the card boundary.</span></div>
+          <div class="term"><b>RANDOMNESS</b><span>How irregular cube placement, spacing and movement feel. Higher randomness reduces obvious repetition.</span></div>
+          <div class="term"><b>ENTRY PHASE</b><span>Moves the timing/starting point of the cube pattern through its loop.</span></div>
+          <div class="term"><b>CARD BOUNDARY WIDTH</b><span>The visible green card outline width in plan view. This represents the card edge the cube crosses.</span></div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const svgNS = "http://www.w3.org/2000/svg";
+    const controls = {
+      cubeCount: $("cubeCount"),
+      entrySpread: $("entrySpread"),
+      depthTravel: $("depthTravel"),
+      motionSpeed: $("motionSpeed"),
+      behindRatio: $("behindRatio"),
+      fadeStrength: $("fadeStrength"),
+      boundaryPadding: $("boundaryPadding"),
+      randomness: $("randomness"),
+      phaseOffset: $("phaseOffset"),
+      cardWidth: $("cardWidth"),
+    };
+    const cardCenters = [-90, -54, -18, 18, 54, 90];
+    let animationStart = performance.now();
+
+    function polar(radius, deg) {
+      const rad = (deg - 90) * Math.PI / 180;
+      return { x: Math.cos(rad) * radius, y: Math.sin(rad) * radius };
+    }
+
+    function arcPath(radius, startDeg, endDeg, innerRadius = 0) {
+      const start = polar(radius, startDeg);
+      const end = polar(radius, endDeg);
+      const large = Math.abs(endDeg - startDeg) > 180 ? 1 : 0;
+      if (!innerRadius) return `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${large} 1 ${end.x} ${end.y}`;
+      const innerEnd = polar(innerRadius, endDeg);
+      const innerStart = polar(innerRadius, startDeg);
+      return [
+        `M ${start.x} ${start.y}`,
+        `A ${radius} ${radius} 0 ${large} 1 ${end.x} ${end.y}`,
+        `L ${innerEnd.x} ${innerEnd.y}`,
+        `A ${innerRadius} ${innerRadius} 0 ${large} 0 ${innerStart.x} ${innerStart.y}`,
+        "Z",
+      ].join(" ");
+    }
+
+    function clear(node) {
+      while (node.firstChild) node.removeChild(node.firstChild);
+    }
+
+    function addSvg(parent, tag, attrs) {
+      const el = document.createElementNS(svgNS, tag);
+      Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, value));
+      parent.appendChild(el);
+      return el;
+    }
+
+    function seededNoise(n) {
+      const x = Math.sin(n * 127.1 + 91.7) * 43758.5453;
+      return x - Math.floor(x);
+    }
+
+    function nearBoundary(deg, width) {
+      return cardCenters.some(center => Math.abs(deg - center) <= width / 2);
+    }
+
+    function repetitionLabel(randomness) {
+      if (randomness < 25) return "high";
+      if (randomness < 65) return "medium";
+      return "low";
+    }
+
+    function drawStatic() {
+      updateStaticControls();
+    }
+
+    function updateStaticControls() {
+      const cardWidth = Number(controls.cardWidth.value);
+      const padding = Number(controls.boundaryPadding.value);
+      const spread = Number(controls.entrySpread.value);
+      const boundaryWidth = cardWidth + padding * 2;
+      const start = -spread / 2;
+      const end = spread / 2;
+      $("entrySpreadValue").textContent = `${spread} deg`;
+      $("cardWidthValue").textContent = `${cardWidth} deg`;
+      $("boundaryPaddingValue").textContent = `${padding} deg`;
+      $("activeArc").setAttribute("d", arcPath(270, start, end, 128));
+      $("entryField").setAttribute("d", arcPath(235, start, end, 145));
+
+      const zones = $("cardZones");
+      clear(zones);
+      cardCenters.forEach((center, i) => {
+        addSvg(zones, "path", {
+          class: "boundary",
+          d: arcPath(252, center - boundaryWidth / 2, center + boundaryWidth / 2, 132),
+        });
+      });
+      cardCenters.forEach((center, i) => {
+        addSvg(zones, "path", {
+          class: "card",
+          d: arcPath(238, center - cardWidth / 2, center + cardWidth / 2, 166),
+        });
+        const p = polar(266, center);
+        addSvg(zones, "text", {
+          class: "label tiny muted",
+          x: p.x - 8,
+          y: p.y,
+        }).textContent = `0${i + 1}`;
+      });
+    }
+
+    function render(t) {
+      const count = Number(controls.cubeCount.value);
+      const spread = Number(controls.entrySpread.value);
+      const depthTravel = Number(controls.depthTravel.value);
+      const motionSpeed = Number(controls.motionSpeed.value) / 100;
+      const rearRatio = Number(controls.behindRatio.value) / 100;
+      const fadeStrength = Number(controls.fadeStrength.value);
+      const randomness = Number(controls.randomness.value) / 100;
+      const phase = Number(controls.phaseOffset.value) / 100;
+      const cardWidth = Number(controls.cardWidth.value);
+      const padding = Number(controls.boundaryPadding.value);
+      const boundaryWidth = cardWidth + padding * 2;
+      const fadedOpacity = Math.max(0.05, 1 - fadeStrength / 100);
+      const elapsed = (((t - animationStart) / 11000) * motionSpeed) % 1;
+      const activeStart = -spread / 2;
+      const activeEnd = spread / 2;
+
+      $("cubeCountValue").textContent = count;
+      $("entrySpreadValue").textContent = `${spread} deg`;
+      $("depthTravelValue").textContent = `${depthTravel} units`;
+      $("motionSpeedValue").textContent = `${Math.round(motionSpeed * 100)}%`;
+      $("behindRatioValue").textContent = `${Math.round(rearRatio * 100)}%`;
+      $("fadeStrengthValue").textContent = `${fadeStrength}%`;
+      $("randomnessValue").textContent = `${Math.round(randomness * 100)}%`;
+      $("phaseOffsetValue").textContent = `${Math.round(phase * 100)}%`;
+      $("frontCount").textContent = Math.max(0, count - Math.round(count * rearRatio));
+      $("rearCount").textContent = Math.round(count * rearRatio);
+      $("fadedOpacity").textContent = `${Math.round(fadedOpacity * 100)}%`;
+      $("repetition").textContent = repetitionLabel(randomness);
+
+      const signals = $("signals");
+      clear(signals);
+
+      for (let i = 0; i < count; i++) {
+        const base = seededNoise(i + 3);
+        const jitter = (seededNoise(i + 31) - 0.5) * randomness * 0.18;
+        const laneNoise = seededNoise(i + 19);
+        const isRear = laneNoise < rearRatio;
+        const progress = (base + elapsed + phase + jitter + 1) % 1;
+        const deg = activeStart + progress * (activeEnd - activeStart);
+        const insideBoundary = nearBoundary(deg, boundaryWidth);
+        const depth = (seededNoise(i + 57) - 0.5) * depthTravel * 8;
+        const radius = 190 + depth + (isRear && insideBoundary ? -18 : 18);
+        const p = polar(radius, deg);
+        const opacity = isRear && insideBoundary ? fadedOpacity : 1;
+        const scale = isRear && insideBoundary ? 0.58 : 1;
+        const cls = isRear ? "signal-back" : "signal-front";
+        const size = 9 * scale;
+
+        addSvg(signals, "rect", {
+          class: cls,
+          x: p.x - size / 2,
+          y: p.y - size / 2,
+          width: size,
+          height: size,
+          opacity,
+          transform: `rotate(${deg} ${p.x} ${p.y})`,
+        });
+      }
+
+      const start = polar(218, activeStart + phase * (activeEnd - activeStart));
+      $("startPoint").setAttribute("cx", start.x);
+      $("startPoint").setAttribute("cy", start.y);
+      $("startLabel").setAttribute("x", start.x + 14);
+      $("startLabel").setAttribute("y", start.y - 10);
+
+      requestAnimationFrame(render);
+    }
+
+    Object.values(controls).forEach((control) => {
+      control.addEventListener("input", updateStaticControls);
+    });
+    drawStatic();
+    updateStaticControls();
+    requestAnimationFrame(render);
+  </script>
+</body>
+</html>

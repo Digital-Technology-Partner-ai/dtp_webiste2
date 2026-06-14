@@ -1,0 +1,214 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import '../styles/news-v2-helix.css';
+
+const approvedNews = await getCollection(
+  'news',
+  ({ data }) => data.approved === true
+);
+
+const news = approvedNews.sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
+
+const articleViews = await Promise.all(
+  news.map(async (entry) => {
+    const { Content } = await render(entry);
+    return { entry, Content };
+  })
+);
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+
+const cleanCopy = (value: string) =>
+  value.replace(/\s*[\u2014\u2013]\s*/g, ', ');
+
+const galleryItems = articleViews.map(({ entry }, index) => ({
+  id: entry.id,
+  slug: entry.id,
+  url: `/news/${entry.id}/`,
+  index,
+  title: cleanCopy(entry.data.title),
+  category: entry.data.category,
+  pubDateLabel: formatDate(entry.data.pubDate),
+  pubDateIso: entry.data.pubDate.toISOString(),
+  description: cleanCopy(entry.data.description),
+  tags: entry.data.tags || [],
+  author: entry.data.author,
+  source: entry.data.source || '',
+}));
+
+const featuredItem = galleryItems[0] ?? {
+  title: '',
+  pubDateLabel: '',
+  description: '',
+};
+
+const dataJson = JSON.stringify(galleryItems).replace(/</g, '\\u003c');
+---
+
+<Layout
+  title="Newsroom | Digital Technology Partner"
+  description="DTP's immersive AI signal newsroom, featuring approved AI adoption, governance, delivery and automation articles."
+>
+  <Header />
+
+  <main class="news-v2-page" data-news-v2-page>
+    <script
+      is:inline
+      id="news-v2-data"
+      type="application/json"
+      set:html={dataJson}
+    />
+
+    <div class="news-v2-hidden-bodies" hidden>
+      {
+        articleViews.map(({ entry, Content }) => (
+          <article data-news-v2-body={entry.id}>
+            <Content />
+          </article>
+        ))
+      }
+    </div>
+
+    <section class="news-v2-shell" aria-labelledby="news-v2-title">
+      {
+        galleryItems.length === 0 ? (
+          <div class="news-v2-empty">
+            <p class="news-v2-kicker">newsroom lab</p>
+            <h1 id="news-v2-title">No approved articles yet</h1>
+            <p>
+              The AI signal newsroom will appear here as soon as an approved
+              article is available.
+            </p>
+            <a class="news-v2-empty-link" href="/news/archive/">News archive</a>
+          </div>
+        ) : (
+          <>
+            <div class="news-v2-gl" id="newsV2Gl" aria-hidden="true" />
+
+            <div class="news-v2-toolbar" id="newsV2Toolbar">
+              <nav class="news-v2-view-nav" aria-label="Newsroom view">
+                <button
+                  class="is-active"
+                  type="button"
+                  data-news-v2-view="spiral"
+                  data-news-v2-cursor
+                >
+                  Spiral
+                </button>
+                <button
+                  type="button"
+                  data-news-v2-view="list"
+                  data-news-v2-cursor
+                >
+                  List
+                </button>
+              </nav>
+              <a class="news-v2-back-link" href="/news/archive/" data-news-v2-cursor>
+                Archive view
+              </a>
+              <a
+                class="news-v2-back-link news-v2-tunnel-link"
+                href="/phantom-gallery/index.html"
+                data-news-v2-cursor
+                data-depth-tunnel-link
+              >
+                Gallery tunnel
+              </a>
+            </div>
+
+            <div class="news-v2-hero" id="newsV2Hero">
+              <p class="news-v2-kicker" id="newsV2Eyebrow">newsroom lab</p>
+              <h1 id="news-v2-title">AI signal</h1>
+              <p>
+                A sharper way to scan what matters in AI, before it reaches the boardroom.
+              </p>
+            </div>
+
+            <div class="news-v2-work-label" id="newsV2WorkLabel">
+              <span id="newsV2WorkIndex">01</span>
+              <i></i>
+              <strong id="newsV2WorkTitle">{featuredItem.title}</strong>
+            </div>
+
+            <p class="news-v2-scroll-hint" id="newsV2ScrollHint">
+              scroll or drag
+            </p>
+
+            <div class="news-v2-static-list" aria-label="Newsroom articles">
+              {
+                galleryItems.map((item, index) => (
+                  <a
+                    href={item.url}
+                    data-news-v2-static-open={index}
+                    data-news-v2-cursor
+                  >
+                    <span>{String(index + 1).padStart(2, '0')}</span>
+                    <strong>{item.title}</strong>
+                    <small>
+                      {item.category} / {item.pubDateLabel}
+                    </small>
+                  </a>
+                ))
+              }
+            </div>
+
+            <section
+              class="news-v2-detail"
+              id="newsV2Detail"
+              aria-hidden="true"
+              aria-labelledby="newsV2DetailTitle"
+            >
+              <button
+                class="news-v2-detail__back"
+                id="newsV2DetailBack"
+                type="button"
+                data-news-v2-cursor
+              >
+                <span aria-hidden="true">&larr;</span>
+                Back to helix
+              </button>
+
+              <span class="news-v2-detail__num" id="newsV2DetailNum">
+                01 / {galleryItems.length}
+              </span>
+
+              <div class="news-v2-detail__head">
+                <p id="newsV2DetailMeta">AI / {featuredItem.pubDateLabel}</p>
+                <h2 id="newsV2DetailTitle">{featuredItem.title}</h2>
+              </div>
+
+              <aside class="news-v2-detail__reader">
+                <p class="news-v2-detail__desc" id="newsV2DetailDesc">
+                  {featuredItem.description}
+                </p>
+                <div class="news-v2-detail__tags" id="newsV2DetailTags" />
+                <div class="news-v2-detail__body" id="newsV2DetailBody" />
+              </aside>
+            </section>
+
+            <div class="news-v2-grain" aria-hidden="true" />
+            <div class="news-v2-cursor" id="newsV2Cursor" aria-hidden="true" />
+            <div
+              class="news-v2-cursor-ring"
+              id="newsV2CursorRing"
+              aria-hidden="true"
+            />
+          </>
+        )
+      }
+    </section>
+  </main>
+
+  <script>
+    import '../scripts/news-v2-helix.ts';
+  </script>
+</Layout>

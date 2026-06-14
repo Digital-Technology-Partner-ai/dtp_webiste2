@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PHANTOM — A Digital Production Studio</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="/route-depth-tunnel.css?v=20260614-all-equator" />
+  <script type="importmap">
+    { "imports": { "three": "./libs/three.module.js" } }
+  </script>
+</head>
+<body>
+  <canvas id="scene"></canvas>
+
+  <!-- vignette / grain overlays -->
+  <div class="vignette"></div>
+
+  <!-- chrome -->
+  <header class="ui-header">
+    <a class="wordmark" href="#">PHANTOM<span>.LAND</span></a>
+    <nav class="menu">
+      <span class="menu-label">WORK</span>
+      <a class="menu-label depth-tunnel-test-link" href="/news/" data-depth-tunnel-link>NEWS TUNNEL</a>
+      <button class="menu-btn" aria-label="menu">
+        <i></i><i></i>
+      </button>
+    </nav>
+  </header>
+
+  <div class="ui-footer">
+    <p class="tagline">WE CREATE DEFINING<br/>DIGITAL EXPERIENCES</p>
+    <p class="hint"><span class="hint-dot"></span>DRAG TO EXPLORE</p>
+  </div>
+
+  <!-- hover tooltip -->
+  <div class="tooltip" id="tooltip">
+    <span class="tooltip-cat"></span>
+    <span class="tooltip-title"></span>
+  </div>
+
+  <!-- cinematic route bridge -->
+  <div class="transition-overlay" id="transitionOverlay" aria-hidden="true"></div>
+
+  <!-- project detail page -->
+  <section class="detail" id="detail">
+    <div class="detail-inner">
+      <header class="detail-header">
+        <button class="back-btn" id="backBtn">
+          <span class="back-arrow">&larr;</span> BACK TO GALLERY
+        </button>
+        <span class="detail-index" id="detailIndex">01 / 62</span>
+      </header>
+      <div class="detail-hero">
+        <p class="detail-cat" id="detailCat">WEBGL EXPERIENCE</p>
+        <h1 class="detail-title" id="detailTitle">PROJECT</h1>
+      </div>
+      <figure class="detail-figure">
+        <img id="detailImg" src="" alt="" />
+      </figure>
+      <div class="detail-body">
+        <div class="detail-meta">
+          <p><span>CLIENT</span>CONFIDENTIAL</p>
+          <p><span>YEAR</span>2026</p>
+          <p><span>ROLE</span>DESIGN &amp; DEVELOPMENT</p>
+        </div>
+        <p class="detail-copy">
+          An immersive digital experience crafted at the intersection of design,
+          technology and storytelling. We partnered closely with the team to
+          build something that pushes the medium forward &mdash; realtime 3D,
+          generative motion and a relentless attention to craft.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- loader -->
+  <div class="loader" id="loader">
+    <div class="loader-mark">PHANTOM<span>.LAND</span></div>
+    <div class="loader-bar"><i id="loaderBar"></i></div>
+  </div>
+
+  <script src="libs/gsap.min.js"></script>
+  <script src="/route-depth-tunnel.js?v=20260614-no-arrival-flash" defer></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

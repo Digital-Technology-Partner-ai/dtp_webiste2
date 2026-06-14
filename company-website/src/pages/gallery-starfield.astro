@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gallery Starfield Element</title>
+    <script type="importmap">
+      { "imports": { "three": "/ecosystem/libs/three.module.js" } }
+    </script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        overflow: hidden;
+        background: #000;
+        color: #f4f1e8;
+        font-family: Arial, sans-serif;
+      }
+
+      canvas {
+        display: block;
+        width: 100vw;
+        height: 100vh;
+        background: #000;
+      }
+
+      .label {
+        position: fixed;
+        left: 24px;
+        bottom: 22px;
+        z-index: 1;
+        color: rgba(244, 241, 232, 0.72);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        body.gallery-starfield-cursor-ready,
+        body.gallery-starfield-cursor-ready a,
+        body.gallery-starfield-cursor-ready button,
+        body.gallery-starfield-cursor-ready #starfield {
+          cursor: none !important;
+        }
+
+        .gallery-starfield-cursor,
+        .gallery-starfield-cursor-ring {
+          position: fixed;
+          top: 0;
+          left: 0;
+          z-index: 20;
+          border-radius: 50%;
+          pointer-events: none;
+          opacity: 0;
+          mix-blend-mode: difference;
+        }
+
+        .gallery-starfield-cursor {
+          width: 6px;
+          height: 6px;
+          margin: -3px 0 0 -3px;
+          background: #f2f1ec;
+        }
+
+        .gallery-starfield-cursor-ring {
+          width: 34px;
+          height: 34px;
+          margin: -17px 0 0 -17px;
+          border: 1px solid rgba(242, 241, 236, 0.5);
+          transition:
+            width 220ms ease,
+            height 220ms ease,
+            margin 220ms ease,
+            border-color 220ms ease;
+        }
+
+        .gallery-starfield-cursor-ring.is-hover {
+          width: 56px;
+          height: 56px;
+          margin: -28px 0 0 -28px;
+          border-color: rgba(5, 204, 144, 0.9);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="starfield"></canvas>
+    <div class="label">universeGroup / portrait universeParticles</div>
+    <div class="gallery-starfield-cursor" id="galleryStarfieldCursor" aria-hidden="true"></div>
+    <div class="gallery-starfield-cursor-ring" id="galleryStarfieldCursorRing" aria-hidden="true"></div>
+
+    <script is:inline type="module">
+      import * as THREE from 'three';
+
+      const canvas = document.getElementById('starfield');
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x000000);
+
+      const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 100);
+      camera.position.z = 7.6;
+      scene.add(camera);
+
+      const universeGroup = new THREE.Group();
+      universeGroup.scale.setScalar(window.innerWidth < 760 ? 1 : 1.08);
+      scene.add(universeGroup);
+
+      function loadImage(src) {
+        return new Promise((resolve, reject) => {
+          const image = new Image();
+          image.onload = () => resolve(image);
+          image.onerror = reject;
+          image.src = src;
+        });
+      }
+
+      function makeParticleTexture() {
+        const textureCanvas = document.createElement('canvas');
+        textureCanvas.width = 64;
+        textureCanvas.height = 64;
+        const ctx = textureCanvas.getContext('2d');
+        const glow = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+        glow.addColorStop(0, 'rgba(255, 255, 255, 1)');
+        glow.addColorStop(0.34, 'rgba(255, 255, 255, 0.86)');
+        glow.addColorStop(0.72, 'rgba(255, 255, 255, 0.18)');
+        glow.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, 64, 64);
+        const texture = new THREE.CanvasTexture(textureCanvas);
+        texture.needsUpdate = true;
+        return texture;
+      }
+
+      async function buildUniverseBackground() {
+        const image = await loadImage('/particle-sources/portrait-source.jpeg');
+        const sampleWidth = 220;
+        const sampleHeight = Math.round(sampleWidth * (image.naturalHeight / image.naturalWidth));
+        const sourceCanvas = document.createElement('canvas');
+        sourceCanvas.width = sampleWidth;
+        sourceCanvas.height = sampleHeight;
+        const ctx = sourceCanvas.getContext('2d', { willReadFrequently: true });
+        ctx.drawImage(image, 0, 0, sampleWidth, sampleHeight);
+
+        const pixels = ctx.getImageData(0, 0, sampleWidth, sampleHeight).data;
+        const positions = [];
+        const colors = [];
+        const sizes = [];
+        const portraitHeight = 5.8;
+        const portraitWidth = portraitHeight * (sampleWidth / sampleHeight);
+        const lumaAt = (px, py) => {
+          const safeX = Math.max(0, Math.min(sampleWidth - 1, px));
+          const safeY = Math.max(0, Math.min(sampleHeight - 1, py));
+          const i = (safeY * sampleWidth + safeX) * 4;
+          return (pixels[i] * 0.299 + pixels[i + 1] * 0.587 + pixels[i + 2] * 0.114) / 255;
+        };
+
+        for (let y = 0; y < sampleHeight; y += 1) {
+          for (let x = 0; x < sampleWidth; x += 1) {
+            const index = (y * sampleWidth + x) * 4;
+            const r = pixels[index] / 255;
+            const g = pixels[index + 1] / 255;
+            const b = pixels[index + 2] / 255;
+            const brightness = (r + g + b) / 3;
+            const contrast = Math.max(r, g, b) - Math.min(r, g, b);
+            const edge = Math.abs(lumaAt(x, y) - lumaAt(x + 2, y)) +
+              Math.abs(lumaAt(x, y) - lumaAt(x, y + 2));
+            const centerX = (x / sampleWidth - 0.56) / 0.54;
+            const centerY = (y / sampleHeight - 0.52) / 0.62;
+            const subjectBias = Math.max(0, 1 - Math.hypot(centerX, centerY));
+            const keepChance = 0.025 + contrast * 0.72 + edge * 1.8 + subjectBias * 0.2 +
+              Math.max(0, brightness - 0.52) * 0.12;
+
+            if (Math.random() > keepChance) continue;
+
+            const px = ((x / sampleWidth) - 0.5) * portraitWidth;
+            const py = (0.5 - (y / sampleHeight)) * portraitHeight;
+            const jitter = 0.016;
+
+            positions.push(
+              px + (Math.random() - 0.5) * jitter,
+              py + (Math.random() - 0.5) * jitter,
+              (Math.random() - 0.5) * 0.22
+            );
+
+            colors.push(
+              Math.min(1, Math.pow(r, 0.68) * 1.28 + 0.02),
+              Math.min(1, Math.pow(g, 0.68) * 1.2 + 0.02),
+              Math.min(1, Math.pow(b, 0.68) * 1.12 + 0.02)
+            );
+
+            sizes.push(0.8 + brightness * 1.25 + contrast * 0.55);
+          }
+        }
+
+        const particleGeometry = new THREE.BufferGeometry();
+        particleGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        particleGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        particleGeometry.setAttribute('sizeSeed', new THREE.Float32BufferAttribute(sizes, 1));
+
+        const universeParticles = new THREE.Points(
+          particleGeometry,
+          new THREE.PointsMaterial({
+            size: 0.043,
+            map: makeParticleTexture(),
+            vertexColors: true,
+            transparent: true,
+            opacity: 1,
+            alphaTest: 0.01,
+            depthWrite: false,
+            blending: THREE.NormalBlending,
+          })
+        );
+
+        universeGroup.add(universeParticles);
+      }
+
+      function resize() {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        renderer.setSize(width, height, false);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        universeGroup.scale.setScalar(width < 760 ? 0.86 : 1.08);
+      }
+
+      buildUniverseBackground();
+      resize();
+      window.addEventListener('resize', resize);
+
+      const start = performance.now();
+      function animate() {
+        const t = (performance.now() - start) / 1000;
+        universeGroup.rotation.y = Math.sin(t * 0.18) * 0.035;
+        universeGroup.rotation.x = Math.sin(t * 0.24) * 0.018;
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    </script>
+    <script is:inline>
+      (() => {
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+        if (reduceMotion || !finePointer) return;
+
+        const dot = document.getElementById('galleryStarfieldCursor');
+        const ring = document.getElementById('galleryStarfieldCursorRing');
+        if (!dot || !ring) return;
+
+        document.body.classList.add('gallery-starfield-cursor-ready');
+
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let ringX = mouseX;
+        let ringY = mouseY;
+
+        const setTransform = (element, x, y) => {
+          element.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+        };
+
+        document.addEventListener('mousemove', (event) => {
+          mouseX = event.clientX;
+          mouseY = event.clientY;
+          dot.style.opacity = '1';
+          ring.style.opacity = '1';
+          setTransform(dot, mouseX, mouseY);
+        });
+
+        document.addEventListener('mouseover', (event) => {
+          if (event.target instanceof Element && event.target.closest('a, button, [role="button"]')) {
+            ring.classList.add('is-hover');
+          }
+        });
+
+        document.addEventListener('mouseout', (event) => {
+          if (event.target instanceof Element && event.target.closest('a, button, [role="button"]')) {
+            ring.classList.remove('is-hover');
+          }
+        });
+
+        document.addEventListener('mouseleave', () => {
+          dot.style.opacity = '0';
+          ring.style.opacity = '0';
+        });
+
+        document.addEventListener('mouseenter', () => {
+          dot.style.opacity = '1';
+          ring.style.opacity = '1';
+        });
+
+        const tick = () => {
+          ringX += (mouseX - ringX) * 0.18;
+          ringY += (mouseY - ringY) * 0.18;
+          setTransform(ring, ringX, ringY);
+          requestAnimationFrame(tick);
+        };
+
+        tick();
+      })();
+    </script>
+  </body>
+</html>
