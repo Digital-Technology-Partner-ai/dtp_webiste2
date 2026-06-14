@@ -376,8 +376,9 @@ const isActive = (href: string) => currentPath === href || currentPath.startsWit
 
   @media (max-width: 760px) {
     .ma-nav-inner {
-      padding: 0 22px;
+      padding: 0 14px;
       height: 64px;
+      gap: 10px;
     }
 
     .ma-logo-img {
@@ -385,15 +386,33 @@ const isActive = (href: string) => currentPath === href || currentPath.startsWit
     }
 
     .ma-nav-logo {
-      gap: 10px;
+      gap: 0;
     }
 
     .ma-logo-wordmark {
-      font-size: 11px;
+      display: none;
     }
 
     .ma-nav-cta {
       display: none;
+    }
+
+    .ma-nav-right {
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .ma-nav-index,
+    .ma-nav-gallery-return {
+      flex: 0 0 auto;
+      padding: 9px 10px;
+      gap: 8px;
+      letter-spacing: 0.16em;
+    }
+
+    .ma-nav-index > span:first-child,
+    .ma-nav-gallery-return > span:first-child {
+      margin-right: 0;
     }
   }
 </style>
