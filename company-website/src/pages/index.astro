@@ -197,7 +197,7 @@ const ringItems = [
   { label: 'CONTACT', id: 'contact' },
 ];
 
-const ecosystemAssetVersion = '20260614-unified-loader-wipe';
+const ecosystemAssetVersion = '20260614-news-depth-tunnel';
 ---
 
 <!doctype html>
@@ -212,6 +212,7 @@ const ecosystemAssetVersion = '20260614-unified-loader-wipe';
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href={`/ecosystem/css/style.css?v=${ecosystemAssetVersion}`} />
+    <link rel="stylesheet" href="/route-depth-tunnel.css?v=20260614-no-horizon" />
     <style>
       .ui-header .brand,
       .ui-header .brand:link,
@@ -316,6 +317,14 @@ const ecosystemAssetVersion = '20260614-unified-loader-wipe';
       </a>
       <div class="header-right">
         <span class="status-line"><i class="status-dot"></i>ECOSYSTEM&nbsp;ONLINE</span>
+        <a
+          class="status-line depth-tunnel-test-link"
+          href="http://localhost:5173/"
+          data-depth-tunnel-link
+          data-depth-tunnel-cross-origin
+        >
+          MOTION&nbsp;TUNNEL
+        </a>
         <button class="menu-btn" id="menuBtn" aria-label="Open ecosystem index" aria-expanded="false">
           <span>INDEX</span>
           <span class="menu-btn-lines" aria-hidden="true"><i></i><i></i></span>
@@ -358,6 +367,7 @@ const ecosystemAssetVersion = '20260614-unified-loader-wipe';
     <script type="application/json" id="ecosystem-ring-items" set:html={JSON.stringify(ringItems)}></script>
     <script is:inline src="/ecosystem/libs/gsap.min.js"></script>
     <script is:inline type="module" src={`/ecosystem/js/main.js?v=${ecosystemAssetVersion}`}></script>
+    <script is:inline src="/route-depth-tunnel.js?v=20260614-no-reverse-arrival"></script>
     <script is:inline>
       (() => {
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

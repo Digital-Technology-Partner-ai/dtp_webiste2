@@ -24,6 +24,9 @@ const dataEl = document.getElementById('news-v2-data');
 if (page && dataEl?.textContent) {
   const items = JSON.parse(dataEl.textContent) as NewsItem[];
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const depthTunnelArrival =
+    window.sessionStorage.getItem('dtpDepthTunnelArrival') === '1' ||
+    document.documentElement.classList.contains('dtp-depth-tunnel-arrival');
   const hasWebGL = (() => {
     try {
       const canvas = document.createElement('canvas');
@@ -41,7 +44,7 @@ if (page && dataEl?.textContent) {
     page.classList.add(reducedMotion ? 'is-reduced' : 'is-no-webgl');
     setupStaticList(items);
   } else {
-    setupHelix(items);
+    setupHelix(items, depthTunnelArrival);
   }
 }
 
@@ -65,7 +68,7 @@ function navigateToArticle(items: NewsItem[], index: number) {
   window.location.href = item.url || `/news/${item.slug}/`;
 }
 
-function setupHelix(items: NewsItem[]) {
+function setupHelix(items: NewsItem[], depthTunnelArrival = false) {
   setupCursor();
 
   const glRoot = byId<HTMLDivElement>('newsV2Gl');
@@ -458,8 +461,8 @@ function setupHelix(items: NewsItem[]) {
 
     tl.fromTo(
       hero,
-      { autoAlpha: 0, y: 20 },
-      { autoAlpha: 1, y: 0, duration: 0.8 },
+      { autoAlpha: 0, y: depthTunnelArrival ? 0 : 20 },
+      { autoAlpha: 1, y: 0, duration: depthTunnelArrival ? 0.55 : 0.8 },
       0.24
     )
       .to(workLabel, { opacity: 1, duration: 0.7 }, 0.42)

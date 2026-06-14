@@ -68,6 +68,10 @@ const indexDestinations = [
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isTouch = window.matchMedia('(pointer: coarse)').matches;
+  const depthTunnelArrival = window.sessionStorage.getItem('dtpDepthTunnelArrival') === '1';
+  if (depthTunnelArrival) {
+    document.documentElement.classList.add('dtp-depth-tunnel-arrival');
+  }
 
   /* ============ smooth scroll ============ */
   let lenis: Lenis | null = null;
@@ -82,7 +86,7 @@ const indexDestinations = [
   /* ============ page-enter wipe ============ */
   const wipe = document.getElementById('st-wipe');
   if (wipe) {
-    if (reduceMotion) {
+    if (reduceMotion || depthTunnelArrival) {
       wipe.remove();
     } else {
       gsap.to(wipe, {

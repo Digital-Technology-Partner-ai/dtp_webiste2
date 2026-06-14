@@ -115,6 +115,14 @@ const dataJson = JSON.stringify(galleryItems).replace(/</g, '\\u003c');
               <a class="news-v2-back-link" href="/news/archive/" data-news-v2-cursor>
                 Archive view
               </a>
+              <a
+                class="news-v2-back-link news-v2-tunnel-link"
+                href="/phantom-gallery/index.html"
+                data-news-v2-cursor
+                data-depth-tunnel-link
+              >
+                Gallery tunnel
+              </a>
             </div>
 
             <div class="news-v2-hero" id="newsV2Hero">
@@ -203,4 +211,6 @@ const dataJson = JSON.stringify(galleryItems).replace(/</g, '\\u003c');
   <script>
     import '../scripts/news-v2-helix.ts';
   </script>
+  <link rel="stylesheet" href="/route-depth-tunnel.css?v=20260614-no-horizon" />
+  <script src="/route-depth-tunnel.js?v=20260614-no-reverse-arrival" defer></script>
 </Layout>

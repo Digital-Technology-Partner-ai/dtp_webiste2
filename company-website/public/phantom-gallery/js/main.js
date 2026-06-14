@@ -286,11 +286,24 @@ const detailTitle = document.getElementById('detailTitle');
 const detailCat = document.getElementById('detailCat');
 const detailImg = document.getElementById('detailImg');
 const detailIndex = document.getElementById('detailIndex');
+const detailHeader = detail.querySelector('.detail-header');
+const detailBody = detail.querySelector('.detail-body');
+const transitionOverlay = document.getElementById('transitionOverlay');
 const backBtn = document.getElementById('backBtn');
 backBtn.addEventListener('click', () => closeCard());
 
+const galleryChrome = ['.ui-header', '.ui-footer'];
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+let isTransitioning = false;
+
+function prefersReducedMotion() {
+  return reduceMotion.matches;
+}
+
 function openCard(card) {
+  if (state.locked) return;
   state.locked = true;
+  isTransitioning = true;
   currentCard = card;
   state.velY = 0; state.velX = 0;
   setHovered(null);
@@ -307,47 +320,71 @@ function openCard(card) {
   const tY = nearestAngle(Math.PI - card.theta, state.curY);
   const tX = -card.lat;
   const others = cards.filter(c => c !== card).map(c => c.uniforms.uOpacity);
+  const reduce = prefersReducedMotion();
+  const zoomDuration = reduce ? 0.45 : 1.05;
+  const zoomDepth = reduce ? -5.5 : -11.8;
+  const targetFov = reduce ? 60 : 54;
+  const bridgeStart = reduce ? 0.16 : 0.65;
+  const bridgeDuration = reduce ? 0.2 : 0.35;
+  const revealStart = bridgeStart + bridgeDuration + (reduce ? 0.04 : 0.12);
+  const contentDuration = reduce ? 0.35 : 0.65;
 
-  const tl = gsap.timeline();
-  tl.to(state, { curY: tY, curX: tX, tarY: tY, tarX: tX, duration: 1.15, ease: 'power3.inOut' }, 0)
-    .to(camera.position, { z: -15.5, duration: 1.15, ease: 'power3.inOut' }, 0)
+  const tl = gsap.timeline({
+    onComplete: () => {
+      isTransitioning = false;
+    },
+  });
+  tl.set(transitionOverlay, { autoAlpha: 0 }, 0)
+    .set(detail, { visibility: 'hidden', clipPath: 'inset(100% 0 0 0)' }, 0)
+    .set([detailHeader, detailCat, detailTitle, detailBody], { autoAlpha: 0 }, 0)
+    .set(detailImg, { scale: 1.12 }, 0)
+    .to(galleryChrome, { autoAlpha: 0, duration: 0.25, ease: 'power2.out' }, 0)
+    .to(state, { curY: tY, curX: tX, tarY: tY, tarX: tX, duration: zoomDuration, ease: 'power3.inOut' }, 0)
+    .to(camera.position, { z: zoomDepth, duration: zoomDuration, ease: 'power3.inOut' }, 0)
     .to(camera, {
-      fov: 50, duration: 1.15, ease: 'power3.inOut',
+      fov: targetFov, duration: zoomDuration, ease: 'power3.inOut',
       onUpdate: () => camera.updateProjectionMatrix(),
     }, 0)
-    .to(others, { value: 0.0, duration: 0.7, ease: 'power2.out' }, 0)
-    .to(card.uniforms.uHover, { value: 1, duration: 0.7, ease: 'power2.out' }, 0)
-    .set(detail, { visibility: 'visible' }, 0.5)
-    .to(detail, { clipPath: 'inset(0% 0 0 0)', duration: 0.9, ease: 'power4.inOut' }, 0.5)
-    .fromTo(detailCat, { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.6, ease: 'power3.out' }, 1.0)
-    .fromTo(detailTitle, { yPercent: 110 }, { yPercent: 0, duration: 0.85, ease: 'power3.out' }, 1.0)
-    .fromTo(detailImg, { scale: 1.18 }, { scale: 1, duration: 1.2, ease: 'power3.out' }, 1.05)
-    .fromTo('.detail-body', { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: 'power3.out' }, 1.2);
+    .to(others, { value: 0.0, duration: reduce ? 0.25 : 0.65, ease: 'power2.out' }, 0)
+    .to(card.uniforms.uHover, { value: 1, duration: reduce ? 0.25 : 0.65, ease: 'power2.out' }, 0)
+    .to(transitionOverlay, { autoAlpha: 1, duration: bridgeDuration, ease: 'power2.inOut' }, bridgeStart)
+    .set(detail, { visibility: 'visible', clipPath: 'inset(0% 0 0 0)' }, revealStart - 0.02)
+    .to(transitionOverlay, { autoAlpha: 0, duration: reduce ? 0.3 : 0.5, ease: 'power2.out' }, revealStart)
+    .fromTo(detailHeader, { y: -12, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: contentDuration, ease: 'power3.out' }, revealStart + 0.06)
+    .fromTo(detailCat, { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: contentDuration, ease: 'power3.out' }, revealStart + 0.1)
+    .fromTo(detailTitle, { y: 0, yPercent: 105, autoAlpha: 1 }, { y: 0, yPercent: 0, autoAlpha: 1, duration: reduce ? 0.45 : 0.8, ease: 'power3.out' }, revealStart + 0.12)
+    .fromTo(detailImg, { scale: reduce ? 1.04 : 1.14 }, { scale: 1, duration: reduce ? 0.45 : 1.0, ease: 'power3.out' }, revealStart + 0.14)
+    .fromTo(detailBody, { y: 32, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: contentDuration, ease: 'power3.out' }, revealStart + 0.22);
 }
 
 function closeCard() {
   const card = currentCard;
-  if (!card) return;
+  if (!card || isTransitioning) return;
+  isTransitioning = true;
   card.hover = 0;
   card.hoverT = 0;
   const allOps = cards.map(c => c.uniforms.uOpacity);
+  const reduce = prefersReducedMotion();
 
   const tl = gsap.timeline({
     onComplete: () => {
       state.locked = false;
       currentCard = null;
+      isTransitioning = false;
       lastInteract = performance.now();
     },
   });
-  tl.to(detail, { clipPath: 'inset(100% 0 0 0)', duration: 0.85, ease: 'power4.inOut' }, 0)
-    .set(detail, { visibility: 'hidden' })
-    .to(camera.position, { z: 0, duration: 1.05, ease: 'power3.inOut' }, 0.15)
-    .to(camera, {
-      fov: 70, duration: 1.05, ease: 'power3.inOut',
-      onUpdate: () => camera.updateProjectionMatrix(),
-    }, 0.15)
-    .to(allOps, { value: 1, duration: 0.8, ease: 'power2.out' }, 0.3)
-    .to(card.uniforms.uHover, { value: 0, duration: 0.6 }, 0.3);
+  tl.to([detailHeader, detailCat, detailTitle, detailBody], { autoAlpha: 0, y: -10, duration: reduce ? 0.15 : 0.22, ease: 'power2.in' }, 0)
+    .to(detailImg, { scale: reduce ? 1.02 : 1.06, duration: reduce ? 0.15 : 0.22, ease: 'power2.in' }, 0)
+    .to(transitionOverlay, { autoAlpha: 1, duration: reduce ? 0.18 : 0.32, ease: 'power2.inOut' }, 0.08)
+    .set(detail, { visibility: 'hidden', clipPath: 'inset(100% 0 0 0)' }, reduce ? 0.28 : 0.45)
+    .set(camera.position, { z: 0 }, reduce ? 0.28 : 0.45)
+    .set(camera, { fov: 70 }, reduce ? 0.28 : 0.45)
+    .call(() => camera.updateProjectionMatrix(), null, reduce ? 0.28 : 0.45)
+    .set(allOps, { value: 1 }, reduce ? 0.28 : 0.45)
+    .set(card.uniforms.uHover, { value: 0 }, reduce ? 0.28 : 0.45)
+    .to(transitionOverlay, { autoAlpha: 0, duration: reduce ? 0.25 : 0.45, ease: 'power2.out' }, reduce ? 0.34 : 0.55)
+    .to(galleryChrome, { autoAlpha: 1, duration: 0.45, ease: 'power2.out' }, reduce ? 0.42 : 0.66);
 }
 
 /* ---------------- intro ---------------- */

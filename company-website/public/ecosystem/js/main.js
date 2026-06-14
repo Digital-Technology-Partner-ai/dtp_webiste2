@@ -945,9 +945,31 @@ function findRingItemAt(x, y) {
   }) || null;
 }
 
+function isNewsDestination(node) {
+  return node?.dest?.id === 'news';
+}
+
+function enterNewsRoute(node) {
+  state.locked = true;
+  state.velY = 0; state.velX = 0;
+  setInfoNode(null);
+  canvas.classList.remove('hovering');
+
+  const route = node?.dest?.route || '/news/';
+  if (window.DTPDepthTunnel?.navigate) {
+    window.DTPDepthTunnel.navigate(route);
+  } else {
+    window.location.assign(route);
+  }
+}
+
 function activateRingItem(item) {
   if (!item || state.locked || menuOpen) return;
   if (item.node) {
+    if (isNewsDestination(item.node)) {
+      enterNewsRoute(item.node);
+      return;
+    }
     openSection(item.node);
   } else {
     gsap.to(state, {
@@ -1092,6 +1114,11 @@ function closeMenu() {
 /* ---------------- destination page entry ---------------- */
 
 function openSection(node) {
+  if (isNewsDestination(node)) {
+    enterNewsRoute(node);
+    return;
+  }
+
   state.locked = true;
   currentNode = node;
   state.velY = 0; state.velX = 0;

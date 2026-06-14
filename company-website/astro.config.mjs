@@ -6,6 +6,9 @@ export default defineConfig({
   site: 'https://digitaltechnologypartner.ai', // Production domain for absolute URLs
   integrations: [sitemap()],
   output: 'static',
+  devToolbar: {
+    enabled: false,
+  },
   vite: {
     plugins: [tailwindcss()],
   },

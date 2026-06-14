@@ -150,6 +150,17 @@ html, body {
   white-space: nowrap;
 }
 
+/* ============ transition bridge ============ */
+.transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  pointer-events: none;
+  background: #000;
+  opacity: 0;
+  visibility: hidden;
+}
+
 /* ============ detail page ============ */
 .detail {
   position: fixed;
