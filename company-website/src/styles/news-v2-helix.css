@@ -14,7 +14,6 @@ body:has(.news-v2-page) .ma-footer {
   --news-v2-line: rgba(242, 241, 236, 0.16);
   --news-v2-mint: #05cc90;
   --news-v2-amber: #f2bb57;
-  --news-v2-coral: #ef6f5e;
   --news-v2-blue: #5eb7ef;
   --news-v2-font-ui: "Space Grotesk", "Helvetica Neue", sans-serif;
   --news-v2-font-body: "IBM Plex Sans", "Helvetica Neue", sans-serif;
@@ -26,11 +25,34 @@ body:has(.news-v2-page) .ma-footer {
     linear-gradient(rgba(242, 241, 236, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(242, 241, 236, 0.03) 1px, transparent 1px),
     radial-gradient(circle at 18% 24%, rgba(5, 204, 144, 0.12), transparent 32rem),
-    radial-gradient(circle at 86% 72%, rgba(239, 111, 94, 0.11), transparent 30rem),
+    radial-gradient(circle at 84% 66%, rgba(124, 139, 255, 0.1), transparent 28rem),
     var(--news-v2-bg);
   background-size: 88px 88px, 88px 88px, auto, auto, auto;
   color: var(--news-v2-ink);
   font-family: var(--news-v2-font-ui);
+}
+
+.news-v2-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 76% 30%, rgba(244, 241, 232, 0.18) 0 1px, transparent 2px),
+    radial-gradient(circle at 88% 56%, rgba(5, 204, 144, 0.2) 0 1px, transparent 2px),
+    radial-gradient(circle at 70% 76%, rgba(124, 139, 255, 0.2) 0 1px, transparent 2px),
+    radial-gradient(circle at 94% 18%, rgba(244, 200, 74, 0.16) 0 1px, transparent 2px),
+    radial-gradient(ellipse 42% 78% at 88% 50%, rgba(124, 139, 255, 0.12), transparent 68%),
+    radial-gradient(ellipse 34% 70% at 78% 42%, rgba(5, 204, 144, 0.08), transparent 70%);
+  background-size:
+    220px 220px,
+    280px 280px,
+    340px 340px,
+    260px 260px,
+    auto,
+    auto;
+  opacity: 0.78;
 }
 
 .news-v2-shell {
@@ -388,7 +410,7 @@ body:has(.news-v2-page) .ma-footer {
   gap: 0.75rem;
 }
 
-.news-v2-static-list button {
+.news-v2-static-list :is(a, button) {
   display: grid;
   grid-template-columns: 3rem minmax(0, 1fr);
   gap: 0.4rem 0.9rem;
@@ -398,6 +420,7 @@ body:has(.news-v2-page) .ma-footer {
   color: var(--news-v2-ink);
   background: rgba(7, 9, 13, 0.68);
   text-align: left;
+  text-decoration: none;
 }
 
 .news-v2-static-list span {

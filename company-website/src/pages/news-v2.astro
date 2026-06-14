@@ -33,6 +33,7 @@ const cleanCopy = (value: string) =>
 const galleryItems = articleViews.map(({ entry }, index) => ({
   id: entry.id,
   slug: entry.id,
+  url: `/news/${entry.id}/`,
   index,
   title: cleanCopy(entry.data.title),
   category: entry.data.category,
@@ -131,9 +132,9 @@ const dataJson = JSON.stringify(galleryItems).replace(/</g, '\\u003c');
 
             <div class="news-v2-hero" id="newsV2Hero">
               <p class="news-v2-kicker" id="newsV2Eyebrow">newsroom lab</p>
-              <h1 id="news-v2-title">Signal Helix</h1>
+              <h1 id="news-v2-title">AI signal</h1>
               <p>
-                Approved DTP articles arranged as an immersive signal map.
+                A sharper way to scan what matters in AI, before it reaches the boardroom.
               </p>
             </div>
 
@@ -150,8 +151,8 @@ const dataJson = JSON.stringify(galleryItems).replace(/</g, '\\u003c');
             <div class="news-v2-static-list" aria-label="Newsroom articles">
               {
                 galleryItems.map((item, index) => (
-                  <button
-                    type="button"
+                  <a
+                    href={item.url}
                     data-news-v2-static-open={index}
                     data-news-v2-cursor
                   >
@@ -160,7 +161,7 @@ const dataJson = JSON.stringify(galleryItems).replace(/</g, '\\u003c');
                     <small>
                       {item.category} / {item.pubDateLabel}
                     </small>
-                  </button>
+                  </a>
                 ))
               }
             </div>

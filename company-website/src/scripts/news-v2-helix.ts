@@ -6,6 +6,7 @@ import * as THREE from 'three';
 type NewsItem = {
   id: string;
   slug: string;
+  url: string;
   index: number;
   title: string;
   category: string;
@@ -50,13 +51,18 @@ function byId<T extends HTMLElement>(id: string) {
 
 function setupStaticList(items: NewsItem[]) {
   setupCursor();
-  const detail = createDetailController(items, null);
-  document.querySelectorAll<HTMLElement>('[data-news-v2-static-open]').forEach((button) => {
-    button.addEventListener('click', () => {
-      const index = Number(button.dataset['newsV2StaticOpen']);
-      detail.open(index);
+  document.querySelectorAll<HTMLElement>('[data-news-v2-static-open]').forEach((card) => {
+    card.addEventListener('click', () => {
+      const index = Number(card.dataset['newsV2StaticOpen']);
+      navigateToArticle(items, index);
     });
   });
+}
+
+function navigateToArticle(items: NewsItem[], index: number) {
+  const item = items[index];
+  if (!item) return;
+  window.location.href = item.url || `/news/${item.slug}/`;
 }
 
 function setupHelix(items: NewsItem[]) {
@@ -212,31 +218,27 @@ function setupHelix(items: NewsItem[]) {
   let currentItem = -1;
   let currentView = 'spiral';
   let hintDismissed = false;
-
-  const detail = createDetailController(items, {
-    meshes,
-    layoutState,
-    getScrollCurrent: () => scrollCurrent,
-    setScrollTarget: (value) => {
-      scrollTarget = value;
-    },
-    linearFactor,
-    uiOut: [toolbar, hero, workLabel, scrollHint],
-  });
+  let isNavigating = false;
 
   window.addEventListener(
     'wheel',
     (event) => {
-      if (!started || detail.isOpen()) return;
+      if (!started || isNavigating) return;
       scrollTarget += event.deltaY * 0.0016;
       dismissHint();
     },
     { passive: true }
   );
 
+  function updatePointerPosition(event: PointerEvent) {
+    pointer.x = (event.clientX / innerWidth) * 2 - 1;
+    pointer.y = -(event.clientY / innerHeight) * 2 + 1;
+  }
+
   window.addEventListener('pointerdown', (event) => {
-    if (!started || detail.isOpen()) return;
+    if (!started || isNavigating) return;
     if (event.button !== undefined && event.button !== 0) return;
+    updatePointerPosition(event);
     dragging = true;
     dragMoved = 0;
     lastX = event.clientX;
@@ -245,8 +247,7 @@ function setupHelix(items: NewsItem[]) {
   });
 
   window.addEventListener('pointermove', (event) => {
-    pointer.x = (event.clientX / innerWidth) * 2 - 1;
-    pointer.y = -(event.clientY / innerHeight) * 2 + 1;
+    updatePointerPosition(event);
     if (!dragging) return;
     const dx = event.clientX - lastX;
     const dy = event.clientY - lastY;
@@ -258,19 +259,22 @@ function setupHelix(items: NewsItem[]) {
     if (dragMoved > 8) dismissHint();
   });
 
-  window.addEventListener('pointerup', () => {
+  window.addEventListener('pointerup', (event) => {
     if (!dragging) return;
+    updatePointerPosition(event);
     dragging = false;
     const isClick = dragMoved < 7 && performance.now() - downTime < 350;
-    if (isClick && hovered && !detail.isOpen()) {
-      detail.open(hovered.userData.index);
+    if (isClick) updateHover();
+    if (isClick && hovered && !isNavigating) {
+      isNavigating = true;
+      navigateToArticle(items, hovered.userData.index);
     }
   });
 
   document.querySelectorAll<HTMLButtonElement>('[data-news-v2-view]').forEach((button) => {
     button.addEventListener('click', () => {
       const nextView = button.dataset['newsV2View'] || 'spiral';
-      if (nextView === currentView || detail.isOpen()) return;
+      if (nextView === currentView || isNavigating) return;
       currentView = nextView;
       document.querySelectorAll('[data-news-v2-view]').forEach((viewButton) => {
         viewButton.classList.toggle('is-active', viewButton === button);
@@ -302,7 +306,7 @@ function setupHelix(items: NewsItem[]) {
     if (hovered) hovered.userData.hoverTarget = 1;
     byId<HTMLDivElement>('newsV2CursorRing')?.classList.toggle(
       'is-hover',
-      Boolean(hovered && !detail.isOpen())
+      Boolean(hovered && !isNavigating)
     );
   }
 
@@ -311,11 +315,7 @@ function setupHelix(items: NewsItem[]) {
       setHovered(null);
       return;
     }
-    if (detail.isOpen()) {
-      const mesh = detail.activeMesh();
-      setHovered(mesh);
-      return;
-    }
+    if (isNavigating) return;
     raycaster.setFromCamera(pointer, camera);
     const hits = raycaster.intersectObjects(meshes);
     setHovered(hits.length ? hits[0].object as typeof hovered : null);
@@ -350,7 +350,7 @@ function setupHelix(items: NewsItem[]) {
     timer.update();
     const dt = Math.min(timer.getDelta(), 0.05);
 
-    if (started && !dragging && !detail.isOpen() && layoutState.progress < 0.5) {
+    if (started && !dragging && !isNavigating && layoutState.progress < 0.5) {
       scrollTarget += dt * 0.018;
     }
 
@@ -411,7 +411,7 @@ function setupHelix(items: NewsItem[]) {
     camera.lookAt(0, 0, 0);
 
     updateHover();
-    if (started && !detail.isOpen()) updateWorkLabel();
+    if (started && !isNavigating) updateWorkLabel();
     renderer.render(scene, camera);
   }
 
@@ -689,7 +689,9 @@ function createCardTexture(item: NewsItem, index: number) {
 
   ctx.fillStyle = 'rgba(242, 241, 236, 0.72)';
   ctx.font = '28px IBM Plex Sans, sans-serif';
-  ctx.fillText(item.pubDateLabel, 190, 95);
+  ctx.textAlign = 'right';
+  ctx.fillText(item.pubDateLabel, panelX + panelW - 54, 95);
+  ctx.textAlign = 'left';
 
   ctx.fillStyle = '#f2f1ec';
   ctx.font = '700 42px Space Grotesk, sans-serif';
