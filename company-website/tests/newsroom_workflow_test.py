@@ -116,12 +116,12 @@ class NewsroomWorkflowTests(unittest.TestCase):
         self.assertEqual(len(list((self.root / 'src' / 'content' / 'news').glob('*.md'))), 0)
 
     def test_validate_approved_fails_for_placeholder_content(self) -> None:
-        article = self.root / 'src' / 'content' / 'news' / '2026-06-14-test.md'
+        article = self.root / 'src' / 'content' / 'news' / '2026-06-15-test.md'
         article.write_text(
             '---\n'
             'title: "Test article"\n'
             'description: "Draft generated from newsroom shortlist."\n'
-            'pubDate: 2026-06-14\n'
+            'pubDate: 2026-06-15\n'
             'category: "AI"\n'
             'approved: true\n'
             '---\n\n'
@@ -140,7 +140,7 @@ class NewsroomWorkflowTests(unittest.TestCase):
         self.assertIn('missing approvedAt', output)
         self.assertIn('default draft description still present', output)
         self.assertIn('draft footer still present', output)
-        self.assertIn('missing DTP context section', output)
+        self.assertIn('missing practical ending section', output)
 
     def test_validate_approved_fails_for_placeholder_scaffold_sections(self) -> None:
         article = self.root / 'src' / 'content' / 'news' / '2026-06-14-test.md'
@@ -161,8 +161,8 @@ class NewsroomWorkflowTests(unittest.TestCase):
             '- Change 1\n- Change 2\n- Change 3\n\n'
             '## What to do next\n\n'
             '1. Action one\n2. Action two\n3. Action three\n\n'
-            '## Why this matters to Digital Technology Partner\n\n'
-            'Useful DTP context.\n',
+            '## Why this matters in practice\n\n'
+            'Useful practical context.\n',
             encoding='utf-8',
         )
 
@@ -197,7 +197,8 @@ class NewsroomWorkflowTests(unittest.TestCase):
         text = article.read_text(encoding='utf-8')
         self.assertNotIn('Draft generated from newsroom shortlist.', text)
         self.assertNotIn('*AI-assisted draft. Human review and approval required before publish.*', text)
-        self.assertEqual(text.count('## Why this matters to Digital Technology Partner'), 1)
+        self.assertEqual(text.count('## Why this matters in practice'), 1)
+        self.assertNotIn('## Why this matters to Digital Technology Partner', text)
 
     def test_production_domain_guard_allows_ordinary_live_site_references(self) -> None:
         scripts_dir = self.root / 'scripts' / 'news'

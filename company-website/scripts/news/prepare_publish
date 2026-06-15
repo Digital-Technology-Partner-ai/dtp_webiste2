@@ -3,7 +3,7 @@
 Prepare a newsroom article for publish:
 - remove draft boilerplate
 - ensure description is not the default draft text
-- inject DTP context section if missing
+- ensure the article has a practical ending section, not a DTP-centred sales section
 """
 
 from __future__ import annotations
@@ -13,11 +13,10 @@ import re
 from pathlib import Path
 
 DEFAULT_DESCRIPTION = "Draft generated from newsroom shortlist."
-DTP_SECTION_TITLE = "## Why this matters to Digital Technology Partner"
-DTP_SECTION_BODY = (
-    "We help mid‑market teams move from AI pilots to measurable outcomes by making integration, "
-    "governance, and delivery boring and repeatable. If you want AI that survives production "
-    "scrutiny, we build the operating model that gets you there."
+PRACTICAL_SECTION_TITLE = "## Why this matters in practice"
+PRACTICAL_SECTION_BODY = (
+    "The practical question is whether the business process still knows what to do "
+    "if the preferred model, provider, or workflow becomes unavailable."
 )
 DRAFT_FOOTER = "*AI-assisted draft. Human review and approval required before publish.*"
 APPROVAL_LINE_PATTERN = r"^\s*Human-?approved by .*?$"
@@ -53,10 +52,11 @@ def remove_draft_footer(text: str) -> str:
     return text.strip() + "\n"
 
 
-def ensure_dtp_section(text: str) -> str:
-    if DTP_SECTION_TITLE in text:
+def ensure_practical_section(text: str) -> str:
+    text = text.replace("## Why this matters to Digital Technology Partner", PRACTICAL_SECTION_TITLE)
+    if PRACTICAL_SECTION_TITLE in text:
         return text
-    return text.rstrip() + f"\n\n{DTP_SECTION_TITLE}\n\n{DTP_SECTION_BODY}\n"
+    return text.rstrip() + f"\n\n{PRACTICAL_SECTION_TITLE}\n\n{PRACTICAL_SECTION_BODY}\n"
 
 
 def main() -> int:
@@ -76,7 +76,7 @@ def main() -> int:
         text = replace_description(text, title)
 
     text = remove_draft_footer(text)
-    text = ensure_dtp_section(text)
+    text = ensure_practical_section(text)
 
     path.write_text(text, encoding="utf-8")
     print(f"Prepared for publish: {path}")

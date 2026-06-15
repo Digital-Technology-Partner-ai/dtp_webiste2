@@ -48,8 +48,14 @@ def main() -> int:
         if '*AI-assisted draft. Human review and approval required before publish.*' in text:
             problems.append(f'{md.name}: draft footer still present')
 
-        if '## Why this matters to Digital Technology Partner' not in text:
-            problems.append(f'{md.name}: missing DTP context section')
+        pub_date = field(text, 'pubDate') or ''
+        enforce_practical_ending = pub_date >= '2026-06-15'
+
+        if enforce_practical_ending and '## Why this matters to Digital Technology Partner' in text:
+            problems.append(f'{md.name}: DTP-centred ending heading still present')
+
+        if enforce_practical_ending and '## Why this matters in practice' not in text:
+            problems.append(f'{md.name}: missing practical ending section')
 
         if has_placeholder_scaffold(text):
             problems.append(f'{md.name}: placeholder scaffold text still present')

@@ -2,7 +2,8 @@
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
-import BookingButton from '../../components/BookingButton.astro';
+
+const bookingUrl = 'https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous';
 
 export async function getStaticPaths() {
   const approvedNews = await getCollection('news', ({ data }) => data.approved === true);
@@ -47,8 +48,11 @@ const { Content } = await render(entry);
         <a href="/news" class="ma-btn ma-btn-outline">← Back to Newsroom</a>
 
         <section class="news-article-cta" aria-label="Book a call with Digital Technology Partner">
-          <p>If AI is becoming part of your operating stack, let’s pressure-test the risks, dependencies and fallback options.</p>
-          <BookingButton text="Book a call" variant="primary" />
+          <div>
+            <h2>Pressure-test your AI dependencies</h2>
+            <p>If AI is becoming part of your operating stack, let’s pressure-test the risks, dependencies and fallback options.</p>
+          </div>
+          <a href={bookingUrl} target="_blank" rel="noopener noreferrer" class="ma-btn ma-btn-mint news-article-cta-button">Book a call</a>
         </section>
       </footer>
     </article>
@@ -91,16 +95,41 @@ const { Content } = await render(entry);
 
   .news-article-cta {
     margin-top: 2rem;
-    padding: 1.5rem;
-    border: 1px solid rgba(255,255,255,.12);
-    border-radius: 1rem;
-    background: rgba(255,255,255,.03);
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+    border: 1px solid rgba(5, 204, 144, .24);
+    border-radius: 1.2rem;
+    background: linear-gradient(135deg, rgba(5, 204, 144, .11), rgba(255,255,255,.035));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .news-article-cta h2 {
+    margin: 0 0 .65rem;
+    font-size: clamp(1.35rem, 3vw, 1.85rem);
+    line-height: 1.15;
   }
 
   .news-article-cta p {
-    margin: 0 0 1rem;
+    margin: 0;
     color: var(--ma-text-primary);
     font-size: 1.05rem;
     line-height: 1.6;
+    max-width: 54ch;
+  }
+
+  .news-article-cta-button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    font-size: .82rem;
+    padding: .9rem 1.35rem;
+  }
+
+  @media (max-width: 720px) {
+    .news-article-cta {
+      align-items: flex-start;
+      flex-direction: column;
+    }
   }
 </style>

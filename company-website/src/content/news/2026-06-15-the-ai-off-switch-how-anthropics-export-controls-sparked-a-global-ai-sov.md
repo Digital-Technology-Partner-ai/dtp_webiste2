@@ -74,16 +74,8 @@ The right architecture may be mixed: hosted frontier models where capability mat
 
 ## Why this matters in practice
 
-DTP's view is simple: useful AI has to survive contact with real operations.
-
-That means governance cannot just be a policy document, and resilience cannot just be a line in a risk register. If a client is putting AI into a business process, they need to understand the dependency they are creating.
-
-The Anthropic story is useful because it makes the abstract risk visible. Whether every reported detail holds up or not, it points to a practical question every leadership team should ask before AI becomes embedded in daily work:
+The Anthropic story is useful because it makes abstract dependency risk visible. Whether every reported detail holds up or not, it points to a practical question every leadership team should ask before AI becomes embedded in daily work:
 
 **If the model goes away, does the process still know what to do?**
 
 If the answer is no, the work is not finished yet.
-
-## Why this matters to Digital Technology Partner
-
-We help mid‑market teams move from AI pilots to measurable outcomes by making integration, governance, and delivery boring and repeatable. If you want AI that survives production scrutiny, we build the operating model that gets you there.
