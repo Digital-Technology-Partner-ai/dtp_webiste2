@@ -28,3 +28,7 @@ Teams start with tools, not workflows. They add AI to existing friction instead 
 ## Bottom line
 
 AI is not the project. Throughput and reliability are the project.
+
+## Why this matters to Digital Technology Partner
+
+We help mid‑market teams move from AI pilots to measurable outcomes by making integration, governance, and delivery boring and repeatable. If you want AI that survives production scrutiny, we build the operating model that gets you there.

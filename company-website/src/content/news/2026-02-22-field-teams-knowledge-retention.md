@@ -27,3 +27,7 @@ Most teams think the risk is staffing numbers. The bigger risk is losing context
 ## KPI to watch
 
 Track "time-to-independent-execution" for new team members. If it drops, your knowledge transfer system is working.
+
+## Why this matters to Digital Technology Partner
+
+We help mid‑market teams move from AI pilots to measurable outcomes by making integration, governance, and delivery boring and repeatable. If you want AI that survives production scrutiny, we build the operating model that gets you there.

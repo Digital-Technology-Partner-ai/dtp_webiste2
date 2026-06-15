@@ -12,11 +12,12 @@ Build visible momentum on the DTP news page with daily activity for 7 days.
 1. Run topic discovery
 2. Build 10-topic shortlist with high-level overview
 3. Share shortlist with Steve for selection
-4. If no response after 3 hours, auto-pick strongest topic
-5. Generate draft article
+4. Wait for Steve to pick the topic id; do not auto-pick
+5. Generate draft article only after selection
 6. Review with checklist
-7. Approve/publish if quality threshold met
-8. Run status + validation and log result
+7. Use a standalone here.now preview slug for review if needed; never the production domain
+8. Publish only after explicit human approval, via the normal Netlify-backed production path
+9. Run status + validation and log result
 
 ## Commands
 ```bash

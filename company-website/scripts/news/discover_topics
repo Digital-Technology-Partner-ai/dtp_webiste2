@@ -1,93 +1,453 @@
 #!/usr/bin/env python3
 """
 Discover daily newsroom topics (manual + cron friendly).
-Outputs an 8-topic shortlist JSON file.
+
+This script builds a fresh 10-topic shortlist from live internet sources rather
+than replaying a static topic pool. It deliberately stops at the shortlist stage:
+Steve chooses the topic before any draft is generated.
 """
 
 from __future__ import annotations
 
 import argparse
+import email.utils
+import hashlib
+import html
 import json
-from datetime import datetime
+import os
+import re
+import ssl
+import sys
+import time
+import urllib.parse
+import urllib.request
+import xml.etree.ElementTree as ET
+from dataclasses import dataclass
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from typing import Iterable
 
-TOPIC_POOL = [
+MAX_AGE_DAYS = 4
+DEFAULT_COUNT = 10
+USER_AGENT = "Hudson-DTP-newsroom/1.0 (+https://digitaltechnologypartner.ai)"
+
+RSS_SOURCES = [
     {
-        "title": "How Aberdeen Operators Can Cut Decommissioning Documentation Time with AI",
-        "category": "Automation",
-        "source": "Energy transition operations trend",
-    },
-    {
-        "title": "Knowledge Retention Playbook for Field Teams Facing Workforce Contraction",
-        "category": "Operations",
-        "source": "Workforce planning trend",
-    },
-    {
-        "title": "Why AI Pilots Fail in Mid-Market Ops Teams (and How to Avoid It)",
-        "category": "Strategy",
-        "source": "Delivery postmortems",
-    },
-    {
-        "title": "Netlify Governance Checklist for Regulated Client Websites",
-        "category": "Digital Transformation",
-        "source": "Web delivery governance",
-    },
-    {
-        "title": "The KPI Stack Every AI-Assisted Ops Team Needs",
-        "category": "Operations",
-        "source": "Client reporting requirements",
-    },
-    {
-        "title": "AI-Assisted, Human-Approved: The Content Operating Model Clients Trust",
-        "category": "Strategy",
-        "source": "Editorial workflow design",
-    },
-    {
-        "title": "Practical Automation Opportunities in Scottish Manufacturing Ops",
-        "category": "Automation",
-        "source": "Regional operations trend",
-    },
-    {
-        "title": "What CTOs Actually Need from AI Vendors in 2026",
+        "name": "TechCrunch AI",
         "category": "AI",
-        "source": "Buyer conversations",
+        "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+        "weight": 80,
+    },
+    {
+        "name": "The Verge AI",
+        "category": "AI",
+        "url": "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml",
+        "weight": 76,
+    },
+    {
+        "name": "AI News",
+        "category": "AI",
+        "url": "https://www.artificialintelligence-news.com/feed/",
+        "weight": 70,
+    },
+    {
+        "name": "Ars Technica IT",
+        "category": "AI",
+        "url": "https://arstechnica.com/information-technology/feed/",
+        "weight": 68,
+    },
+    {
+        "name": "MIT Technology Review AI",
+        "category": "AI",
+        "url": "https://www.technologyreview.com/topic/artificial-intelligence/feed/",
+        "weight": 72,
+    },
+    {
+        "name": "ZDNET AI",
+        "category": "AI",
+        "url": "https://www.zdnet.com/topic/artificial-intelligence/rss.xml",
+        "weight": 66,
+    },
+    {
+        "name": "Google News — AI agents",
+        "category": "AI",
+        "url": "https://news.google.com/rss/search?q=AI%20agents%20business%20when:2d&hl=en-GB&gl=GB&ceid=GB:en",
+        "weight": 64,
+    },
+    {
+        "name": "Google News — automation operations",
+        "category": "Automation",
+        "url": "https://news.google.com/rss/search?q=business%20automation%20operations%20AI%20when:2d&hl=en-GB&gl=GB&ceid=GB:en",
+        "weight": 62,
     },
 ]
 
+DTP_KEYWORDS = {
+    "agent": 18,
+    "agents": 18,
+    "automation": 18,
+    "workflow": 14,
+    "enterprise": 13,
+    "business": 12,
+    "model": 11,
+    "models": 11,
+    "openai": 10,
+    "anthropic": 10,
+    "google": 8,
+    "microsoft": 8,
+    "security": 12,
+    "governance": 14,
+    "regulation": 10,
+    "data": 8,
+    "productivity": 9,
+    "operations": 15,
+    "local": 8,
+    "startup": 5,
+}
+
+CATEGORY_HINTS = [
+    ("security", "Security"),
+    ("governance", "Strategy"),
+    ("regulation", "Strategy"),
+    ("agent", "AI"),
+    ("model", "AI"),
+    ("openai", "AI"),
+    ("anthropic", "AI"),
+    ("automation", "Automation"),
+    ("workflow", "Operations"),
+    ("operations", "Operations"),
+]
+
+
+@dataclass
+class Candidate:
+    title: str
+    category: str
+    source_name: str
+    source_url: str
+    published_at: str | None
+    score: int
+    evidence: str
+
+    def topic_title(self) -> str:
+        return make_dtp_angle(self.title)
+
+
+def fetch_text(url: str, timeout: int = 20) -> str:
+    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    context = ssl.create_default_context()
+    with urllib.request.urlopen(request, timeout=timeout, context=context) as response:
+        charset = response.headers.get_content_charset() or "utf-8"
+        return response.read().decode(charset, errors="replace")
+
+
+def parse_datetime(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    value = value.strip()
+    if not value:
+        return None
+    try:
+        return email.utils.parsedate_to_datetime(value)
+    except Exception:
+        pass
+    try:
+        if value.endswith("Z"):
+            value = value[:-1] + "+00:00"
+        return datetime.fromisoformat(value)
+    except Exception:
+        return None
+
+
+def normalise_title(title: str) -> str:
+    title = html.unescape(title or "")
+    title = re.sub(r"\s+", " ", title).strip()
+    title = re.sub(r"\s[-–—]\s.*$", "", title) if "Google News" in title else title
+    return title
+
+
+def item_text(parent: ET.Element, *names: str) -> str | None:
+    for name in names:
+        direct = parent.findtext(name)
+        if direct:
+            return direct
+        for child in parent:
+            if child.tag.split("}")[-1] == name:
+                return child.text
+    return None
+
+
+def parse_rss(source: dict, cutoff: datetime) -> list[Candidate]:
+    try:
+        xml_text = fetch_text(source["url"])
+    except Exception as exc:
+        print(f"Warning: failed to fetch {source['name']}: {exc}", file=sys.stderr)
+        return []
+
+    try:
+        root = ET.fromstring(xml_text)
+    except ET.ParseError as exc:
+        print(f"Warning: failed to parse {source['name']}: {exc}", file=sys.stderr)
+        return []
+
+    items: list[ET.Element] = []
+    for element in root.iter():
+        local = element.tag.split("}")[-1]
+        if local in {"item", "entry"}:
+            items.append(element)
+
+    candidates: list[Candidate] = []
+    for item in items[:30]:
+        title = normalise_title(item_text(item, "title") or "")
+        if not title or is_low_value_title(title):
+            continue
+
+        link = item_text(item, "link") or ""
+        if not link:
+            for child in item:
+                if child.tag.split("}")[-1] == "link" and child.attrib.get("href"):
+                    link = child.attrib["href"]
+                    break
+        published_raw = item_text(item, "pubDate", "published", "updated")
+        published = parse_datetime(published_raw)
+        if published and published.tzinfo is None:
+            published = published.replace(tzinfo=timezone.utc)
+        if published and published < cutoff:
+            continue
+
+        category = infer_category(title, source.get("category", "AI"))
+        score = score_title(title, source.get("weight", 50), published)
+        candidates.append(
+            Candidate(
+                title=title,
+                category=category,
+                source_name=source["name"],
+                source_url=link or source["url"],
+                published_at=published.isoformat() if published else None,
+                score=score,
+                evidence=f"{source['name']} headline" + (f", published {published.date()}" if published else ""),
+            )
+        )
+    return candidates
+
+
+def fetch_hacker_news(cutoff: datetime) -> list[Candidate]:
+    since = int(cutoff.timestamp())
+    query = urllib.parse.urlencode(
+        {
+            "query": "AI OR agents OR automation OR LLM",
+            "tags": "story",
+            "numericFilters": f"created_at_i>{since}",
+            "hitsPerPage": "40",
+        }
+    )
+    url = f"https://hn.algolia.com/api/v1/search_by_date?{query}"
+    try:
+        payload = json.loads(fetch_text(url))
+    except Exception as exc:
+        print(f"Warning: failed to fetch Hacker News: {exc}", file=sys.stderr)
+        return []
+
+    candidates: list[Candidate] = []
+    for hit in payload.get("hits", []):
+        title = normalise_title(hit.get("title") or hit.get("story_title") or "")
+        if not title or is_low_value_title(title):
+            continue
+        points = int(hit.get("points") or 0)
+        comments = int(hit.get("num_comments") or 0)
+        if points < 8 and comments < 4:
+            continue
+        created = parse_datetime(hit.get("created_at"))
+        link = hit.get("url") or f"https://news.ycombinator.com/item?id={hit.get('objectID')}"
+        candidates.append(
+            Candidate(
+                title=title,
+                category=infer_category(title, "AI"),
+                source_name="Hacker News",
+                source_url=link,
+                published_at=created.isoformat() if created else None,
+                score=70 + min(points, 120) + min(comments * 2, 100) + keyword_score(title),
+                evidence=f"Hacker News discussion: {points} points, {comments} comments",
+            )
+        )
+    return candidates
+
+
+def fetch_github(cutoff: datetime) -> list[Candidate]:
+    created = cutoff.date().isoformat()
+    query = urllib.parse.urlencode(
+        {
+            "q": f"(ai OR llm OR agent OR agents) created:>={created} stars:>100",
+            "sort": "stars",
+            "order": "desc",
+            "per_page": "20",
+        }
+    )
+    url = f"https://api.github.com/search/repositories?{query}"
+    headers = {"User-Agent": USER_AGENT, "Accept": "application/vnd.github+json"}
+    token = os.environ.get("GITHUB_TOKEN")
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    try:
+        request = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(request, timeout=20) as response:
+            payload = json.loads(response.read().decode("utf-8", errors="replace"))
+    except Exception as exc:
+        print(f"Warning: failed to fetch GitHub: {exc}", file=sys.stderr)
+        return []
+
+    candidates: list[Candidate] = []
+    for repo in payload.get("items", []):
+        name = repo.get("full_name") or repo.get("name") or "GitHub project"
+        description = normalise_title(repo.get("description") or "")
+        title = f"{name}: {description}" if description else name
+        stars = int(repo.get("stargazers_count") or 0)
+        if stars < 100:
+            continue
+        created_at = parse_datetime(repo.get("created_at"))
+        candidates.append(
+            Candidate(
+                title=title,
+                category=infer_category(title, "AI"),
+                source_name="GitHub",
+                source_url=repo.get("html_url") or "https://github.com",
+                published_at=created_at.isoformat() if created_at else None,
+                score=25 + min(stars // 100, 20) + keyword_score(title),
+                evidence=f"New GitHub repository: {stars} stars",
+            )
+        )
+    return candidates
+
+
+def is_low_value_title(title: str) -> bool:
+    lowered = title.lower()
+    blocked = ["podcast", "webinar", "subscribe", "newsletter", "stock market today"]
+    return any(term in lowered for term in blocked) or len(title) < 18
+
+
+def keyword_score(title: str) -> int:
+    lowered = title.lower()
+    return sum(weight for word, weight in DTP_KEYWORDS.items() if word in lowered)
+
+
+def score_title(title: str, base: int, published: datetime | None) -> int:
+    score = base + keyword_score(title)
+    if published:
+        age_hours = max((datetime.now(timezone.utc) - published.astimezone(timezone.utc)).total_seconds() / 3600, 0)
+        score += max(0, 36 - int(age_hours))
+    return score
+
+
+def infer_category(title: str, fallback: str) -> str:
+    lowered = title.lower()
+    for needle, category in CATEGORY_HINTS:
+        if needle in lowered:
+            return category
+    return fallback
+
+
+def make_dtp_angle(headline: str) -> str:
+    cleaned = normalise_title(headline)
+    cleaned = re.sub(r"\s+", " ", cleaned).strip(" .")
+    if len(cleaned) > 104:
+        cleaned = cleaned[:101].rstrip() + "…"
+    return cleaned
+
+
+def dedupe(candidates: Iterable[Candidate], per_source_limit: int = 2) -> list[Candidate]:
+    seen: set[str] = set()
+    source_counts: dict[str, int] = {}
+    output: list[Candidate] = []
+    for candidate in sorted(candidates, key=lambda c: c.score, reverse=True):
+        key = re.sub(r"[^a-z0-9]+", " ", candidate.topic_title().lower()).strip()
+        fingerprint = " ".join(key.split()[:8])
+        if fingerprint in seen:
+            continue
+        if source_counts.get(candidate.source_name, 0) >= per_source_limit:
+            continue
+        seen.add(fingerprint)
+        source_counts[candidate.source_name] = source_counts.get(candidate.source_name, 0) + 1
+        output.append(candidate)
+    return output
+
+
+def atomic_write_json(path: Path, payload: dict) -> None:
+    tmp_path = path.with_suffix(path.suffix + ".tmp")
+    tmp_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    tmp_path.replace(path)
+
+
+def build_shortlist(count: int) -> tuple[list[Candidate], list[str]]:
+    cutoff = datetime.now(timezone.utc) - timedelta(days=MAX_AGE_DAYS)
+    warnings: list[str] = []
+    candidates: list[Candidate] = []
+
+    for source in RSS_SOURCES:
+        candidates.extend(parse_rss(source, cutoff))
+        time.sleep(0.2)
+    candidates.extend(fetch_hacker_news(cutoff))
+    candidates.extend(fetch_github(cutoff))
+
+    candidates = dedupe(candidates)
+    if len(candidates) < count:
+        warnings.append(f"Only found {len(candidates)} candidates from live sources; expected {count}.")
+    return candidates[:count], warnings
+
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Generate an 8-topic newsroom shortlist")
+    parser = argparse.ArgumentParser(description="Generate a fresh 10-topic newsroom shortlist from live internet sources")
     parser.add_argument("--date", help="Date for shortlist (YYYY-MM-DD). Defaults to today.")
+    parser.add_argument("--force", action="store_true", help="Overwrite an existing shortlist for the same date.")
+    parser.add_argument("--count", type=int, default=DEFAULT_COUNT, help="Number of topics to shortlist. Defaults to 10.")
     args = parser.parse_args()
 
     date_key = args.date or datetime.now().strftime("%Y-%m-%d")
+    if args.count < 1:
+        raise SystemExit("--count must be at least 1")
 
     out_dir = Path("src/content/news/shortlists")
     out_dir.mkdir(parents=True, exist_ok=True)
     out_file = out_dir / f"{date_key}-topics.json"
 
+    if out_file.exists() and not args.force:
+        raise SystemExit(f"Shortlist already exists: {out_file}. Re-run with --force to overwrite.")
+
+    topics, warnings = build_shortlist(args.count)
+    if not topics:
+        raise SystemExit("No live newsroom topics found. Check network access and source feeds.")
+
     payload = {
         "date": date_key,
         "generatedAt": datetime.now().isoformat(),
-        "count": 8,
+        "count": len(topics),
+        "method": "live-internet-discovery",
+        "sourceWindowDays": MAX_AGE_DAYS,
         "topics": [
             {
-                "id": f"topic-{index+1:02d}",
-                "title": t["title"],
-                "category": t["category"],
-                "source": t["source"],
+                "id": f"topic-{index + 1:02d}",
+                "title": topic.topic_title(),
+                "category": topic.category,
+                "source": f"{topic.source_name}: {topic.source_url}",
+                "sourceName": topic.source_name,
+                "url": topic.source_url,
+                "publishedAt": topic.published_at,
+                "evidence": topic.evidence,
+                "score": topic.score,
                 "status": "shortlisted",
             }
-            for index, t in enumerate(TOPIC_POOL[:8])
+            for index, topic in enumerate(topics)
         ],
-        "notes": "Workflow: shortlist -> Steve pick -> generate_draft -> PR preview -> merge publish",
+        "warnings": warnings,
+        "notes": "Workflow: live discovery -> Steve pick -> generate_draft -> human review -> publish",
     }
 
-    out_file.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    atomic_write_json(out_file, payload)
     print(f"Wrote shortlist: {out_file}")
-    print("\nTop 8 topics:")
+    print(f"\nTop {len(payload['topics'])} live topics:")
     for topic in payload["topics"]:
-        print(f"- {topic['id']}: {topic['title']}")
+        print(f"- {topic['id']}: {topic['title']} [{topic['sourceName']}]")
+    for warning in warnings:
+        print(f"Warning: {warning}", file=sys.stderr)
 
     return 0
 

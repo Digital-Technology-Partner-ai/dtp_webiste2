@@ -4,6 +4,10 @@ import Layout from '../../../layouts/Layout.astro';
 import Header from '../../../components/Header.astro';
 
 export async function getStaticPaths() {
+  if (import.meta.env.PROD) {
+    return [];
+  }
+
   const allNews = await getCollection('news');
 
   return allNews.map((entry) => ({
@@ -13,14 +17,30 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { Content } = await render(entry);
+const previewEnabled = !import.meta.env.PROD;
+const { Content } = entry ? await render(entry) : { Content: null };
 ---
 
-<Layout title={`${entry.data.title} | Newsroom Preview`} description={entry.data.description}>
+<Layout title={entry ? `${entry.data.title} | Newsroom Preview` : 'Newsroom Preview'} description={entry?.data?.description ?? 'Internal newsroom preview.'}>
   <Header />
 
   <main class="ma-section">
-    <article class="ma-container" style="max-width: 820px;">
+    {
+      !previewEnabled || !entry || !Content ? (
+        <article class="ma-container" style="max-width: 820px;">
+          <header style="margin-bottom:2rem;">
+            <h1 style="font-size: clamp(2rem, 4vw, 3rem); line-height:1.1; margin-bottom:1rem;">Preview unavailable</h1>
+            <p style="font-size:1.1rem; color:var(--ma-text-secondary); max-width: 70ch;">
+              Draft preview is limited to local development. Use the public newsroom for published articles.
+            </p>
+          </header>
+
+          <footer style="margin-top:3rem; border-top:1px solid rgba(255,255,255,.1); padding-top:1.25rem; display:flex; gap:1rem; flex-wrap:wrap;">
+            <a href="/news" class="ma-btn ma-btn-outline">Newsroom</a>
+          </footer>
+        </article>
+      ) : (
+        <article class="ma-container" style="max-width: 820px;">
       <header style="margin-bottom:2rem;">
         <div style="display:flex; gap:.75rem; align-items:center; flex-wrap:wrap; margin-bottom:1rem;">
           <span class="ma-tag">{entry.data.category}</span>
@@ -55,7 +75,9 @@ const { Content } = await render(entry);
         <a href="/news/preview" class="ma-btn ma-btn-outline">← Back to Preview</a>
         <a href="/news" class="ma-btn ma-btn-outline">Newsroom</a>
       </footer>
-    </article>
+        </article>
+      )
+    }
   </main>
 </Layout>
 

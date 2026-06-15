@@ -9,7 +9,7 @@ tags:
   - enterprise-ai
   - workflow-automation
   - digital-transformation
-approved: true
+approved: false
 ---
 
 OpenAI is making a strategic move that could reshape how artificial intelligence spreads through enterprises. The company is partnering with top-tier consulting firms to embed AI capabilities directly into corporate workflows — bypassing traditional IT procurement channels and changing who controls adoption decisions inside large organisations.
@@ -92,4 +92,6 @@ The enterprises that benefit most will be those that use consulting partnerships
 
 *At Digital Technology Partner, we help organisations build internal AI capabilities that reduce long-term dependence on external advisory firms. If your AI strategy relies entirely on consulting partnerships, we should talk about building sustainable operational expertise.*
 
+## Why this matters to Digital Technology Partner
 
+We help mid‑market teams move from AI pilots to measurable outcomes by making integration, governance, and delivery boring and repeatable. If you want AI that survives production scrutiny, we build the operating model that gets you there.

@@ -1,6 +1,6 @@
 [build]
   base = "company-website"
-  command = "cd company-website && npm run build"
+  command = "cd company-website && npm run newsroom:verify"
   publish = "company-website/dist"
   functions = "company-website/netlify/functions"
 
@@ -8,6 +8,16 @@
   NODE_VERSION = "22.12.0"
   NPM_VERSION = "10.9.0"
   NPM_FLAGS = "--legacy-peer-deps"
+
+[[redirects]]
+  from = "/news/preview"
+  to = "/news"
+  status = 302
+
+[[redirects]]
+  from = "/news/preview/*"
+  to = "/news"
+  status = 302
 
 # Removed legacy redirect from /location to avoid stale 301 caches on mobile
 

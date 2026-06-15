@@ -1,117 +1,90 @@
-# Task List — DTP Automated Newsroom Service
+# Task List — DTP Website Newsroom Hardening
 
-Project ID: `6c3a2e19-712a-4289-83c8-ad962de2eaab`
-Project Name: DTP Automated Newsroom
-Scope: Consolidate docs, harden workflow, and productize offer
+Project Name: DTP Website Newsroom Hardening
+Owner: Hudson
+Last Updated: 2026-06-15 23:30 BST
+Status: Phase-1 requirements implemented and locally verified; ready for deployment/use within the documented human approval boundary
 
-**Status:** Phases A-D Complete | 7-Day Live Run In Progress
-**Last Updated:** 2026-02-24 09:10 GMT (by Gideon)
+## Repo reality check verdict
+- The newsroom is now *buildable and locally verifiable* as an Astro newsroom workflow.
+- The remaining boundaries are intentional, not accidental: human topic selection, human approval, and no public draft preview in production.
+- The main phase-1 requirements from the PRD are now covered by code, docs, and verification commands.
 
----
+## Consensus implementation track
+This task list reflects the final Hudson/Codex Bridge consensus:
+- keep phase 1 file-based
+- no CMS
+- no auto-pick fallback
+- no public production preview surface
+- human topic selection and human approval stay mandatory
+- social automation deferred; future socials derive from approved website articles only
 
-## Quick Status
-| Phase | Status | Key Deliverables |
-|-------|--------|------------------|
-| A — Audit & Baseline | ✅ Done | Scripts confirmed, duplicates removed, visibility verified |
-| B — Workflow Hardening | ✅ Done | Duplicate guard, reviewer checklist, metadata validation |
-| C — Delivery Ops | ✅ Done | SOP doc, weekly cadence, reporting snapshot |
-| D — Productization | ✅ Done | Service package, pricing/tiers, onboarding checklist |
-| E — Live Validation | 🔄 In Progress | 7-day cron run (24 Feb–2 Mar), daily articles, case studies |
-| F — Release | ⏳ Pending | Evidence bundle, marketing positioning, move to review |
+## Atomic tasks
 
----
+### Phase A — Documentation truth reset
+- [x] A1. Rewrite `docs/newsroom-prd.md` to match the audited repo reality and agreed phase-1 architecture.
+- [x] A2. Rewrite `docs/newsroom-sop.md` to remove auto-pick behaviour and define the publish-safety gate.
+- [x] A3. Update `docs/newsroom-review-checklist.md` so it matches the publish rules.
+- [x] A4. Replace stale Gideon-era status claims and dead local paths in newsroom docs.
 
-## Phase A — Audit & Baseline ✅ COMPLETE
-- [x] A1. Confirm current scripts, schema, routes, and content status
-- [x] A2. Remove/merge duplicate article entries
-  - Duplicate draft archived: `src/content/news/_archive/2026-02-22-how-aberdeen-operators-can-cut-decommissioning-documentation-time-with-a.md`
-- [x] A3. Verify approved vs draft visibility behavior
+### Phase B — Script hardening
+- [x] B1. Make shortlist generation safe on rerun by default.
+- [x] B2. Add explicit overwrite behaviour for shortlist regeneration.
+- [x] B3. Make shortlist writes atomic.
+- [x] B4. Validate shortlist structure before draft generation.
+- [x] B5. Make draft generation use deterministic date behaviour.
+- [x] B6. Make draft writes atomic.
+- [x] B7. Keep duplicate title/slug protection in place.
+- [x] B8. Tighten approved-article validation to catch placeholder/scaffold text.
+- [x] B9. Improve `news:status` so Hudson gets a truthful quick state read.
 
-## Phase B — Workflow Hardening ✅ COMPLETE
-- [x] B1. Add duplicate-title/slug guard in draft workflow
-  - Script: `scripts/news/generate_draft`
-- [x] B2. Add reviewer checklist template for approvals
-  - Doc: `docs/newsroom-review-checklist.md`
-- [x] B3. Ensure every approved post has source metadata
-  - Script: `scripts/news/validate_approved` (PASS)
+### Phase C — Production safety
+- [x] C1. Remove or gate production preview exposure so draft content is not publicly accessible.
+- [x] C2. Add a newsroom verification command that runs validation, tests, type-check, and build.
+- [x] C3. Ensure Netlify build uses the publish-safety gate before build succeeds.
 
-## Phase C — Delivery Ops ✅ COMPLETE
-- [x] C1. Document end-to-end SOP (discover → draft → review → approve → publish)
-  - Doc: `docs/newsroom-sop.md`
-- [x] C2. Define weekly editorial cadence
-  - Doc: `docs/newsroom-weekly-cadence.md`
-- [x] C3. Add simple reporting snapshot (draft/approved/published counts)
-  - Script: `npm run news:status`
-  - Status: No duplicates, counts visible
+### Phase D — Matt-TDD test coverage
+- [x] D1. Add a behaviour test for deterministic shortlist creation.
+- [x] D2. Add a behaviour test for no silent shortlist overwrite on rerun.
+- [x] D3. Add a behaviour test for happy-path draft generation from shortlist topic.
+- [x] D4. Add a behaviour test for duplicate draft blocking.
+- [x] D5. Add a behaviour test for malformed shortlist failure.
+- [x] D6. Add a behaviour test for approved-article validation failure modes.
+- [x] D7. Add a behaviour test for `prepare_publish` idempotency.
+- [x] D8. Add a render/build test proving drafts stay off public `/news` output.
+- [x] D9. Add a render/build test proving the production preview surface is disabled.
 
-## Phase D — Productization (AI With Agency) ✅ COMPLETE
-- [x] D1. Create reusable service package docs
-  - Location: `projects/ai-with-agency/offerings/automated-newsroom/`
-- [x] D2. Define pricing/tiers and deliverables
-  - Included in service package docs
-- [x] D3. Define onboarding checklist for new client rollout
-  - Included in service package docs
+### Phase E — Verification
+- [x] E1. Run newsroom verification locally and record exact results.
+- [x] E2. Run a safe shortlist/draft rehearsal and verify rerun behaviour.
+- [x] E3. Confirm public-site build still succeeds after newsroom hardening.
+- [x] E4. Summarise residual risks and explicit phase-2 deferrals.
 
-## Phase E — Live Validation 🔄 IN PROGRESS
-- [x] E1. Schedule 7-day daily cron runs (09:00 UK)
-  - Dates: 2026-02-24 to 2026-03-02
-- [~] E2. Execute daily run and publish at least one additional approved article each day where quality threshold is met
-  - Day 1 (24 Feb): ✅ "When 'Vibe Coding' Goes Wrong: The Hidden Risks of AI Experiments in Enterprise Environments"
-- [~] E3. Capture outcomes as mini case-study notes
-  - Template: `case-studies/dtp-newsroom-2026-02-23.md`
-- [ ] E4. Compile 7-day evidence bundle
+## Verification notes
+- `python3 -m unittest tests/newsroom_workflow_test.py` → passed, 9 tests.
+- `npm run newsroom:verify` → passed.
+- `npm run news:status` → 15 total articles, 8 approved, 7 drafts, 0 duplicate titles, 8 shortlist files.
+- Safe rehearsal in an isolated temp workspace:
+  - first `discover_topics --date 2026-06-15` run succeeded
+  - second same-date run failed cleanly without overwrite unless forced
+  - `generate_draft` created one deterministic draft from `topic-01`
+  - `prepare_publish` succeeded on the generated draft
+- Production build verification confirms:
+  - approved article routes build
+  - draft article routes do not build under `/news/*`
+  - `/news/preview` renders a production-safe unavailable message
+  - draft preview article routes do not build in production
 
-## Phase F — Release Readiness ⏳ PENDING
-- [ ] F1. Finalise marketing positioning from live DTP outcomes
-- [ ] F2. Prepare evidence bundle for review
-- [ ] F3. Move task to `review` column in Mission Control
+## Residual risks and phase-2 deferrals
+- `prepare_publish` removes the draft footer and injects DTP context, but it does not rewrite placeholder section body text; human editorial refinement is still mandatory before approval.
+- `astro check`/`astro build` emit content-directory warnings for `blog`, `case-studies`, `services`, and `testimonials` collections that do not currently exist under `src/content/`. These are warnings, not blockers for newsroom verification, but they are repo hygiene debt.
+- Publication is still intentionally human-gated. The workflow stops if Steve does not select a topic or if approval metadata is missing.
+- Social automation remains deferred and must continue to derive from approved website articles only.
 
-## Done Criteria
-- [ ] DTP workflow stable and used repeatedly (pending 7-day validation)
-- [ ] Team can execute without ad-hoc steps (SOP in place, pending validation)
-- [ ] Reusable service package ready for external clients (docs ready, pending case study evidence)
-
----
-
-## Agent Process Discipline (Gideon Protocol)
-
-**This section is MANDATORY and must not be removed.**
-
-### Before Starting Work
-1. **Read the task list first** — Open this file before writing any code
-2. **Identify current phase** — Know which items are `[ ]`, `[~]`, or `[x]`
-3. **Pick the next unstarted item** — Work in phase order (A → B → C → D → E → F)
-
-### During Work
-4. **Update status immediately** — When a task is done, change `[ ]` to `[x]` in the same session
-5. **Mark partial progress** — Use `[~]` for "in progress / partially done"
-6. **Note blockers** — Add inline comments if blocked (e.g., `Blocked: needs API key`)
-
-### After Work
-7. **Update the Quick Status table** — Reflect accurate % completion
-8. **Update Last Updated timestamp** — Add date/time + your name
-9. **Commit with task reference** — Include task ID in commit message (e.g., `E2: Publish day 3 article`)
-
-### Verification Checklist (Before saying "I'm done")
-- [ ] Did I update the task list with `[x]` for completed items?
-- [ ] Did I update the Quick Status table?
-- [ ] Did I update the Last Updated timestamp?
-- [ ] Did I verify the fix/feature actually works (not just "should work")?
-
-**Violation of this protocol is a project hygiene failure.**
-
----
-
-## Document References
-- **Brief:** `docs/newsroom-product-brief.md`
-- **PRD:** `docs/newsroom-prd.md`
-- **Baseline Audit:** `docs/newsroom-baseline-audit.md`
-- **SOP:** `docs/newsroom-sop.md`
-- **Weekly Cadence:** `docs/newsroom-weekly-cadence.md`
-- **Reviewer Checklist:** `docs/newsroom-review-checklist.md`
-- **Task Context:** `/Users/gideon/clawd/projects/mission-control/docs/task-context/6c3a2e19-712a-4289-83c8-ad962de2eaab.md`
-- **AI With Agency Package:** `/Users/gideon/clawd/projects/ai-with-agency/offerings/automated-newsroom/`
-
----
-
-*Template version: 1.0*
+## Done criteria
+- [x] Reruns are explicit and non-destructive by default.
+- [x] Drafts are not publicly exposed in production.
+- [x] Approved content must pass newsroom validation before publish.
+- [x] One command proves newsroom publish safety.
+- [x] Docs reflect actual Hudson operating behaviour.
+- [x] The future social phase remains downstream of approved website articles only.

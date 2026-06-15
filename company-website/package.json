@@ -12,7 +12,10 @@
     "format": "prettier --write \"src/**/*.{astro,html,js,jsx,ts,tsx,css,md}\"",
     "type-check": "astro check",
     "news:status": "./scripts/news/report_status",
-    "news:validate": "./scripts/news/validate_approved"
+    "news:validate": "./scripts/news/validate_approved",
+    "news:guard": "python3 ./scripts/news/guard_production_domains.py",
+    "news:test": "python3 -m unittest tests/newsroom_workflow_test.py",
+    "newsroom:verify": "npm run news:guard && npm run news:test && npm run news:validate && npm run type-check && npm run build"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.2",

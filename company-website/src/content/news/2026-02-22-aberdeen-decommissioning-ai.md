@@ -32,3 +32,7 @@ Engineering teams are spending too much time writing and formatting documentatio
 3. Measure cycle time before/after for 4 weeks.
 
 This is where AI is strongest: reducing repetitive effort while preserving accountable human review.
+
+## Why this matters to Digital Technology Partner
+
+We help mid‑market teams move from AI pilots to measurable outcomes by making integration, governance, and delivery boring and repeatable. If you want AI that survives production scrutiny, we build the operating model that gets you there.

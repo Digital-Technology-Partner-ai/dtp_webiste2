@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
+import BookingButton from '../../components/BookingButton.astro';
 
 export async function getStaticPaths() {
   const approvedNews = await getCollection('news', ({ data }) => data.approved === true);
@@ -42,8 +43,13 @@ const { Content } = await render(entry);
         <Content />
       </section>
 
-      <footer style="margin-top:3rem; border-top:1px solid rgba(255,255,255,.1); padding-top:1.25rem;">
+      <footer class="news-article-footer">
         <a href="/news" class="ma-btn ma-btn-outline">← Back to Newsroom</a>
+
+        <section class="news-article-cta" aria-label="Book a call with Digital Technology Partner">
+          <p>If AI is becoming part of your operating stack, let’s pressure-test the risks, dependencies and fallback options.</p>
+          <BookingButton text="Book a call" variant="primary" />
+        </section>
       </footer>
     </article>
   </main>
@@ -76,5 +82,25 @@ const { Content } = await render(entry);
     padding-left: 1rem;
     color: var(--ma-text-primary);
     margin: 1.25rem 0;
+  }
+  .news-article-footer {
+    margin-top: 3rem;
+    border-top: 1px solid rgba(255,255,255,.1);
+    padding-top: 1.25rem;
+  }
+
+  .news-article-cta {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 1rem;
+    background: rgba(255,255,255,.03);
+  }
+
+  .news-article-cta p {
+    margin: 0 0 1rem;
+    color: var(--ma-text-primary);
+    font-size: 1.05rem;
+    line-height: 1.6;
   }
 </style>

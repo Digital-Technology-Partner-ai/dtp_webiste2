@@ -9,7 +9,7 @@ tags:
   - enterprise-ai
   - plugins
   - workplace-automation
-approved: true
+approved: false
 ---
 
 Anthropic is making a decisive move into the enterprise AI market. The company has expanded Claude Cowork with enterprise plugins and connectors — transforming its AI assistant from a standalone chat interface into an integrated workplace platform.
@@ -115,3 +115,7 @@ For business leaders, the implication is clear: AI strategy is increasingly abou
 ---
 
 *At Digital Technology Partner, we help organisations design AI-enabled workflows that deliver measurable outcomes. If you're evaluating AI assistants and integration strategies, we can help you make choices that align with your operational reality rather than vendor roadmaps.*
+
+## Why this matters to Digital Technology Partner
+
+We help mid‑market teams move from AI pilots to measurable outcomes by making integration, governance, and delivery boring and repeatable. If you want AI that survives production scrutiny, we build the operating model that gets you there.

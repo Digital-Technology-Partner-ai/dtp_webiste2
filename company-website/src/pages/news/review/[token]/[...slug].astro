@@ -1,0 +1,28 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import Header from '../../../../components/Header.astro';
+
+export async function getStaticPaths() {
+  return [];
+}
+---
+
+<Layout
+  title="Draft review happens on separate here.now links | Digital Technology Partner"
+  description="Draft article review is hosted on separate here.now links, not on the main DTP domain."
+  noindex={true}
+>
+  <Header />
+
+  <main class="ma-section">
+    <article class="ma-container" style="max-width: 820px;">
+      <header style="margin-bottom:2rem;">
+        <span class="ma-section-tag">// newsroom review</span>
+        <h1 style="font-size: clamp(2rem, 4vw, 3rem); line-height:1.1; margin:1rem 0;">Draft review is not hosted here</h1>
+        <p style="font-size:1.1rem; color:var(--ma-text-secondary); max-width:70ch;">
+          Draft article review happens on separate here.now links sent directly by Hudson. The main DTP domain remains for approved public newsroom content only.
+        </p>
+      </header>
+    </article>
+  </main>
+</Layout>

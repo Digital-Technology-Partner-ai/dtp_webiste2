@@ -2,23 +2,25 @@
 
 Use this checklist before setting `approved: true`.
 
-## Editorial Quality
-- [ ] Headline is clear and specific
-- [ ] Description is concise and accurate (<=160 chars preferred)
-- [ ] Claims are practical and relevant to target audience
-- [ ] No placeholder or generic filler text remains
+## Editorial quality
+- [ ] Headline is clear, specific, and not hypey
+- [ ] Description is concise and accurate
+- [ ] Claims are practical and relevant to DTP’s audience
+- [ ] No placeholder or scaffold text remains
+- [ ] The article includes a clear DTP context section
 
-## Governance & Compliance
-- [ ] `source` field is present and meaningful
+## Governance & compliance
+- [ ] `source` is present and meaningful
 - [ ] `approvedBy` is set
 - [ ] `approvedAt` is set
-- [ ] AI-assisted disclosure remains in article body if used
+- [ ] Draft footer/disclaimer has been removed from the published body
 
-## Technical Readiness
+## Technical readiness
 - [ ] Frontmatter is valid
 - [ ] Article renders locally without errors
-- [ ] Tags/category are correct for newsroom filters
+- [ ] Tags and category are correct
+- [ ] `npm run newsroom:verify` passes
 
-## Publish Decision
+## Publish decision
 - [ ] Approve for publication
 - [ ] Needs revision (leave `approved: false`)

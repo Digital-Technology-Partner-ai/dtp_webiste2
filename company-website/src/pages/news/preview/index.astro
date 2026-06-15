@@ -3,7 +3,8 @@ import { getCollection } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
 import Header from '../../../components/Header.astro';
 
-const allNews = await getCollection('news');
+const previewEnabled = !import.meta.env.PROD;
+const allNews = previewEnabled ? await getCollection('news') : [];
 const news = allNews.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 ---
 
@@ -24,7 +25,13 @@ const news = allNews.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.ge
       </div>
 
       {
-        news.length === 0 ? (
+        !previewEnabled ? (
+          <div class="ma-benefit-card" style="margin-top: 2rem;">
+            <h3>Preview unavailable in production</h3>
+            <p>Draft preview is limited to local development. Published articles are available on the public newsroom.</p>
+            <p><a href="/news">Go to /news</a></p>
+          </div>
+        ) : news.length === 0 ? (
           <div class="ma-benefit-card" style="margin-top: 2rem;">
             <h3>No articles yet</h3>
             <p>Add a draft to see it here.</p>
