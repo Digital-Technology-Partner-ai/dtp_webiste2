@@ -57,6 +57,9 @@ def main() -> int:
         if enforce_practical_ending and '## Why this matters in practice' not in text:
             problems.append(f'{md.name}: missing practical ending section')
 
+        if enforce_practical_ending and '## Pressure-test your AI dependencies' not in text:
+            problems.append(f'{md.name}: missing in-article CTA section')
+
         if has_placeholder_scaffold(text):
             problems.append(f'{md.name}: placeholder scaffold text still present')
 

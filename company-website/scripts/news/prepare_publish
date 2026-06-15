@@ -18,6 +18,11 @@ PRACTICAL_SECTION_BODY = (
     "The practical question is whether the business process still knows what to do "
     "if the preferred model, provider, or workflow becomes unavailable."
 )
+CTA_SECTION_TITLE = "## Pressure-test your AI dependencies"
+CTA_SECTION_BODY = (
+    "If AI is becoming part of your operating stack, let’s pressure-test the risks, "
+    "dependencies and fallback options."
+)
 DRAFT_FOOTER = "*AI-assisted draft. Human review and approval required before publish.*"
 APPROVAL_LINE_PATTERN = r"^\s*Human-?approved by .*?$"
 
@@ -54,9 +59,11 @@ def remove_draft_footer(text: str) -> str:
 
 def ensure_practical_section(text: str) -> str:
     text = text.replace("## Why this matters to Digital Technology Partner", PRACTICAL_SECTION_TITLE)
-    if PRACTICAL_SECTION_TITLE in text:
-        return text
-    return text.rstrip() + f"\n\n{PRACTICAL_SECTION_TITLE}\n\n{PRACTICAL_SECTION_BODY}\n"
+    if PRACTICAL_SECTION_TITLE not in text:
+        text = text.rstrip() + f"\n\n{PRACTICAL_SECTION_TITLE}\n\n{PRACTICAL_SECTION_BODY}\n"
+    if CTA_SECTION_TITLE not in text:
+        text = text.rstrip() + f"\n\n{CTA_SECTION_TITLE}\n\n{CTA_SECTION_BODY}\n"
+    return text
 
 
 def main() -> int:

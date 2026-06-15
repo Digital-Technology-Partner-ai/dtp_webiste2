@@ -79,3 +79,7 @@ The Anthropic story is useful because it makes abstract dependency risk visible.
 **If the model goes away, does the process still know what to do?**
 
 If the answer is no, the work is not finished yet.
+
+## Pressure-test your AI dependencies
+
+If AI is becoming part of your operating stack, let’s pressure-test the risks, dependencies and fallback options.

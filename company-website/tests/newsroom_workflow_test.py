@@ -141,6 +141,7 @@ class NewsroomWorkflowTests(unittest.TestCase):
         self.assertIn('default draft description still present', output)
         self.assertIn('draft footer still present', output)
         self.assertIn('missing practical ending section', output)
+        self.assertIn('missing in-article CTA section', output)
 
     def test_validate_approved_fails_for_placeholder_scaffold_sections(self) -> None:
         article = self.root / 'src' / 'content' / 'news' / '2026-06-14-test.md'
@@ -198,6 +199,7 @@ class NewsroomWorkflowTests(unittest.TestCase):
         self.assertNotIn('Draft generated from newsroom shortlist.', text)
         self.assertNotIn('*AI-assisted draft. Human review and approval required before publish.*', text)
         self.assertEqual(text.count('## Why this matters in practice'), 1)
+        self.assertEqual(text.count('## Pressure-test your AI dependencies'), 1)
         self.assertNotIn('## Why this matters to Digital Technology Partner', text)
 
     def test_production_domain_guard_allows_ordinary_live_site_references(self) -> None:
