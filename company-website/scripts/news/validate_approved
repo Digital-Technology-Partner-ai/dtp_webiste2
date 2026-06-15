@@ -7,12 +7,25 @@ from __future__ import annotations
 
 from pathlib import Path
 import re
-import sys
+
+PLACEHOLDER_MARKERS = [
+    'Add practical context for operators and decision-makers.',
+    '- Change 1',
+    '- Change 2',
+    '- Change 3',
+    '1. Action one',
+    '2. Action two',
+    '3. Action three',
+]
 
 
 def field(text: str, name: str) -> str | None:
     m = re.search(rf'^{name}:\s*(.+)$', text, re.MULTILINE)
     return m.group(1).strip() if m else None
+
+
+def has_placeholder_scaffold(text: str) -> bool:
+    return any(marker in text for marker in PLACEHOLDER_MARKERS)
 
 
 def main() -> int:
@@ -37,6 +50,9 @@ def main() -> int:
 
         if '## Why this matters to Digital Technology Partner' not in text:
             problems.append(f'{md.name}: missing DTP context section')
+
+        if has_placeholder_scaffold(text):
+            problems.append(f'{md.name}: placeholder scaffold text still present')
 
     if problems:
         print('Approved article validation FAILED:')

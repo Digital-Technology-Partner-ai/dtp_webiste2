@@ -8,6 +8,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import secrets
 from datetime import datetime
 from pathlib import Path
 
@@ -29,6 +30,28 @@ def existing_titles(news_dir: Path) -> set[str]:
     return titles
 
 
+def load_shortlist(path: Path) -> dict:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    topics = payload.get("topics")
+    if not isinstance(topics, list) or not topics:
+        raise SystemExit(f"Malformed shortlist: {path}")
+
+    for topic in topics:
+        if not all(key in topic for key in ("id", "title", "category", "source")):
+            raise SystemExit(f"Malformed shortlist topic in: {path}")
+
+    if "date" not in payload:
+        raise SystemExit(f"Malformed shortlist: missing date in {path}")
+
+    return payload
+
+
+def atomic_write_text(path: Path, content: str) -> None:
+    tmp_path = path.with_suffix(path.suffix + '.tmp')
+    tmp_path.write_text(content, encoding="utf-8")
+    tmp_path.replace(path)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Generate draft article from shortlist topic")
     parser.add_argument("--shortlist", required=True, help="Path to shortlist JSON")
@@ -41,14 +64,15 @@ def main() -> int:
     if not shortlist_path.exists():
         raise SystemExit(f"Shortlist not found: {shortlist_path}")
 
-    payload = json.loads(shortlist_path.read_text(encoding="utf-8"))
+    payload = load_shortlist(shortlist_path)
     topic = next((t for t in payload.get("topics", []) if t.get("id") == args.topic_id), None)
 
     if topic is None:
         raise SystemExit(f"Topic id not found: {args.topic_id}")
 
-    today = datetime.now().strftime("%Y-%m-%d")
-    slug = f"{today}-{slugify(topic['title'])[:72]}"
+    article_date = payload["date"]
+    slug = f"{article_date}-{slugify(topic['title'])[:72]}"
+    review_token = f"rvw-{secrets.token_hex(6)}"
 
     out_dir = Path("src/content/news")
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -69,14 +93,15 @@ def main() -> int:
     markdown = f"""---
 title: \"{topic['title']}\"
 description: \"Draft generated from newsroom shortlist.\"
-pubDate: {today}
+pubDate: {article_date}
 author: \"{args.author}\"
 category: \"{topic['category']}\"
 tags:
   - newsroom
   - ai-assisted
 approved: false
-source: \"{topic['source']}\"
+reviewToken: "{review_token}"
+source: "{topic['source']}"
 ---
 
 ## Why this topic matters
@@ -94,13 +119,9 @@ Add practical context for operators and decision-makers.
 1. Action one
 2. Action two
 3. Action three
-
----
-
-*AI-assisted draft. Human review and approval required before publish.*
 """
 
-    out_file.write_text(markdown, encoding="utf-8")
+    atomic_write_text(out_file, markdown)
     print(f"Draft created: {out_file}")
     return 0
 

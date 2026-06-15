@@ -62,6 +62,7 @@ const newsCollection = defineCollection({
     approved: z.boolean().default(false),
     approvedBy: z.string().optional(),
     approvedAt: z.date().optional(),
+    reviewToken: z.string().optional(),
     source: z.string().optional(),
   }),
 });

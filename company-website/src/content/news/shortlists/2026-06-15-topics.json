@@ -1,0 +1,131 @@
+{
+  "date": "2026-06-15",
+  "generatedAt": "2026-06-15T17:40:58.195586",
+  "count": 10,
+  "method": "live-internet-discovery",
+  "sourceWindowDays": 4,
+  "topics": [
+    {
+      "id": "topic-01",
+      "title": "Cybersecurity vets protest \u2018dangerous\u2019 US government ban on Anthropic\u2019s most powerful models",
+      "category": "Security",
+      "source": "TechCrunch AI: https://techcrunch.com/2026/06/15/cybersecurity-vets-protest-dangerous-us-government-ban-on-anthropics-most-powerful-models/",
+      "sourceName": "TechCrunch AI",
+      "url": "https://techcrunch.com/2026/06/15/cybersecurity-vets-protest-dangerous-us-government-ban-on-anthropics-most-powerful-models/",
+      "publishedAt": "2026-06-15T15:29:51+00:00",
+      "evidence": "TechCrunch AI headline, published 2026-06-15",
+      "score": 159,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-02",
+      "title": "inecta Adds AI Agents to Food ERP for Workflow Automation - ERP Today",
+      "category": "AI",
+      "source": "Google News \u2014 AI agents: https://news.google.com/rss/articles/CBMickFVX3lxTE5lNW9MaEh5bENIQWxXWERpZXpTX2hBaGhOazRDdEVMUmZxU0xDaVhUUWdib2NsT2F1YTFhS29JdVZzX29sMmFzeE5lRXFscHFzMlFtMFZEWjFNaGxqcDM0M0JLNDRMVGZyNkpXc0Q4QTNldw?oc=5",
+      "sourceName": "Google News \u2014 AI agents",
+      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE5lNW9MaEh5bENIQWxXWERpZXpTX2hBaGhOazRDdEVMUmZxU0xDaVhUUWdib2NsT2F1YTFhS29JdVZzX29sMmFzeE5lRXFscHFzMlFtMFZEWjFNaGxqcDM0M0JLNDRMVGZyNkpXc0Q4QTNldw?oc=5",
+      "publishedAt": "2026-06-15T06:52:23+00:00",
+      "evidence": "Google News \u2014 AI agents headline, published 2026-06-15",
+      "score": 159,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-03",
+      "title": "1Password Pioneers Access Governance for Humans, Machines, and AI Agents with Acquisition of Apono -\u2026",
+      "category": "Strategy",
+      "source": "Google News \u2014 AI agents: https://news.google.com/rss/articles/CBMi6AFBVV95cUxNMWZEWXZoVVRMMWo1MzZWYmluVUdxSFNMTHVYaC1GNERoQUtac1UycC1pSEZnOFpsT3hXd05QZmVGTlFRNkNaanMzLUxxbWV6TFRJR0ZfMDJSSzlWS0FfSnZSV3VuUF9pYWsyZ3VDdFVPUzNCX2xqQk5jTkQ3eUtXRGxXMWhNcE1MNDR6UXowV3IxSHhFM1BNaDRmOEFETnVEb1p0YjhtTHdLX1d6b1BaNENhX0tzTUIxbzBFVzlva25rNFAyT2ZSMy03VUJ0U2J4UWRUYkZhb1gweUo4Y3VIYmpESDd2TDZj?oc=5",
+      "sourceName": "Google News \u2014 AI agents",
+      "url": "https://news.google.com/rss/articles/CBMi6AFBVV95cUxNMWZEWXZoVVRMMWo1MzZWYmluVUdxSFNMTHVYaC1GNERoQUtac1UycC1pSEZnOFpsT3hXd05QZmVGTlFRNkNaanMzLUxxbWV6TFRJR0ZfMDJSSzlWS0FfSnZSV3VuUF9pYWsyZ3VDdFVPUzNCX2xqQk5jTkQ3eUtXRGxXMWhNcE1MNDR6UXowV3IxSHhFM1BNaDRmOEFETnVEb1p0YjhtTHdLX1d6b1BaNENhX0tzTUIxbzBFVzlva25rNFAyT2ZSMy03VUJ0U2J4UWRUYkZhb1gweUo4Y3VIYmpESDd2TDZj?oc=5",
+      "publishedAt": "2026-06-15T13:00:00+00:00",
+      "evidence": "Google News \u2014 AI agents headline, published 2026-06-15",
+      "score": 159,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-04",
+      "title": "Gotransverse Launches Workflow to Automate Enterprise Monetization Operations - Business Wire",
+      "category": "Operations",
+      "source": "Google News \u2014 automation operations: https://news.google.com/rss/articles/CBMizwFBVV95cUxOUEdMQUpKT0tFMWxKOUJOZG5TMDlFcGYyUkhqMVJiNnNNSWpRTm5VTHZtZTJUYkJBdWQtLUN0ckNEVGVEdHlpdmlXbFI0dmIxVG0wZUdoXy1mS0RJQmRGNDVsTjhJTDRGNWhJNEJ1Vlh1Y1N6RUpHN196WHlPQzBPdnBhbWpLR3N3V2tZTTUwcUh6MGtGWk9ON01McE16dTFpOExhMlZLM1I1RVVsZVpVVlRGQVM1Q3RhbUlEclB4NjRHQXpleWo0bm9KWHpiazA?oc=5",
+      "sourceName": "Google News \u2014 automation operations",
+      "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxOUEdMQUpKT0tFMWxKOUJOZG5TMDlFcGYyUkhqMVJiNnNNSWpRTm5VTHZtZTJUYkJBdWQtLUN0ckNEVGVEdHlpdmlXbFI0dmIxVG0wZUdoXy1mS0RJQmRGNDVsTjhJTDRGNWhJNEJ1Vlh1Y1N6RUpHN196WHlPQzBPdnBhbWpLR3N3V2tZTTUwcUh6MGtGWk9ON01McE16dTFpOExhMlZLM1I1RVVsZVpVVlRGQVM1Q3RhbUlEclB4NjRHQXpleWo0bm9KWHpiazA?oc=5",
+      "publishedAt": "2026-06-15T15:00:00+00:00",
+      "evidence": "Google News \u2014 automation operations headline, published 2026-06-15",
+      "score": 151,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-05",
+      "title": "As AI agents become employees, NewCore emerges with $66M to give them identities",
+      "category": "AI",
+      "source": "TechCrunch AI: https://techcrunch.com/2026/06/15/ai-agents-are-becoming-employees-newcore-emerges-with-66m-to-give-them-identities/",
+      "sourceName": "TechCrunch AI",
+      "url": "https://techcrunch.com/2026/06/15/ai-agents-are-becoming-employees-newcore-emerges-with-66m-to-give-them-identities/",
+      "publishedAt": "2026-06-15T13:00:00+00:00",
+      "evidence": "TechCrunch AI headline, published 2026-06-15",
+      "score": 149,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-06",
+      "title": "Accenture: Consumers show growing trust in AI shopping agents",
+      "category": "AI",
+      "source": "AI News: https://www.artificialintelligence-news.com/news/ai-shopping-agents-consumer-trust-accenture-report/",
+      "sourceName": "AI News",
+      "url": "https://www.artificialintelligence-news.com/news/ai-shopping-agents-consumer-trust-accenture-report/",
+      "publishedAt": "2026-06-15T10:00:00+00:00",
+      "evidence": "AI News headline, published 2026-06-15",
+      "score": 136,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-07",
+      "title": "How Logistics Companies in Dubai Are Using AI Automation to Improve Operations? - ARQA",
+      "category": "Automation",
+      "source": "Google News \u2014 automation operations: https://news.google.com/rss/articles/CBMisgFBVV95cUxQLUhaa3pkUnFaQjU1MG9CMXlWWkpBZzJQbW1ELUNWOUs0eVE2QVpTeFNncWZmRTREYzQydWtIOVhYSkFSa0hSS0t5MEN0d21iRWk3SmJJSE41aWd6R3lNRlZIVGFNc1pma3BfWFc5U1RsSjlaamJSMlNuYzJkalA0SjZmd0dQTEF4ekVuUmNYNTFQY3M4NlVLYzd3VGtKdFJQV0Q2U081a3BsQlVyc3pvSGV3?oc=5",
+      "sourceName": "Google News \u2014 automation operations",
+      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQLUhaa3pkUnFaQjU1MG9CMXlWWkpBZzJQbW1ELUNWOUs0eVE2QVpTeFNncWZmRTREYzQydWtIOVhYSkFSa0hSS0t5MEN0d21iRWk3SmJJSE41aWd6R3lNRlZIVGFNc1pma3BfWFc5U1RsSjlaamJSMlNuYzJkalA0SjZmd0dQTEF4ekVuUmNYNTFQY3M4NlVLYzd3VGtKdFJQV0Q2U081a3BsQlVyc3pvSGV3?oc=5",
+      "publishedAt": "2026-06-15T13:12:41+00:00",
+      "evidence": "Google News \u2014 automation operations headline, published 2026-06-15",
+      "score": 128,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-08",
+      "title": "Skydio CEO Adam Bry on why Silicon Valley shouldn\u2019t draw red lines for drone use",
+      "category": "AI",
+      "source": "The Verge AI: https://www.theverge.com/podcast/949195/skydio-ceo-adam-bry-autonmous-drones-china-red-lines-military",
+      "sourceName": "The Verge AI",
+      "url": "https://www.theverge.com/podcast/949195/skydio-ceo-adam-bry-autonmous-drones-china-red-lines-military",
+      "publishedAt": "2026-06-15T10:00:00-04:00",
+      "evidence": "The Verge AI headline, published 2026-06-15",
+      "score": 110,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-09",
+      "title": "The AI off switch: How Anthropic\u2019s export controls sparked a global AI sovereignty scramble",
+      "category": "AI",
+      "source": "AI News: https://www.artificialintelligence-news.com/news/anthropic-export-controls-ai-sovereignty/",
+      "sourceName": "AI News",
+      "url": "https://www.artificialintelligence-news.com/news/anthropic-export-controls-ai-sovereignty/",
+      "publishedAt": "2026-06-15T08:00:00+00:00",
+      "evidence": "AI News headline, published 2026-06-15",
+      "score": 108,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-10",
+      "title": "Why Anthropic suddenly pulled Fable 5 and Mythos 5 for everyone",
+      "category": "AI",
+      "source": "ZDNET AI: https://www.zdnet.com/article/why-anthropic-suddenly-pulled-fable-5-and-mythos-5-for-everyone/",
+      "sourceName": "ZDNET AI",
+      "url": "https://www.zdnet.com/article/why-anthropic-suddenly-pulled-fable-5-and-mythos-5-for-everyone/",
+      "publishedAt": "2026-06-15T12:21:00+00:00",
+      "evidence": "ZDNET AI headline, published 2026-06-15",
+      "score": 108,
+      "status": "shortlisted"
+    }
+  ],
+  "warnings": [],
+  "notes": "Workflow: live discovery -> Steve pick -> generate_draft -> human review -> publish"
+}

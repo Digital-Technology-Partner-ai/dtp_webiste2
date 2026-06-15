@@ -4,7 +4,11 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   site: 'https://digitaltechnologypartner.ai', // Production domain for absolute URLs
-  integrations: [sitemap()],
+  integrations: [
+    sitemap({
+      filter: (page) => !page.includes('/news/review/'),
+    }),
+  ],
   output: 'static',
   devToolbar: {
     enabled: false,

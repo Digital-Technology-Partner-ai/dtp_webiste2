@@ -11,6 +11,7 @@ import re
 
 def main() -> int:
     news_dir = Path('src/content/news')
+    shortlist_dir = news_dir / 'shortlists'
     files = sorted(news_dir.glob('*.md'))
 
     approved = 0
@@ -28,6 +29,7 @@ def main() -> int:
 
     draft = len(files) - approved
     duplicates = {k: v for k, v in titles.items() if len(v) > 1}
+    shortlists = sorted(shortlist_dir.glob('*.json')) if shortlist_dir.exists() else []
 
     print('DTP Newsroom Status')
     print('===================')
@@ -35,6 +37,11 @@ def main() -> int:
     print(f'Approved      : {approved}')
     print(f'Drafts        : {draft}')
     print(f'Duplicates    : {len(duplicates)} title(s)')
+    print(f'Shortlists    : {len(shortlists)} file(s)')
+
+    if shortlists:
+        latest = shortlists[-1]
+        print(f'Latest shortlist: {latest.name}')
 
     if duplicates:
         print('\nDuplicate titles:')

@@ -33,6 +33,16 @@
   force = true
 
 [[redirects]]
+  from = "/news/preview"
+  to = "/news"
+  status = 302
+
+[[redirects]]
+  from = "/news/preview/*"
+  to = "/news"
+  status = 302
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200

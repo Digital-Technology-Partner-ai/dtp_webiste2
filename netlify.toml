@@ -9,6 +9,16 @@
   NPM_VERSION = "10.9.0"
   NPM_FLAGS = "--legacy-peer-deps"
 
+[[redirects]]
+  from = "/news/preview"
+  to = "/news"
+  status = 302
+
+[[redirects]]
+  from = "/news/preview/*"
+  to = "/news"
+  status = 302
+
 # Removed legacy redirect from /location to avoid stale 301 caches on mobile
 
 [[redirects]]
