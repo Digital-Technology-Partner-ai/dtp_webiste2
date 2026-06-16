@@ -154,6 +154,15 @@
 
   window.DTPDepthTunnel = { navigate };
 
+  window.addEventListener('pageshow', (event) => {
+    if (!event.persisted) return;
+    running = false;
+    if (overlay) setActive(false);
+    try {
+      window.sessionStorage.removeItem(STORAGE_KEY);
+    } catch {}
+  });
+
   if (window.sessionStorage.getItem(STORAGE_KEY) === '1') {
     window.sessionStorage.removeItem(STORAGE_KEY);
     window.requestAnimationFrame(() => {

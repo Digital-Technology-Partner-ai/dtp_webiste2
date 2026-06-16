@@ -104,14 +104,17 @@ function setupHelix(items: NewsItem[], depthTunnelArrival = false) {
   glRoot.appendChild(renderer.domElement);
 
   const count = items.length;
-  const angleStep = count < 5 ? 0.92 : 0.62;
+  const isMobileViewport = innerWidth < 760;
+  const mobileCardScale = 1.6;
+  const angleStepBase = count < 5 ? 0.92 : 0.62;
+  const angleStep = angleStepBase * (isMobileViewport ? 1.35 : 1);
   const total = Math.max(count * angleStep, Math.PI * 2.2);
   const half = total / 2;
-  const radius = innerWidth < 760 ? 4.7 : 5.4;
-  const pitch = innerWidth < 760 ? 0.72 : 0.92;
-  const planeW = innerWidth < 760 ? 2.95 : 3.42;
-  const planeH = innerWidth < 760 ? 1.9 : 2.18;
-  const spacing = planeW + 0.88;
+  const radius = isMobileViewport ? 6.4 : 5.4;
+  const pitch = isMobileViewport ? 1.08 : 0.92;
+  const planeW = (isMobileViewport ? 2.95 : 3.42) * (isMobileViewport ? mobileCardScale : 1);
+  const planeH = (isMobileViewport ? 1.9 : 2.18) * (isMobileViewport ? mobileCardScale : 1);
+  const spacing = planeW + (isMobileViewport ? 1.15 : 0.88);
   const totalW = Math.max(count * spacing, spacing * 6);
   const halfW = totalW / 2;
   const linearFactor = totalW / total;
@@ -190,7 +193,7 @@ function setupHelix(items: NewsItem[], depthTunnelArrival = false) {
       },
       side: THREE.DoubleSide,
       transparent: true,
-      depthWrite: false,
+      depthWrite: isMobileViewport,
     });
 
     const mesh = new THREE.Mesh(geometry, material);
@@ -651,7 +654,7 @@ function createCardTexture(item: NewsItem, index: number) {
   const panelW = 900;
   const panelH = 568;
 
-  ctx.fillStyle = 'rgba(8, 12, 19, 0.56)';
+  ctx.fillStyle = innerWidth < 760 ? 'rgba(8, 12, 19, 0.98)' : 'rgba(8, 12, 19, 0.56)';
   ctx.fillRect(panelX, panelY, panelW, panelH);
 
   ctx.strokeStyle = 'rgba(242, 241, 236, 0.24)';

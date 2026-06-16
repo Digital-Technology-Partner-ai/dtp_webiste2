@@ -12,10 +12,14 @@ import * as THREE from 'three';
 
 const RADIUS = 20;
 const RING_RADIUS = RADIUS;
-const NODE_W = Math.PI * (23 / 180); // angular width at equator (rad)
-const NODE_H = 0.28;          // angular height (rad)
+const NODE_W_BASE = Math.PI * (23 / 180); // angular width at equator (rad)
+const NODE_H_BASE = 0.28;          // angular height (rad)
 const BAND_ELEVATION = Math.PI * (20 / 180);
-const RING_ITEM_H = 0.049;
+const RING_ITEM_H_BASE = 0.049;
+const MOBILE_QUERY = window.matchMedia('(max-width: 760px)');
+const MOBILE_BFCACHE_RELOAD_KEY = 'dtp-gallery-mobile-bfcache-reloaded';
+const MOBILE_CARD_SCALE = 1.3;
+const MOBILE_RING_SCALE = 1.4;
 const MINT = 0x05cc90;
 const MINT_GLSL = 'vec3(0.020, 0.800, 0.565)';
 const ACTIVE_ARC = Math.PI;
@@ -28,6 +32,22 @@ const SIGNAL_ENTRY_SPREAD = Math.PI * (220 / 180);
 const SIGNAL_ENTRY_LAT = 0.62;
 const SIGNAL_DEPTH_TRAVEL = 18;
 const SIGNAL_MOTION_SPEED = 0.75;
+
+function isMobileViewport() {
+  return MOBILE_QUERY.matches;
+}
+
+function nodeWidth() {
+  return NODE_W_BASE * (isMobileViewport() ? MOBILE_CARD_SCALE : 1);
+}
+
+function nodeHeight() {
+  return NODE_H_BASE * (isMobileViewport() ? MOBILE_CARD_SCALE : 1);
+}
+
+function ringItemHeight() {
+  return RING_ITEM_H_BASE * (isMobileViewport() ? MOBILE_RING_SCALE : 1);
+}
 
 function arcTheta(index, count, offset = 0) {
   if (count <= 1) return Math.PI + offset;
@@ -171,13 +191,40 @@ const RING_ITEMS = readJsonData('ecosystem-ring-items', DEFAULT_RING_ITEMS);
 const canvas = document.getElementById('scene');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setSize(window.innerWidth, window.innerHeight);
+
+function getViewportSize() {
+  const vv = window.visualViewport;
+  return {
+    width: Math.max(1, Math.round(vv?.width || window.innerWidth || document.documentElement.clientWidth || 1)),
+    height: Math.max(1, Math.round(vv?.height || window.innerHeight || document.documentElement.clientHeight || 1)),
+  };
+}
+
+const viewportSize = getViewportSize();
+renderer.setSize(viewportSize.width, viewportSize.height, false);
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x07090d);
 
-const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 140);
+const camera = new THREE.PerspectiveCamera(90, viewportSize.width / viewportSize.height, 0.1, 140);
 scene.add(camera);
+
+function applyViewportSize() {
+  const { width, height } = getViewportSize();
+  viewportSize.width = width;
+  viewportSize.height = height;
+  camera.aspect = width / height;
+  camera.updateProjectionMatrix();
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(width, height, false);
+  universeGroup.scale.setScalar(isMobileViewport() ? 3.6 : 5.2);
+}
+
+function syncViewport() {
+  applyViewportSize();
+  updateRingNav();
+  renderer.render(scene, camera);
+}
 
 const pivot = new THREE.Group();       // vertical look (x)
 const sphereGroup = new THREE.Group(); // horizontal spin (y)
@@ -196,8 +243,9 @@ scene.add(signalGroup);
 
 const universeGroup = new THREE.Group(); // Why DTP star universe, used as distant background
 universeGroup.position.set(0, 0, -42);
-universeGroup.scale.setScalar(window.innerWidth < 760 ? 3.6 : 5.2);
+universeGroup.scale.setScalar(isMobileViewport() ? 3.6 : 5.2);
 scene.add(universeGroup);
+applyViewportSize();
 
 /* ---------------- node shaders ---------------- */
 
@@ -289,26 +337,32 @@ function drawTrackedText(ctx, text, x, y, tracking) {
   }
 }
 
-function makeRingItemTexture(label) {
+function makeRingItemTexture(label, active = false) {
   const c = document.createElement('canvas');
   c.width = 640;
   c.height = 128;
   const x = c.getContext('2d');
   x.clearRect(0, 0, c.width, c.height);
 
-  x.fillStyle = 'rgba(7, 9, 13, 0.72)';
-  x.strokeStyle = 'rgba(242, 241, 236, 0.18)';
-  x.lineWidth = 2;
+  const mobile = isMobileViewport();
+  x.fillStyle = mobile ? 'rgba(7, 9, 13, 0.86)' : 'rgba(7, 9, 13, 0.72)';
+  x.strokeStyle = active && mobile ? 'rgba(5, 204, 144, 0.92)' : 'rgba(242, 241, 236, 0.18)';
+  x.lineWidth = active && mobile ? 4 : 2;
+  if (active && mobile) {
+    x.shadowColor = 'rgba(5, 204, 144, 0.5)';
+    x.shadowBlur = 18;
+  }
   x.beginPath();
   x.roundRect(10, 18, c.width - 20, c.height - 36, 46);
   x.fill();
   x.stroke();
+  x.shadowBlur = 0;
 
-  x.font = '500 30px "IBM Plex Mono", monospace';
-  x.fillStyle = 'rgba(242, 241, 236, 0.72)';
-  const tracking = 7.2;
+  x.font = `500 ${mobile ? 42 : 30}px "IBM Plex Mono", monospace`;
+  x.fillStyle = mobile ? '#ffffff' : 'rgba(242, 241, 236, 0.72)';
+  const tracking = mobile ? 8.4 : 7.2;
   const textWidth = trackedTextWidth(x, label, tracking);
-  drawTrackedText(x, label, (c.width - textWidth) / 2, 75, tracking);
+  drawTrackedText(x, label, (c.width - textWidth) / 2, mobile ? 81 : 75, tracking);
 
   const tex = new THREE.CanvasTexture(c);
   tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
@@ -316,7 +370,8 @@ function makeRingItemTexture(label) {
 }
 
 function ringItemWidth(label) {
-  return clamp(0.24 + label.length * 0.022, 0.34, 0.64) * 0.7;
+  const base = clamp(0.24 + label.length * 0.022, 0.34, 0.64) * 0.7;
+  return base * (isMobileViewport() ? MOBILE_RING_SCALE : 1);
 }
 
 /* ---------------- node texture (canvas) ---------------- */
@@ -442,8 +497,8 @@ function buildNodes() {
     list.forEach((dest, i) => {
       const theta = arcTheta(i, list.length, offset);
       const index = DESTINATIONS.indexOf(dest);
-      const effW = NODE_W / Math.cos(lat);
-      const geo = curvedPanelGeometry(theta, lat, effW, NODE_H, RADIUS);
+      const effW = nodeWidth() / Math.cos(lat);
+      const geo = curvedPanelGeometry(theta, lat, effW, nodeHeight(), RADIUS);
       const card = makeNodeTexture(dest, index);
       const uniforms = {
         uMap: { value: card.map },
@@ -518,8 +573,8 @@ function angularDelta(a, b) {
 
 function insideCardBoundary(theta, lat) {
   for (const node of nodes) {
-    const halfW = (NODE_W / Math.cos(node.lat)) / 2;
-    const halfH = NODE_H / 2;
+    const halfW = (nodeWidth() / Math.cos(node.lat)) / 2;
+    const halfH = nodeHeight() / 2;
     if (Math.abs(angularDelta(theta, node.theta)) <= halfW && Math.abs(lat - node.lat) <= halfH) {
       return true;
     }
@@ -844,12 +899,15 @@ let hovered = null;
 let infoNode = null;
 let hoveredRingItem = null;
 let pointerRingItem = null;
+let pressedRingItem = null;
+let selectedRingItem = null;
 let currentNode = null;
 let moved = 0;
 let lastDx = 0, lastDy = 0;
 
 window.DTP = {
   state, camera, nodes, universeGroup, openSection, closeSection,
+  syncViewport,
   get videoBackdrop() { return videoBackdropEl; },
   get hovered() { return hovered; },
   get infoNode() { return infoNode; },
@@ -858,11 +916,28 @@ window.DTP = {
 
 /* ---------------- pointer / wheel ---------------- */
 
+function updatePointerState(e) {
+  mouseNdc.x = (e.clientX / viewportSize.width) * 2 - 1;
+  mouseNdc.y = -(e.clientY / viewportSize.height) * 2 + 1;
+  tilt.tx = mouseNdc.x;
+  tilt.ty = -mouseNdc.y;
+}
+
+function ringItemFromRaycast() {
+  if (state.locked || menuOpen) return null;
+  raycaster.setFromCamera(mouseNdc, camera);
+  const ringHits = raycaster.intersectObjects(ringPickMeshes, false);
+  return ringHits.length ? ringEls[ringHits[0].object.userData.ringIndex] : null;
+}
+
 canvas.addEventListener('pointerdown', (e) => {
   if (state.locked) return;
+  updatePointerState(e);
   state.dragging = true;
   canvas.classList.add('dragging');
   canvas.setPointerCapture(e.pointerId);
+  pressedRingItem = findRingItemAt(e.clientX, e.clientY) || ringItemFromRaycast();
+  if (pressedRingItem?.visible) setRingHovered(pressedRingItem);
   moved = 0;
   state.velY = 0; state.velX = 0;
   lastDx = 0; lastDy = 0;
@@ -870,11 +945,8 @@ canvas.addEventListener('pointerdown', (e) => {
 });
 
 window.addEventListener('pointermove', (e) => {
-  mouseNdc.x = (e.clientX / window.innerWidth) * 2 - 1;
-  mouseNdc.y = -(e.clientY / window.innerHeight) * 2 + 1;
-  tilt.tx = mouseNdc.x;
-  tilt.ty = -mouseNdc.y;
-  panelX(Math.min(e.clientX, window.innerWidth - 300));
+  updatePointerState(e);
+  panelX(Math.min(e.clientX, viewportSize.width - 300));
   panelY(e.clientY);
   if (!state.dragging || state.locked) return;
   const dx = e.movementX ?? 0;
@@ -887,17 +959,27 @@ window.addEventListener('pointermove', (e) => {
   lastInteract = performance.now();
 });
 
-function endDrag() {
+function endDrag(e) {
   if (!state.dragging) return;
+  updatePointerState(e);
   state.dragging = false;
   canvas.classList.remove('dragging');
   state.velY = clamp(lastDx * 0.9, -0.09, 0.09);
   state.velX = clamp(lastDy * 0.9, -0.05, 0.05);
   lastInteract = performance.now();
   if (moved < 6 && !state.locked) {
-    if (hoveredRingItem) activateRingItem(hoveredRingItem);
-    else if (hovered) openSection(hovered);
+    const tappedRingItem = findRingItemAt(e.clientX, e.clientY) || pressedRingItem || ringItemFromRaycast();
+    if (tappedRingItem?.visible) activateRingItem(tappedRingItem);
+    else if (hoveredRingItem) activateRingItem(hoveredRingItem);
+    else if (hovered) {
+      selectedRingItem = null;
+      openSection(hovered);
+    } else {
+      selectedRingItem = null;
+      setRingHovered(null);
+    }
   }
+  pressedRingItem = null;
 }
 window.addEventListener('pointerup', endDrag);
 window.addEventListener('pointercancel', endDrag);
@@ -984,6 +1066,17 @@ function enterDestinationRoute(node) {
 
 function activateRingItem(item) {
   if (!item || state.locked || menuOpen) return;
+  if (isMobileViewport()) {
+    if (selectedRingItem !== item) {
+      selectedRingItem = item;
+      pressedRingItem = item;
+      pointerRingItem = item;
+      setRingHovered(item);
+      lastInteract = performance.now();
+      return;
+    }
+    selectedRingItem = null;
+  }
   if (item.node) {
     enterDestinationRoute(item.node);
   } else {
@@ -1005,6 +1098,7 @@ function buildRingNav() {
 
     const node = item.id ? nodes.find(n => n.dest.id === item.id) : null;
     const labelTex = makeRingItemTexture(item.label);
+    const activeLabelTex = makeRingItemTexture(item.label, true);
     const labelMat = new THREE.MeshBasicMaterial({
       map: labelTex,
       transparent: true,
@@ -1014,7 +1108,7 @@ function buildRingNav() {
       side: THREE.DoubleSide,
     });
     const labelMesh = new THREE.Mesh(
-      curvedPanelGeometry(theta, beltLat, ringItemWidth(item.label), RING_ITEM_H, RING_RADIUS),
+      curvedPanelGeometry(theta, beltLat, ringItemWidth(item.label), ringItemHeight(), RING_RADIUS),
       labelMat
     );
     labelMesh.userData.ringIndex = i;
@@ -1025,6 +1119,7 @@ function buildRingNav() {
     const pick = new THREE.Mesh(ringPickGeo, ringPickMat);
     pick.userData.ringIndex = i;
     pick.visible = false;
+    pick.scale.setScalar(isMobileViewport() ? MOBILE_RING_SCALE * 1.55 : 1);
     pick.position.copy(sph(1, theta, beltLat)).multiplyScalar(RING_RADIUS);
     sphereGroup.add(pick);
     ringPickMeshes.push(pick);
@@ -1033,11 +1128,32 @@ function buildRingNav() {
       anchor: sph(1, theta, beltLat),
       mesh: labelMesh,
       mat: labelMat,
+      labelTex,
+      activeLabelTex,
       pick,
       node,
       visible: false,
+      visualScale: 1,
     };
-    el.addEventListener('click', () => activateRingItem(ringItem));
+    el.addEventListener('pointerdown', () => {
+      if (state.locked || menuOpen || !ringItem.visible) return;
+      pressedRingItem = ringItem;
+      pointerRingItem = ringItem;
+      setRingHovered(ringItem);
+    });
+    el.addEventListener('pointerup', (event) => {
+      if (!isMobileViewport()) return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (state.locked || menuOpen || !ringItem.visible) return;
+      activateRingItem(ringItem);
+      pressedRingItem = null;
+    });
+    el.addEventListener('click', (event) => {
+      event.stopPropagation();
+      if (isMobileViewport()) return;
+      activateRingItem(ringItem);
+    });
     el.addEventListener('pointerenter', () => {
       if (state.locked || menuOpen || !ringItem.visible) return;
       pointerRingItem = ringItem;
@@ -1045,7 +1161,7 @@ function buildRingNav() {
     });
     el.addEventListener('pointerleave', () => {
       if (pointerRingItem === ringItem) pointerRingItem = null;
-      if (hoveredRingItem === ringItem) setRingHovered(null);
+      if (hoveredRingItem === ringItem && selectedRingItem !== ringItem) setRingHovered(null);
     });
     ringEls.push(ringItem);
   });
@@ -1071,11 +1187,16 @@ function updateRingNav() {
     item.visible = isInteractive;
     item.mesh.visible = isInteractive;
     item.pick.visible = isInteractive;
-    item.mat.opacity = alpha * (item === hoveredRingItem ? 1 : 0.78);
-    item.mat.color.setHex(item === hoveredRingItem ? 0xffffff : 0xd7ddd8);
+    const active = item === hoveredRingItem || item === pressedRingItem || item === selectedRingItem;
+    item.mat.map = active && isMobileViewport() ? item.activeLabelTex : item.labelTex;
+    item.mat.needsUpdate = true;
+    item.mat.opacity = alpha * (active ? 1 : 0.78);
+    item.mat.color.setHex(active ? 0xffffff : 0xd7ddd8);
+    item.visualScale += ((active && isMobileViewport() ? 1.14 : 1) - item.visualScale) * 0.22;
+    item.mesh.scale.setScalar(item.visualScale);
     if (!behind) {
-      const x = (ndc.x + 1) / 2 * window.innerWidth;
-      const y = (-ndc.y + 1) / 2 * window.innerHeight;
+      const x = (ndc.x + 1) / 2 * viewportSize.width;
+      const y = (-ndc.y + 1) / 2 * viewportSize.height;
       item.el.style.transform = `translate(-50%, -50%) translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
     }
   }
@@ -1304,9 +1425,41 @@ requestAnimationFrame(tick);
 
 /* ---------------- resize ---------------- */
 
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  universeGroup.scale.setScalar(window.innerWidth < 760 ? 3.6 : 5.2);
+window.addEventListener('resize', syncViewport);
+window.visualViewport?.addEventListener('resize', syncViewport);
+window.visualViewport?.addEventListener('scroll', syncViewport);
+
+window.addEventListener('pagehide', () => {
+  state.dragging = false;
+  state.velY = 0;
+  state.velX = 0;
+  canvas.classList.remove('dragging');
+});
+
+window.addEventListener('pageshow', (event) => {
+  if (!event.persisted) {
+    sessionStorage.removeItem(MOBILE_BFCACHE_RELOAD_KEY);
+    syncViewport();
+    return;
+  }
+  if (isMobileViewport() && sessionStorage.getItem(MOBILE_BFCACHE_RELOAD_KEY) !== '1') {
+    sessionStorage.setItem(MOBILE_BFCACHE_RELOAD_KEY, '1');
+    window.location.reload();
+    return;
+  }
+  if (!event.persisted) return;
+  state.locked = false;
+  state.dragging = false;
+  state.velY = 0;
+  state.velX = 0;
+  pressedRingItem = null;
+  selectedRingItem = null;
+  pointerRingItem = null;
+  setRingHovered(null);
+  canvas.classList.remove('dragging', 'hovering');
+  window.scrollTo(0, 0);
+  syncViewport();
+  window.setTimeout(syncViewport, 80);
+  window.setTimeout(syncViewport, 240);
+  lastInteract = performance.now();
 });

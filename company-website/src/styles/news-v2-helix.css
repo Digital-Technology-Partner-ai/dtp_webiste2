@@ -576,4 +576,26 @@ body:has(.news-v2-page) .ma-footer {
   .news-v2-hero p {
     display: none;
   }
+
+  .news-v2-static-list {
+    gap: 1rem;
+  }
+
+  .news-v2-static-list :is(a, button) {
+    grid-template-columns: 3.8rem minmax(0, 1fr);
+    gap: 0.6rem 1rem;
+    padding: 1.6rem;
+  }
+
+  .news-v2-static-list span {
+    font-size: 1.15rem;
+  }
+
+  .news-v2-static-list strong {
+    font-size: 1.6rem;
+  }
+
+  .news-v2-static-list small {
+    font-size: 1rem;
+  }
 }
