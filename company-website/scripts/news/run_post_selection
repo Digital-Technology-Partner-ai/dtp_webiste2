@@ -57,13 +57,41 @@ def parse_review_url(output: str) -> str:
     raise RuntimeError("Could not parse review URL from publish_review_page output")
 
 
-def validate_shortlist(shortlist_path: Path, topic_id: str) -> None:
+def slugify(value: str) -> str:
+    value = value.lower().strip()
+    value = re.sub(r"[^a-z0-9\s-]", "", value)
+    value = re.sub(r"\s+", "-", value)
+    return re.sub(r"-+", "-", value)
+
+
+def clean_topic_title(raw_title: str) -> str:
+    title = re.sub(r"\s+", " ", raw_title.strip())
+    if " - " in title:
+        parts = [part.strip() for part in title.split(" - ") if part.strip()]
+        if len(parts) >= 2:
+            trailing = parts[-1]
+            has_truncation = "…" in title or "..." in title
+            if "…" in trailing or "..." in trailing or (len(trailing.split()) <= 4 and has_truncation):
+                title = " - ".join(parts[:-1]).strip()
+    return title.rstrip(" .…")
+
+
+def expected_draft_path(shortlist_payload: dict, topic: dict) -> Path:
+    article_date = shortlist_payload["date"]
+    topic_title = clean_topic_title(str(topic["title"]))
+    slug = f"{article_date}-{slugify(topic_title)[:72]}"
+    return WORK_ROOT / "src" / "content" / "news" / f"{slug}.md"
+
+
+def validate_shortlist(shortlist_path: Path, topic_id: str) -> tuple[dict, Path]:
     if not shortlist_path.exists():
         raise FileNotFoundError(f"Shortlist file not found: {shortlist_path}")
     payload = json.loads(shortlist_path.read_text(encoding="utf-8"))
     topics = payload.get("topics") or []
-    if not any(topic.get("id") == topic_id for topic in topics):
+    topic = next((topic for topic in topics if topic.get("id") == topic_id), None)
+    if not topic:
         raise ValueError(f"Topic id not present in shortlist: {topic_id}")
+    return topic, expected_draft_path(payload, topic)
 
 
 def main() -> int:
@@ -79,15 +107,20 @@ def main() -> int:
 
     try:
         print("[1/5] Validate inputs")
-        validate_shortlist(shortlist_path, args.topic_id)
+        _topic, expected_path = validate_shortlist(shortlist_path, args.topic_id)
         print(f"Shortlist OK: {shortlist_path}")
         print(f"Topic OK: {args.topic_id}")
 
-        generate = run_step(
-            "[2/5] Generate draft",
-            [str(GENERATE_SCRIPT), "--shortlist", str(shortlist_path), "--topic-id", args.topic_id],
-        )
-        draft_path = parse_draft_path(generate.stdout)
+        if expected_path.exists():
+            print("[2/5] Generate draft")
+            print(f"Draft already exists, reusing: {expected_path}")
+            draft_path = expected_path
+        else:
+            generate = run_step(
+                "[2/5] Generate draft",
+                [str(GENERATE_SCRIPT), "--shortlist", str(shortlist_path), "--topic-id", args.topic_id],
+            )
+            draft_path = parse_draft_path(generate.stdout)
 
         run_step(
             "[3/5] Prepare draft for review",
