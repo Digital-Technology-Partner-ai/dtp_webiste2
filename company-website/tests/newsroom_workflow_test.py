@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -14,6 +15,8 @@ GENERATE = REPO_ROOT / 'scripts' / 'news' / 'generate_draft'
 VALIDATE = REPO_ROOT / 'scripts' / 'news' / 'validate_approved'
 PREPARE = REPO_ROOT / 'scripts' / 'news' / 'prepare_publish'
 GUARD = REPO_ROOT / 'scripts' / 'news' / 'guard_production_domains.py'
+PUBLISH_REVIEW = REPO_ROOT / 'scripts' / 'news' / 'publish_review_page'
+RUN_POST_SELECTION = REPO_ROOT / 'scripts' / 'news' / 'run_post_selection'
 
 
 class NewsroomWorkflowTests(unittest.TestCase):
@@ -25,12 +28,16 @@ class NewsroomWorkflowTests(unittest.TestCase):
     def tearDown(self) -> None:
         self.tmpdir.cleanup()
 
-    def run_script(self, script: Path, *args: str) -> subprocess.CompletedProcess[str]:
+    def run_script(self, script: Path, *args: str, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
+        merged_env = os.environ.copy()
+        if env:
+            merged_env.update(env)
         return subprocess.run(
             [sys.executable, str(script), *args],
             cwd=self.root,
             capture_output=True,
             text=True,
+            env=merged_env,
         )
 
     def test_discover_topics_creates_deterministic_shortlist(self) -> None:
@@ -65,6 +72,39 @@ class NewsroomWorkflowTests(unittest.TestCase):
         self.assertNotEqual(second.returncode, 0, second.stdout)
         self.assertEqual(shortlist.read_bytes(), original_bytes)
 
+    def test_discover_topics_cron_can_reuse_existing_shortlist_without_drafts(self) -> None:
+        shortlist = self.root / 'src' / 'content' / 'news' / 'shortlists' / '2026-06-17-topics.json'
+        shortlist.write_text(
+            json.dumps(
+                {
+                    'date': '2026-06-17',
+                    'generatedAt': '2026-06-17T07:05:00',
+                    'count': 1,
+                    'method': 'live-internet-discovery',
+                    'topics': [
+                        {
+                            'id': 'topic-01',
+                            'title': 'Existing topic for cron reuse',
+                            'category': 'AI',
+                            'source': 'Existing source',
+                            'status': 'shortlisted',
+                        }
+                    ],
+                },
+                indent=2,
+            )
+            + '\n',
+            encoding='utf-8',
+        )
+        original_bytes = shortlist.read_bytes()
+
+        result = self.run_script(DISCOVER, '--date', '2026-06-17', '--reuse-existing')
+
+        self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
+        self.assertIn('Reusing existing shortlist', result.stdout)
+        self.assertEqual(shortlist.read_bytes(), original_bytes)
+        self.assertEqual(len(list((self.root / 'src' / 'content' / 'news').glob('*.md'))), 0)
+
     def test_generate_draft_uses_shortlist_date_and_selected_topic(self) -> None:
         discover = self.run_script(DISCOVER, '--date', '2026-01-03')
         self.assertEqual(discover.returncode, 0, discover.stderr or discover.stdout)
@@ -93,6 +133,38 @@ class NewsroomWorkflowTests(unittest.TestCase):
         self.assertIn('pubDate: 2026-01-03', text)
         self.assertIn('approved: false', text)
         self.assertIn(f'source: "{selected["source"]}"', text)
+
+    def test_generate_draft_normalises_invalid_shortlist_categories(self) -> None:
+        shortlist = self.root / 'src' / 'content' / 'news' / 'shortlists' / '2026-06-17-topics.json'
+        shortlist.parent.mkdir(parents=True, exist_ok=True)
+        shortlist.write_text(
+            json.dumps(
+                {
+                    'date': '2026-06-17',
+                    'topics': [
+                        {
+                            'id': 'topic-01',
+                            'title': 'Security story that should not break the schema',
+                            'category': 'Security',
+                            'source': 'Example source',
+                        }
+                    ],
+                }
+            )
+            + '\n',
+            encoding='utf-8',
+        )
+        generate = self.run_script(
+            GENERATE,
+            '--shortlist',
+            str(shortlist),
+            '--topic-id',
+            'topic-01',
+        )
+        self.assertEqual(generate.returncode, 0, generate.stderr or generate.stdout)
+        article = next((self.root / 'src' / 'content' / 'news').glob('*.md'))
+        text = article.read_text(encoding='utf-8')
+        self.assertIn('category: "Strategy"', text)
 
     def test_generate_draft_blocks_duplicates(self) -> None:
         discover = self.run_script(DISCOVER, '--date', '2026-01-03')
@@ -250,6 +322,83 @@ class NewsroomWorkflowTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('text[1]', result.stderr)
         self.assertIn('www.digitaltechnologypartner.ai', result.stderr)
+
+    def test_publish_review_page_dry_run_writes_local_html(self) -> None:
+        article = self.root / 'src' / 'content' / 'news' / '2026-06-17-test.md'
+        article.parent.mkdir(parents=True, exist_ok=True)
+        article.write_text(
+            '---\n'
+            'title: "Test review article"\n'
+            'description: "Review description"\n'
+            'pubDate: 2026-06-17\n'
+            'category: "AI"\n'
+            'approved: false\n'
+            'source: "Source note"\n'
+            '---\n\n'
+            '## Why this topic matters\n\n'
+            'A useful paragraph.\n\n'
+            '## Pressure-test your AI dependencies\n\n'
+            'If AI is becoming part of your operating stack, test the controls.\n',
+            encoding='utf-8',
+        )
+        output_root = self.root / 'tmp-review-output'
+        result = self.run_script(
+            PUBLISH_REVIEW,
+            '--file',
+            str(article),
+            '--dry-run',
+            env={
+                'HUDSON_NEWSROOM_REVIEW_OUTPUT_ROOT': str(output_root),
+                'HUDSON_NEWSROOM_REPO_ROOT': str(self.root),
+            },
+        )
+        self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
+        self.assertIn('Review dry run URL: https://review-', result.stdout)
+
+        html_path = output_root / article.stem / 'index.html'
+        self.assertTrue(html_path.exists())
+        html = html_path.read_text(encoding='utf-8')
+        self.assertIn('noindex,nofollow,noarchive', html)
+        self.assertEqual(html.count('Draft.</strong> Review surface only. This is not the production DTP site.'), 1)
+        self.assertIn('← Back to Newsroom', html)
+        self.assertIn('Contact us', html)
+        self.assertNotIn('Status:', html)
+        self.assertNotIn('Human review and approval required before publish', html)
+
+    def test_run_post_selection_dry_run_executes_pipeline(self) -> None:
+        discover = self.run_script(DISCOVER, '--date', '2026-06-17')
+        self.assertEqual(discover.returncode, 0, discover.stderr or discover.stdout)
+        shortlist = self.root / 'src' / 'content' / 'news' / 'shortlists' / '2026-06-17-topics.json'
+        output_root = self.root / 'tmp-review-output'
+        result = self.run_script(
+            RUN_POST_SELECTION,
+            '--shortlist',
+            str(shortlist),
+            '--topic-id',
+            'topic-01',
+            '--dry-run-review',
+            env={
+                'HUDSON_NEWSROOM_REVIEW_OUTPUT_ROOT': str(output_root),
+                'HUDSON_NEWSROOM_REPO_ROOT': str(self.root),
+            },
+        )
+        self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
+        output = result.stdout
+        self.assertIn('[1/5] Validate inputs', output)
+        self.assertIn('[2/5] Generate draft', output)
+        self.assertIn('[3/5] Prepare draft for review', output)
+        self.assertIn('[4/5] Guard check', output)
+        self.assertIn('[5/5] Publish review page', output)
+        self.assertIn('Post-selection summary', output)
+        self.assertIn('Review URL: https://review-', output)
+
+        article_files = sorted((self.root / 'src' / 'content' / 'news').glob('*.md'))
+        self.assertEqual(len(article_files), 1)
+        text = article_files[0].read_text(encoding='utf-8')
+        self.assertIn('## Why this matters in practice', text)
+        self.assertIn('## Pressure-test your AI dependencies', text)
+        self.assertNotIn('Draft generated from newsroom shortlist.', text)
+        self.assertTrue((output_root / article_files[0].stem / 'index.html').exists())
 
     def test_production_build_keeps_drafts_off_public_routes_and_disables_preview(self) -> None:
         build = subprocess.run(

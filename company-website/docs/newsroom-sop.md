@@ -1,5 +1,14 @@
 # DTP Newsroom SOP (Hudson phase 1)
 
+## Document priority
+
+When this SOP, the herenow-site-operations SKILL.md, and the live scripts in scripts/news/ conflict:
+1. Live scripts are mechanical truth (they define what actually runs)
+2. herenow-site-operations/SKILL.md is the operating rulebook (it defines behaviour and rules)
+3. This SOP is reference context (it describes the intended process but may lag behind the above)
+
+If you find a conflict, follow priorities 1 and 2, and flag the SOP line to Steve for update.
+
 ## Purpose
 Run a repeatable DTP website newsroom workflow that is safe enough for daily use and boring enough to trust.
 
@@ -86,7 +95,7 @@ Rules:
 This should:
 - remove draft boilerplate/footer
 - replace placeholder description if still present
-- ensure the DTP context section exists
+- ensure the practical section and CTA exist (per the current prepare_publish script logic)
 
 Example:
 ```bash

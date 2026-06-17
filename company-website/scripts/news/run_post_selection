@@ -1,0 +1,122 @@
+#!/usr/bin/env python3
+"""
+Run the deterministic newsroom post-selection workflow.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+WORK_ROOT = Path(os.environ.get("HUDSON_NEWSROOM_REPO_ROOT", str(REPO_ROOT))).resolve()
+GENERATE_SCRIPT = REPO_ROOT / "scripts" / "news" / "generate_draft"
+PREPARE_SCRIPT = REPO_ROOT / "scripts" / "news" / "prepare_publish"
+GUARD_SCRIPT = REPO_ROOT / "scripts" / "news" / "guard_production_domains.py"
+PUBLISH_SCRIPT = REPO_ROOT / "scripts" / "news" / "publish_review_page"
+
+
+def run_step(label: str, command: list[str]) -> subprocess.CompletedProcess[str]:
+    print(label)
+    result = subprocess.run(
+        command,
+        cwd=WORK_ROOT,
+        capture_output=True,
+        text=True,
+    )
+    if result.stdout.strip():
+        print(result.stdout.strip())
+    if result.returncode != 0:
+        if result.stderr.strip():
+            print(result.stderr.strip(), file=sys.stderr)
+        raise RuntimeError(f"{label} failed")
+    if result.stderr.strip():
+        print(result.stderr.strip())
+    return result
+
+
+def parse_draft_path(output: str) -> Path:
+    match = re.search(r"Draft created:\s+(.+)", output)
+    if not match:
+        raise RuntimeError("Could not parse draft file path from generate_draft output")
+    return Path(match.group(1).strip())
+
+
+def parse_review_url(output: str) -> str:
+    live = re.search(r"Review live:\s+(https://\S+)", output)
+    if live:
+        return live.group(1)
+    dry = re.search(r"Review dry run URL:\s+(https://\S+)", output)
+    if dry:
+        return dry.group(1)
+    raise RuntimeError("Could not parse review URL from publish_review_page output")
+
+
+def validate_shortlist(shortlist_path: Path, topic_id: str) -> None:
+    if not shortlist_path.exists():
+        raise FileNotFoundError(f"Shortlist file not found: {shortlist_path}")
+    payload = json.loads(shortlist_path.read_text(encoding="utf-8"))
+    topics = payload.get("topics") or []
+    if not any(topic.get("id") == topic_id for topic in topics):
+        raise ValueError(f"Topic id not present in shortlist: {topic_id}")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Run deterministic newsroom post-selection workflow")
+    parser.add_argument("--shortlist", required=True, help="Path to shortlist JSON")
+    parser.add_argument("--topic-id", required=True, help="Topic id, e.g. topic-03")
+    parser.add_argument("--dry-run-review", action="store_true", help="Render review page locally without calling here.now API")
+    args = parser.parse_args()
+
+    shortlist_path = Path(args.shortlist)
+    if not shortlist_path.is_absolute():
+        shortlist_path = (Path.cwd() / shortlist_path).resolve()
+
+    try:
+        print("[1/5] Validate inputs")
+        validate_shortlist(shortlist_path, args.topic_id)
+        print(f"Shortlist OK: {shortlist_path}")
+        print(f"Topic OK: {args.topic_id}")
+
+        generate = run_step(
+            "[2/5] Generate draft",
+            [str(GENERATE_SCRIPT), "--shortlist", str(shortlist_path), "--topic-id", args.topic_id],
+        )
+        draft_path = parse_draft_path(generate.stdout)
+
+        run_step(
+            "[3/5] Prepare draft for review",
+            [str(PREPARE_SCRIPT), "--file", str(draft_path)],
+        )
+
+        run_step(
+            "[4/5] Guard check",
+            [sys.executable, str(GUARD_SCRIPT), "--root", str(WORK_ROOT)],
+        )
+
+        publish_command = [str(PUBLISH_SCRIPT), "--file", str(draft_path)]
+        if args.dry_run_review:
+            publish_command.append("--dry-run")
+        publish = run_step("[5/5] Publish review page", publish_command)
+        review_url = parse_review_url(publish.stdout)
+
+        print("Post-selection summary")
+        print(f"Draft file: {draft_path}")
+        print(f"Review URL: {review_url}")
+        if args.dry_run_review:
+            print("Review dry run complete. Publish without --dry-run-review to make the page live.")
+        else:
+            print("Review page is live. Send this URL to Steve for approval.")
+        return 0
+    except (FileNotFoundError, ValueError, RuntimeError, json.JSONDecodeError) as exc:
+        print(f"Post-selection workflow failed: {exc}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

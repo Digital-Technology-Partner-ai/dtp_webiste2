@@ -1,0 +1,486 @@
+#!/usr/bin/env python3
+"""
+Publish a standalone here.now review page for a newsroom draft article.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import html
+import json
+import mimetypes
+import os
+import re
+import subprocess
+import sys
+from pathlib import Path
+from typing import Any
+from urllib import error, request
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+WORK_ROOT = Path(os.environ.get("HUDSON_NEWSROOM_REPO_ROOT", str(REPO_ROOT))).resolve()
+GUARD_SCRIPT = REPO_ROOT / "scripts" / "news" / "guard_production_domains.py"
+OUTPUT_ROOT = Path(
+    os.environ.get(
+        "HUDSON_NEWSROOM_REVIEW_OUTPUT_ROOT",
+        str(Path.home() / "Hudson Outputs" / "newsroom-review"),
+    )
+)
+CLIENT_HEADER = "hudson/hermes"
+DEFAULT_CREDENTIALS_PATH = Path.home() / ".herenow" / "credentials"
+DRAFT_STRIP_HTML = "<strong>Draft.</strong> Review surface only. This is not the production DTP site."
+CTA_SECTION_TITLE = "Pressure-test your AI dependencies"
+
+
+def slugify(text: str) -> str:
+    text = text.lower()
+    text = re.sub(r"[^a-z0-9]+", "-", text)
+    return re.sub(r"-+", "-", text).strip("-")
+
+
+def derive_review_slug(article_path: Path) -> str:
+    stem = article_path.stem
+    stem_slug = slugify(stem)
+    hash_suffix = hashlib.sha1(stem.encode("utf-8")).hexdigest()[:8]
+    trimmed = stem_slug[:44].rstrip("-")
+    return f"review-{trimmed}-{hash_suffix}"
+
+
+def split_frontmatter(text: str) -> tuple[str, str]:
+    match = re.match(r"^---\n(.*?)\n---\n\n?(.*)\Z", text, re.DOTALL)
+    if not match:
+        raise ValueError("Article is missing valid frontmatter block")
+    return match.group(1), match.group(2).strip()
+
+
+def parse_frontmatter(block: str) -> dict[str, Any]:
+    data: dict[str, Any] = {}
+    current_key: str | None = None
+    for raw_line in block.splitlines():
+        line = raw_line.rstrip()
+        if not line.strip():
+            continue
+        if re.match(r"^\s+-\s+", line) and current_key:
+            data.setdefault(current_key, []).append(re.sub(r"^\s+-\s+", "", line).strip().strip('"'))
+            continue
+        if ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        current_key = key.strip()
+        value = value.strip()
+        if not value:
+            data[current_key] = []
+        elif value in {"true", "false"}:
+            data[current_key] = value == "true"
+        else:
+            data[current_key] = value.strip('"')
+    return data
+
+
+def inline_markdown(text: str) -> str:
+    escaped = html.escape(text)
+    escaped = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", escaped)
+    escaped = re.sub(r"`([^`]+)`", r"<code>\1</code>", escaped)
+    return escaped
+
+
+def render_body_sections(body: str) -> tuple[str, str]:
+    lines = body.splitlines()
+    main_lines: list[str] = []
+    cta_heading: str | None = None
+    cta_lines: list[str] = []
+    in_cta = False
+
+    for raw_line in lines:
+        if raw_line.startswith("## ") and raw_line[3:].strip() == CTA_SECTION_TITLE:
+            in_cta = True
+            cta_heading = raw_line[3:].strip()
+            continue
+        if in_cta:
+            cta_lines.append(raw_line)
+        else:
+            main_lines.append(raw_line)
+
+    def markdown_lines_to_html(source_lines: list[str]) -> str:
+        parts: list[str] = []
+        in_ul = False
+        in_ol = False
+        for raw in source_lines:
+            line = raw.rstrip()
+            if not line.strip():
+                if in_ul:
+                    parts.append("</ul>")
+                    in_ul = False
+                if in_ol:
+                    parts.append("</ol>")
+                    in_ol = False
+                continue
+            if line.startswith("## "):
+                if in_ul:
+                    parts.append("</ul>")
+                    in_ul = False
+                if in_ol:
+                    parts.append("</ol>")
+                    in_ol = False
+                parts.append(f"<h2>{inline_markdown(line[3:].strip())}</h2>")
+            elif re.match(r"^-\s+", line):
+                item = re.sub(r"^-\s+", "", line)
+                if in_ol:
+                    parts.append("</ol>")
+                    in_ol = False
+                if not in_ul:
+                    parts.append("<ul>")
+                    in_ul = True
+                parts.append(f"<li>{inline_markdown(item)}</li>")
+            elif re.match(r"^\d+\.\s+", line):
+                item = re.sub(r"^\d+\.\s+", "", line)
+                if in_ul:
+                    parts.append("</ul>")
+                    in_ul = False
+                if not in_ol:
+                    parts.append("<ol>")
+                    in_ol = True
+                parts.append(f"<li>{inline_markdown(item)}</li>")
+            else:
+                if in_ul:
+                    parts.append("</ul>")
+                    in_ul = False
+                if in_ol:
+                    parts.append("</ol>")
+                    in_ol = False
+                parts.append(f"<p>{inline_markdown(line)}</p>")
+        if in_ul:
+            parts.append("</ul>")
+        if in_ol:
+            parts.append("</ol>")
+        return "".join(parts)
+
+    body_html = markdown_lines_to_html(main_lines)
+    cta_html = ""
+    if cta_heading:
+        cta_paragraphs = "".join(
+            f"<p>{inline_markdown(line)}</p>" for line in cta_lines if line.strip()
+        )
+        cta_html = (
+            '<section class="cta-panel" aria-label="Article call to action">'
+            f"<div><h2>{inline_markdown(cta_heading)}</h2>{cta_paragraphs}</div>"
+            "</section>"
+        )
+    return body_html, cta_html
+
+
+def build_review_html(article_path: Path, frontmatter: dict[str, Any], body: str) -> str:
+    title = str(frontmatter.get("title", article_path.stem))
+    description = str(frontmatter.get("description", title))
+    category = str(frontmatter.get("category", "Newsroom"))
+    pub_date = str(frontmatter.get("pubDate", ""))
+    body_html, cta_html = render_body_sections(body)
+    return f'''<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{html.escape(title)} | DTP draft review</title>
+  <meta name="description" content="{html.escape(description)}" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <style>
+    :root {{
+      --bg:#090d12;
+      --panel:#0f151c;
+      --text:#f0f3f6;
+      --muted:#a7b3c0;
+      --line:rgba(255,255,255,.12);
+      --mint:#8ef0ca;
+      --mint-ink:#0a2e21;
+      --draft:#ffd27d;
+    }}
+    * {{ box-sizing:border-box; }}
+    body {{
+      margin:0;
+      background:radial-gradient(circle at top,#121922 0,#090d12 50%);
+      color:var(--text);
+      font:400 16px/1.75 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    }}
+    .wrap {{ max-width:920px; margin:0 auto; padding:24px 18px 64px; }}
+    .draft-strip {{
+      margin:0 0 18px;
+      padding:12px 14px;
+      border:1px solid rgba(255,210,125,.35);
+      border-radius:14px;
+      background:rgba(255,210,125,.08);
+      color:var(--draft);
+      font-size:14px;
+    }}
+    article {{
+      background:linear-gradient(180deg,rgba(18,25,34,.98),rgba(12,17,23,.98));
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:28px 24px;
+      box-shadow:0 18px 50px rgba(0,0,0,.28);
+    }}
+    .eyebrow {{ display:flex; gap:.75rem; align-items:center; flex-wrap:wrap; margin-bottom:1rem; }}
+    .tag {{
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:.38rem .7rem;
+      font-size:.78rem;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      background:rgba(142,240,202,.12);
+      color:var(--mint);
+      border:1px solid rgba(142,240,202,.18);
+    }}
+    .date {{ color:var(--muted); font-size:.92rem; }}
+    h1 {{ font-size:clamp(2rem,4vw,3.2rem); line-height:1.08; margin:0 0 1rem; letter-spacing:-.02em; }}
+    .dek {{ font-size:1.1rem; color:var(--muted); max-width:70ch; margin:0 0 2rem; }}
+    h2 {{ margin:2rem 0 .7rem; font-size:1.5rem; line-height:1.2; }}
+    p,li {{ color:#d6dee7; }}
+    ul,ol {{ padding-left:1.3rem; margin:1rem 0; }}
+    strong {{ color:var(--text); }}
+    code {{ background:rgba(255,255,255,.08); padding:.1rem .35rem; border-radius:6px; }}
+    .cta-panel {{
+      margin-top:2.5rem;
+      border:1px solid rgba(142,240,202,.18);
+      border-radius:20px;
+      background:linear-gradient(135deg,rgba(142,240,202,.12),rgba(142,240,202,.04));
+      padding:18px 18px;
+    }}
+    .cta-panel h2 {{ margin-top:0; margin-bottom:.55rem; }}
+    .cta-panel p {{ margin:0; max-width:58ch; }}
+    .article-footer {{ margin-top:2.5rem; padding-top:1.25rem; border-top:1px solid var(--line); }}
+    .actions {{ display:flex; gap:.85rem; flex-wrap:wrap; }}
+    .btn {{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:46px;
+      padding:.8rem 1.05rem;
+      border-radius:999px;
+      text-decoration:none;
+      font-weight:600;
+    }}
+    .btn-outline {{ border:1px solid rgba(255,255,255,.2); color:var(--text); background:transparent; }}
+    .btn-mint {{ background:var(--mint); color:var(--mint-ink); border:1px solid rgba(142,240,202,.65); box-shadow:0 12px 24px rgba(142,240,202,.12); }}
+    @media (max-width:700px) {{
+      .actions {{ flex-direction:column; }}
+      .actions .btn {{ width:100%; }}
+    }}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="draft-strip">{DRAFT_STRIP_HTML}</div>
+    <article>
+      <div class="eyebrow">
+        <span class="tag">{html.escape(category)}</span>
+        <time class="date">{html.escape(pub_date)}</time>
+      </div>
+      <h1>{html.escape(title)}</h1>
+      <p class="dek">{html.escape(description)}</p>
+      <section class="news-article-content">{body_html}</section>
+      {cta_html}
+      <footer class="article-footer">
+        <nav class="actions" aria-label="Article actions">
+          <a href="https://digitaltechnologypartner.ai/news" class="btn btn-outline">← Back to Newsroom</a>
+          <a href="https://digitaltechnologypartner.ai/contact" class="btn btn-mint">Contact us</a>
+        </nav>
+      </footer>
+    </article>
+  </div>
+</body>
+</html>
+'''
+
+
+def credentials_path() -> Path:
+    override = os.environ.get("HERENOW_CREDENTIALS_PATH")
+    return Path(override) if override else DEFAULT_CREDENTIALS_PATH
+
+
+def read_api_key(path: Path) -> str:
+    if not path.exists():
+        raise FileNotFoundError(f"here.now credentials file not found: {path}")
+    text = path.read_text(encoding="utf-8").strip()
+    if not text:
+        raise ValueError(f"here.now credentials file is empty: {path}")
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+        if "=" in line:
+            key, value = line.split("=", 1)
+            if "key" in key.lower() or "token" in key.lower():
+                return value.strip()
+        if ":" in line:
+            key, value = line.split(":", 1)
+            if "key" in key.lower() or "token" in key.lower():
+                return value.strip()
+    return text.splitlines()[-1].strip()
+
+
+def http_json(url: str, *, method: str, headers: dict[str, str], data: dict[str, Any]) -> dict[str, Any]:
+    req = request.Request(
+        url,
+        data=json.dumps(data).encode("utf-8"),
+        method=method,
+        headers=headers,
+    )
+    with request.urlopen(req, timeout=120) as response:
+        return json.loads(response.read().decode("utf-8"))
+
+
+def load_publish_state(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def save_publish_state(path: Path, payload: dict[str, Any]) -> None:
+    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+
+
+def publish_html(slug_hint: str, html_path: Path, api_key: str, state_path: Path) -> tuple[str, str]:
+    content = html_path.read_bytes()
+    content_type = mimetypes.guess_type(html_path.name)[0] or "text/html"
+    if "charset=" not in content_type:
+        content_type = f"{content_type}; charset=utf-8"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "X-HereNow-Client": CLIENT_HEADER,
+        "Content-Type": "application/json",
+        "User-Agent": CLIENT_HEADER,
+    }
+    state = load_publish_state(state_path)
+    live_slug = str(state.get("live_slug") or "").strip()
+    payload = {
+        "files": [
+            {
+                "path": html_path.name,
+                "size": len(content),
+                "contentType": content_type,
+                "hash": hashlib.sha256(content).hexdigest(),
+            }
+        ]
+    }
+    if live_slug:
+        publish = http_json(
+            f"https://here.now/api/v1/publish/{live_slug}",
+            method="PUT",
+            headers=headers,
+            data=payload,
+        )
+    else:
+        publish = http_json(
+            "https://here.now/api/v1/publish",
+            method="POST",
+            headers=headers,
+            data={**payload, "slug": slug_hint},
+        )
+        live_slug = str(publish.get("slug") or "").strip()
+        if not live_slug:
+            raise RuntimeError("here.now create response did not include a slug")
+    upload = publish.get("upload") or {}
+    uploads = upload.get("uploads") or []
+    skipped = upload.get("skipped") or []
+    if not uploads and not skipped:
+        raise RuntimeError("here.now publish response did not include upload instructions")
+    for item in uploads:
+        upload_headers = dict(item.get("headers") or {})
+        upload_headers.setdefault("Content-Type", content_type)
+        upload_request = request.Request(
+            item["url"],
+            data=content,
+            method=item.get("method", "PUT"),
+            headers=upload_headers,
+        )
+        with request.urlopen(upload_request, timeout=120) as response:
+            response.read()
+    finalize_url = upload.get("finalizeUrl")
+    version_id = upload.get("versionId")
+    if not finalize_url or not version_id:
+        raise RuntimeError("here.now publish response missing finalizeUrl or versionId")
+    finalized = http_json(
+        finalize_url,
+        method="POST",
+        headers=headers,
+        data={"versionId": version_id},
+    )
+    site_url = finalized.get("siteUrl") or publish.get("siteUrl") or f"https://{live_slug}.here.now/"
+    verify_request = request.Request(site_url, headers={"User-Agent": CLIENT_HEADER})
+    with request.urlopen(verify_request, timeout=120) as response:
+        if response.status != 200:
+            raise RuntimeError(f"Review page verification returned HTTP {response.status}")
+        response.read()
+    save_publish_state(
+        state_path,
+        {
+            "slug_hint": slug_hint,
+            "live_slug": live_slug,
+            "site_url": site_url,
+            "article_stem": html_path.parent.name,
+        },
+    )
+    return site_url, live_slug
+
+
+def run_guard(slug: str) -> None:
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(GUARD_SCRIPT),
+            "--root",
+            str(WORK_ROOT),
+            "--check-text",
+            f"publish standalone here.now review slug {slug}",
+        ],
+        cwd=WORK_ROOT,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        raise RuntimeError((result.stderr or result.stdout).strip() or "Production-domain guard failed")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Publish standalone here.now review page for newsroom article")
+    parser.add_argument("--file", required=True, help="Path to article markdown")
+    parser.add_argument("--dry-run", action="store_true", help="Render and stage review page locally without calling here.now API")
+    args = parser.parse_args()
+
+    article_path = Path(args.file)
+    if not article_path.is_absolute():
+        article_path = (Path.cwd() / article_path).resolve()
+    if not article_path.exists():
+        print(f"File not found: {article_path}", file=sys.stderr)
+        return 1
+
+    try:
+        raw_text = article_path.read_text(encoding="utf-8")
+        frontmatter_block, body = split_frontmatter(raw_text)
+        frontmatter = parse_frontmatter(frontmatter_block)
+        slug = derive_review_slug(article_path)
+        run_guard(slug)
+        output_dir = OUTPUT_ROOT / article_path.stem
+        output_dir.mkdir(parents=True, exist_ok=True)
+        html_path = output_dir / "index.html"
+        state_path = output_dir / "publish-state.json"
+        review_html = build_review_html(article_path, frontmatter, body)
+        html_path.write_text(review_html, encoding="utf-8")
+        print(f"Review HTML: {html_path}")
+        if args.dry_run:
+            print(f"Review dry run URL: https://{slug}.here.now/")
+            return 0
+        api_key = read_api_key(credentials_path())
+        site_url, live_slug = publish_html(slug, html_path, api_key, state_path)
+        print(f"Review slug: {live_slug}")
+        print(f"Review live: {site_url}")
+        return 0
+    except (ValueError, FileNotFoundError, RuntimeError, error.HTTPError, error.URLError) as exc:
+        print(f"Review publish failed: {exc}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
