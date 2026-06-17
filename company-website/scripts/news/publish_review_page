@@ -29,7 +29,7 @@ OUTPUT_ROOT = Path(
 )
 CLIENT_HEADER = "hudson/hermes"
 DEFAULT_CREDENTIALS_PATH = Path.home() / ".herenow" / "credentials"
-DRAFT_STRIP_HTML = "<strong>Draft.</strong> Review surface only. This is not the production DTP site."
+DRAFT_STRIP_HTML = "<strong>Draft review only.</strong> This here.now page mirrors the intended live article layout."
 CTA_SECTION_TITLE = "Pressure-test your AI dependencies"
 
 
@@ -85,22 +85,8 @@ def inline_markdown(text: str) -> str:
     return escaped
 
 
-def render_body_sections(body: str) -> tuple[str, str]:
+def render_body_sections(body: str) -> str:
     lines = body.splitlines()
-    main_lines: list[str] = []
-    cta_heading: str | None = None
-    cta_lines: list[str] = []
-    in_cta = False
-
-    for raw_line in lines:
-        if raw_line.startswith("## ") and raw_line[3:].strip() == CTA_SECTION_TITLE:
-            in_cta = True
-            cta_heading = raw_line[3:].strip()
-            continue
-        if in_cta:
-            cta_lines.append(raw_line)
-        else:
-            main_lines.append(raw_line)
 
     def markdown_lines_to_html(source_lines: list[str]) -> str:
         parts: list[str] = []
@@ -156,18 +142,7 @@ def render_body_sections(body: str) -> tuple[str, str]:
             parts.append("</ol>")
         return "".join(parts)
 
-    body_html = markdown_lines_to_html(main_lines)
-    cta_html = ""
-    if cta_heading:
-        cta_paragraphs = "".join(
-            f"<p>{inline_markdown(line)}</p>" for line in cta_lines if line.strip()
-        )
-        cta_html = (
-            '<section class="cta-panel" aria-label="Article call to action">'
-            f"<div><h2>{inline_markdown(cta_heading)}</h2>{cta_paragraphs}</div>"
-            "</section>"
-        )
-    return body_html, cta_html
+    return markdown_lines_to_html(lines)
 
 
 def build_review_html(article_path: Path, frontmatter: dict[str, Any], body: str) -> str:
@@ -175,7 +150,7 @@ def build_review_html(article_path: Path, frontmatter: dict[str, Any], body: str
     description = str(frontmatter.get("description", title))
     category = str(frontmatter.get("category", "Newsroom"))
     pub_date = str(frontmatter.get("pubDate", ""))
-    body_html, cta_html = render_body_sections(body)
+    body_html = render_body_sections(body)
     return f'''<!doctype html>
 <html lang="en-GB">
 <head>
@@ -184,111 +159,338 @@ def build_review_html(article_path: Path, frontmatter: dict[str, Any], body: str
   <title>{html.escape(title)} | DTP draft review</title>
   <meta name="description" content="{html.escape(description)}" />
   <meta name="robots" content="noindex,nofollow,noarchive" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     :root {{
-      --bg:#090d12;
-      --panel:#0f151c;
-      --text:#f0f3f6;
-      --muted:#a7b3c0;
-      --line:rgba(255,255,255,.12);
-      --mint:#8ef0ca;
-      --mint-ink:#0a2e21;
+      --ma-bg:#0A0A0F;
+      --ma-surface:#1A1A2E;
+      --ma-surface-alt:#111122;
+      --ma-border:#2A2A3E;
+      --ma-mint:#00E5A0;
+      --ma-mint-dim:rgba(0,229,160,0.12);
+      --ma-mint-glow:rgba(0,229,160,0.35);
+      --ma-text:#E0E0E0;
+      --ma-text-dim:#8888A0;
+      --ma-white:#F0F0F5;
+      --ma-font-display:'Space Grotesk',system-ui,sans-serif;
+      --ma-font-body:'IBM Plex Sans',system-ui,sans-serif;
+      --ma-font-mono:'IBM Plex Mono','SF Mono',monospace;
+      --ma-radius:8px;
+      --ma-transition:220ms cubic-bezier(0.4,0,0.2,1);
       --draft:#ffd27d;
     }}
-    * {{ box-sizing:border-box; }}
+    *, *::before, *::after {{ box-sizing:border-box; margin:0; padding:0; }}
+    html {{ font-size:16px; }}
     body {{
       margin:0;
-      background:radial-gradient(circle at top,#121922 0,#090d12 50%);
-      color:var(--text);
-      font:400 16px/1.75 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(0,229,160,0.08), transparent 36%),
+        linear-gradient(180deg, #07090d 0%, #0a0a0f 100%);
+      color:var(--ma-text);
+      font:400 16px/1.75 var(--ma-font-body);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }}
-    .wrap {{ max-width:920px; margin:0 auto; padding:24px 18px 64px; }}
+    body::before {{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(0,229,160,0.1), transparent 18%),
+        radial-gradient(circle at 82% 12%, rgba(255,255,255,0.05), transparent 20%),
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size:auto, auto, 32px 32px, 32px 32px;
+      opacity:.18;
+      z-index:0;
+    }}
+    a {{ color:inherit; text-decoration:none; }}
+    h1, h2, h3 {{
+      font-family:var(--ma-font-display);
+      color:var(--ma-white);
+      letter-spacing:-0.02em;
+      line-height:1.2;
+    }}
+    p {{ color:var(--ma-text-dim); }}
+    .ma-container {{
+      max-width:1200px;
+      margin:0 auto;
+      padding:0 2rem;
+      position:relative;
+      z-index:1;
+    }}
+    .ma-section {{
+      padding:6rem 0;
+      position:relative;
+      z-index:1;
+    }}
+    .ma-btn {{
+      display:inline-flex;
+      align-items:center;
+      gap:.5rem;
+      font-family:var(--ma-font-display);
+      font-weight:600;
+      font-size:.92rem;
+      padding:.8rem 1.6rem;
+      border-radius:var(--ma-radius);
+      text-decoration:none;
+      cursor:pointer;
+      border:none;
+      transition:all var(--ma-transition);
+    }}
+    .ma-btn-mint {{ background:var(--ma-mint); color:#0A0A0F; }}
+    .ma-btn-mint:hover {{ background:#00ffb3; transform:translateY(-2px); box-shadow:0 0 24px var(--ma-mint-glow); }}
+    .ma-btn-outline {{ background:transparent; color:var(--ma-text); border:1.5px solid var(--ma-border); }}
+    .ma-btn-outline:hover {{ border-color:var(--ma-mint); color:var(--ma-mint); }}
+    .ma-tag {{
+      font-size:.72rem;
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      color:var(--ma-mint);
+      background:var(--ma-mint-dim);
+      padding:.25rem .6rem;
+      border-radius:4px;
+    }}
+    .ma-header {{
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      z-index:100;
+      background:rgba(7,9,13,0.86);
+      backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--ma-border);
+    }}
+    .ma-nav-inner {{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:1.5rem;
+      height:76px;
+      max-width:none;
+      padding:0 36px;
+    }}
+    .ma-nav-logo {{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      color:#f2f1ec;
+      text-decoration:none;
+      flex-shrink:0;
+    }}
+    .ma-nav-logo:link,
+    .ma-nav-logo:visited,
+    .ma-nav-logo:hover,
+    .ma-nav-logo:active {{ color:#f2f1ec; text-decoration:none; }}
+    .ma-logo-img {{ height:30px; width:auto; }}
+    .ma-logo-wordmark {{
+      color:#f2f1ec;
+      font-family:var(--ma-font-display);
+      font-size:13px;
+      font-weight:600;
+      line-height:1;
+      letter-spacing:.01em;
+      white-space:nowrap;
+    }}
+    .ma-nav-links {{ display:flex; gap:.4rem; list-style:none; }}
+    .ma-nav-links a {{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 12px;
+      font-family:var(--ma-font-mono);
+      font-size:10.5px;
+      letter-spacing:.2em;
+      text-transform:uppercase;
+      color:var(--ma-text-dim);
+      border:1px solid transparent;
+      text-decoration:none;
+      white-space:nowrap;
+      transition:color 250ms ease, border-color 250ms ease;
+    }}
+    .ma-nav-links a::before {{
+      content:'';
+      width:4px;
+      height:4px;
+      border-radius:50%;
+      background:var(--ma-mint);
+      opacity:.55;
+      transition:opacity 250ms ease, box-shadow 250ms ease;
+    }}
+    .ma-nav-links a:hover {{ color:var(--ma-white); border-color:var(--ma-border); }}
+    .ma-nav-links a:hover::before {{ opacity:1; box-shadow:0 0 10px var(--ma-mint-glow); }}
+    .ma-nav-right {{ display:flex; align-items:center; gap:22px; flex-shrink:0; }}
+    .ma-nav-cta {{ font-size:.68rem !important; padding:.62rem 1.1rem !important; }}
+    .ma-nav-index,
+    .ma-nav-gallery-return {{
+      background:none;
+      border:1px solid var(--ma-border);
+      color:var(--ma-white);
+      font-family:var(--ma-font-mono);
+      font-size:10px;
+      letter-spacing:.22em;
+      padding:10px 16px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      text-decoration:none;
+    }}
+    .ma-nav-cube-mark {{
+      display:grid;
+      grid-template-columns:repeat(3,4px);
+      grid-template-rows:repeat(2,4px);
+      gap:2px;
+    }}
+    .ma-nav-cube {{
+      width:4px;
+      height:4px;
+      border:1px solid rgba(240,240,245,0.7);
+      opacity:.9;
+    }}
+    .review-main {{ padding-top:7.6rem; }}
+    .review-article {{ max-width:820px; }}
     .draft-strip {{
-      margin:0 0 18px;
-      padding:12px 14px;
-      border:1px solid rgba(255,210,125,.35);
-      border-radius:14px;
-      background:rgba(255,210,125,.08);
+      margin:0 0 1.5rem;
+      padding:.55rem .8rem;
+      border:1px solid rgba(255,210,125,.22);
+      background:rgba(255,210,125,.05);
       color:var(--draft);
-      font-size:14px;
-    }}
-    article {{
-      background:linear-gradient(180deg,rgba(18,25,34,.98),rgba(12,17,23,.98));
-      border:1px solid var(--line);
-      border-radius:24px;
-      padding:28px 24px;
-      box-shadow:0 18px 50px rgba(0,0,0,.28);
+      font-family:var(--ma-font-mono);
+      font-size:.68rem;
+      letter-spacing:.04em;
     }}
     .eyebrow {{ display:flex; gap:.75rem; align-items:center; flex-wrap:wrap; margin-bottom:1rem; }}
-    .tag {{
-      display:inline-flex;
+    .date {{ font-size:.9rem; color:var(--ma-text-dim); }}
+    h1 {{ font-size:clamp(2rem,4vw,3rem); line-height:1.1; margin-bottom:1rem; }}
+    .dek {{ font-size:1.1rem; color:var(--ma-text-dim); max-width:70ch; margin-bottom:2rem; }}
+    .news-article-content h2 {{ margin:2rem 0 .75rem; font-size:1.6rem; }}
+    .news-article-content h3 {{ margin:1.5rem 0 .5rem; font-size:1.25rem; }}
+    .news-article-content p,
+    .news-article-content li {{ color:var(--ma-text-dim); line-height:1.75; }}
+    .news-article-content ul,
+    .news-article-content ol {{ padding-left:1.25rem; margin:1rem 0; }}
+    .news-article-content strong {{ color:var(--ma-white); }}
+    .news-article-content code {{ background:rgba(255,255,255,.08); padding:.1rem .35rem; border-radius:6px; }}
+    .article-footer {{ margin-top:3rem; border-top:1px solid rgba(255,255,255,.1); padding-top:1.25rem; }}
+    .actions {{ display:flex; align-items:center; flex-wrap:wrap; gap:.8rem; }}
+    .st-stardivider {{
+      display:flex;
       align-items:center;
-      border-radius:999px;
-      padding:.38rem .7rem;
-      font-size:.78rem;
-      letter-spacing:.08em;
+      gap:18px;
+      margin:0 auto;
+      border:0;
+      width:min(420px,70%);
+      opacity:.7;
+    }}
+    .st-stardivider::before,
+    .st-stardivider::after {{
+      content:'';
+      flex:1;
+      height:1px;
+      background:linear-gradient(90deg, transparent, rgba(242,241,236,0.22));
+    }}
+    .st-stardivider::after {{ background:linear-gradient(90deg, rgba(242,241,236,0.22), transparent); }}
+    .st-stardivider i {{ width:5px; height:5px; background:var(--ma-mint); transform:rotate(45deg); box-shadow:0 0 12px var(--ma-mint-glow); }}
+    .ma-footer {{ position:relative; z-index:1; background:transparent; padding:3.2rem 0 2.4rem; }}
+    .ma-footer .st-stardivider {{ margin-bottom:2.6rem; }}
+    .ma-footer-inner {{ display:flex; justify-content:space-between; align-items:center; }}
+    .ma-footer-copy {{ color:var(--ma-text-dim); font-family:var(--ma-font-mono); font-size:.68rem; letter-spacing:.14em; }}
+    .ma-footer-links {{ display:flex; gap:1.8rem; }}
+    .ma-footer-links a {{
+      color:var(--ma-text-dim);
+      font-family:var(--ma-font-mono);
+      font-size:.68rem;
+      letter-spacing:.18em;
       text-transform:uppercase;
-      background:rgba(142,240,202,.12);
-      color:var(--mint);
-      border:1px solid rgba(142,240,202,.18);
-    }}
-    .date {{ color:var(--muted); font-size:.92rem; }}
-    h1 {{ font-size:clamp(2rem,4vw,3.2rem); line-height:1.08; margin:0 0 1rem; letter-spacing:-.02em; }}
-    .dek {{ font-size:1.1rem; color:var(--muted); max-width:70ch; margin:0 0 2rem; }}
-    h2 {{ margin:2rem 0 .7rem; font-size:1.5rem; line-height:1.2; }}
-    p,li {{ color:#d6dee7; }}
-    ul,ol {{ padding-left:1.3rem; margin:1rem 0; }}
-    strong {{ color:var(--text); }}
-    code {{ background:rgba(255,255,255,.08); padding:.1rem .35rem; border-radius:6px; }}
-    .cta-panel {{
-      margin-top:2.5rem;
-      border:1px solid rgba(142,240,202,.18);
-      border-radius:20px;
-      background:linear-gradient(135deg,rgba(142,240,202,.12),rgba(142,240,202,.04));
-      padding:18px 18px;
-    }}
-    .cta-panel h2 {{ margin-top:0; margin-bottom:.55rem; }}
-    .cta-panel p {{ margin:0; max-width:58ch; }}
-    .article-footer {{ margin-top:2.5rem; padding-top:1.25rem; border-top:1px solid var(--line); }}
-    .actions {{ display:flex; gap:.85rem; flex-wrap:wrap; }}
-    .btn {{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-height:46px;
-      padding:.8rem 1.05rem;
-      border-radius:999px;
       text-decoration:none;
-      font-weight:600;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      transition:color 200ms ease;
     }}
-    .btn-outline {{ border:1px solid rgba(255,255,255,.2); color:var(--text); background:transparent; }}
-    .btn-mint {{ background:var(--mint); color:var(--mint-ink); border:1px solid rgba(142,240,202,.65); box-shadow:0 12px 24px rgba(142,240,202,.12); }}
+    .ma-footer-links a::before {{
+      content:'';
+      width:4px;
+      height:4px;
+      border-radius:50%;
+      background:var(--ma-mint);
+      opacity:.55;
+      transition:opacity 200ms ease, box-shadow 200ms ease;
+    }}
+    .ma-footer-links a:hover {{ color:var(--ma-mint); }}
+    .ma-footer-links a:hover::before {{ opacity:1; box-shadow:0 0 10px var(--ma-mint-glow); }}
     @media (max-width:700px) {{
+      .ma-nav-inner {{ padding:0 18px; gap:.8rem; }}
+      .ma-nav-links,
+      .ma-nav-gallery-return {{ display:none; }}
+      .ma-nav-right {{ gap:12px; }}
+      .review-main {{ padding-top:6.6rem; }}
+      .ma-container {{ padding:0 1.1rem; }}
       .actions {{ flex-direction:column; }}
-      .actions .btn {{ width:100%; }}
+      .actions .ma-btn {{ width:100%; justify-content:center; }}
+      .ma-footer-inner {{ flex-direction:column; gap:1.2rem; text-align:center; }}
     }}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="draft-strip">{DRAFT_STRIP_HTML}</div>
-    <article>
+  <header class="ma-header">
+    <nav class="ma-container ma-nav-inner">
+      <a href="https://digitaltechnologypartner.ai/" class="ma-nav-logo" aria-label="Digital Technology Partner — return to ecosystem">
+        <img src="https://digitaltechnologypartner.ai/images/DTP%20logo%20-%20White-2.png" alt="" class="ma-logo-img" />
+        <span class="ma-logo-wordmark">Digital Technology Partner</span>
+      </a>
+      <ul class="ma-nav-links">
+        <li><a href="https://digitaltechnologypartner.ai/why-dtp">WHY DTP</a></li>
+        <li><a href="https://digitaltechnologypartner.ai/programmes">PROGRAMMES</a></li>
+        <li><a href="https://digitaltechnologypartner.ai/solutions">SOLUTIONS</a></li>
+        <li><a href="https://digitaltechnologypartner.ai/case-studies">CASE STUDIES</a></li>
+        <li><a href="https://digitaltechnologypartner.ai/insights">INSIGHTS</a></li>
+        <li><a href="https://digitaltechnologypartner.ai/contact">CONTACT</a></li>
+      </ul>
+      <div class="ma-nav-right">
+        <a class="ma-nav-gallery-return" href="https://digitaltechnologypartner.ai/" aria-label="Return to gallery">
+          <span>GALLERY</span>
+          <span class="ma-nav-cube-mark" aria-hidden="true">
+            <span class="ma-nav-cube"></span><span class="ma-nav-cube"></span><span class="ma-nav-cube"></span><span class="ma-nav-cube"></span><span class="ma-nav-cube"></span><span class="ma-nav-cube"></span>
+          </span>
+        </a>
+        <a href="https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous" target="_blank" rel="noopener noreferrer" class="ma-btn ma-btn-mint ma-nav-cta">Book a Call</a>
+      </div>
+    </nav>
+  </header>
+  <main class="ma-section review-main">
+    <article class="ma-container review-article">
+      <div class="draft-strip">{DRAFT_STRIP_HTML}</div>
       <div class="eyebrow">
-        <span class="tag">{html.escape(category)}</span>
+        <span class="ma-tag">{html.escape(category)}</span>
         <time class="date">{html.escape(pub_date)}</time>
       </div>
       <h1>{html.escape(title)}</h1>
       <p class="dek">{html.escape(description)}</p>
       <section class="news-article-content">{body_html}</section>
-      {cta_html}
       <footer class="article-footer">
         <nav class="actions" aria-label="Article actions">
-          <a href="https://digitaltechnologypartner.ai/news" class="btn btn-outline">← Back to Newsroom</a>
-          <a href="https://digitaltechnologypartner.ai/contact" class="btn btn-mint">Contact us</a>
+          <a href="https://digitaltechnologypartner.ai/news" class="ma-btn ma-btn-outline">← Back to Newsroom</a>
+          <a href="https://digitaltechnologypartner.ai/contact" class="ma-btn ma-btn-mint">Contact us</a>
         </nav>
       </footer>
     </article>
-  </div>
+  </main>
+  <footer class="ma-footer">
+    <div class="st-stardivider" aria-hidden="true"><i></i></div>
+    <div class="ma-container ma-footer-inner">
+      <p class="ma-footer-copy">&copy; 2025 Digital Technology Partner. All Rights Reserved.</p>
+      <div class="ma-footer-links">
+        <a href="https://www.linkedin.com/company/dtp-ai/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <a href="mailto:Info@digitaltechnologypartner.ai">Email</a>
+        <a href="https://wa.me/447769386204">WhatsApp</a>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
 '''

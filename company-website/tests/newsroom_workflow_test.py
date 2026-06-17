@@ -404,11 +404,17 @@ class NewsroomWorkflowTests(unittest.TestCase):
         self.assertTrue(html_path.exists())
         html = html_path.read_text(encoding='utf-8')
         self.assertIn('noindex,nofollow,noarchive', html)
-        self.assertEqual(html.count('Draft.</strong> Review surface only. This is not the production DTP site.'), 1)
+        self.assertEqual(html.count('Draft review only.</strong> This here.now page mirrors the intended live article layout.'), 1)
+        self.assertIn('class="ma-header"', html)
+        self.assertIn('class="ma-footer"', html)
+        self.assertIn('class="ma-btn ma-btn-outline"', html)
+        self.assertIn('class="ma-btn ma-btn-mint"', html)
         self.assertIn('← Back to Newsroom', html)
         self.assertIn('Contact us', html)
         self.assertNotIn('Status:', html)
         self.assertNotIn('Human review and approval required before publish', html)
+        self.assertNotIn('class="btn btn-outline"', html)
+        self.assertNotIn('cta-panel', html)
 
     def test_run_post_selection_dry_run_executes_pipeline(self) -> None:
         discover = self.run_script(DISCOVER, '--date', '2026-06-17')

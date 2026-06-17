@@ -13,6 +13,7 @@ Use this checklist before setting `approved: true`.
 ## Review-surface quality
 - [ ] The here.now review page looks like the final website article
 - [ ] The only draft marker is one minimal strip at the top
+- [ ] Header, footer, tag treatment, and CTA buttons match the live DTP article design rather than a generic preview skin
 - [ ] No metadata/status/source/review boilerplate appears inside the article body or footer
 
 ## Governance & compliance

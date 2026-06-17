@@ -91,6 +91,7 @@ Rules:
 - there is no extra permission gate before deploying the here.now draft review page
 - it must not sit on the DTP production domain before approval
 - it should look like the final website article, with exactly one minimal draft strip at the top
+- the review surface must use the same DTP article chrome and component treatment as the live site where practical: branded header/footer, normal article width, standard tag styling, and the same button shapes/colours/states as production
 - Steve should be able to assess headline, standfirst/description, structure, flow, ending and CTA as if reviewing the live article
 - it must not include metadata/status/source cards, repeated approval warnings, or review boilerplate in the article body/footer
 - `/news` and `/news/[slug]` remain approved-only on the DTP site
