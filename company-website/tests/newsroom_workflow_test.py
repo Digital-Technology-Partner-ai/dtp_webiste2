@@ -202,6 +202,13 @@ class NewsroomWorkflowTests(unittest.TestCase):
         self.assertNotIn('- Change 1', text)
         self.assertNotIn('1. Action one', text)
         self.assertNotIn('description: "Draft generated from newsroom shortlist."', text)
+        self.assertIn('## Why this story matters', text)
+        self.assertIn('## What stands out', text)
+        self.assertIn('## What leaders should take from this', text)
+        self.assertIn('## Why this matters in practice', text)
+        self.assertIn('## Pressure-test your AI dependencies', text)
+        self.assertNotIn('## What to do next', text)
+        self.assertNotIn('What this signal means for leaders thinking about', text)
 
     def test_generate_draft_blocks_duplicates(self) -> None:
         discover = self.run_script(DISCOVER, '--date', '2026-01-03')
@@ -280,6 +287,7 @@ class NewsroomWorkflowTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         output = result.stdout + result.stderr
         self.assertIn('placeholder scaffold text', output)
+        self.assertIn('overview-style scaffold heading', output)
 
     def test_prepare_publish_is_idempotent(self) -> None:
         article = self.root / 'src' / 'content' / 'news' / '2026-06-14-test.md'

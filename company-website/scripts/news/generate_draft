@@ -69,26 +69,36 @@ def clean_topic_title(raw_title: str) -> str:
 
 def build_description(title: str, category: str) -> str:
     lens = CATEGORY_LENSES.get(category, CATEGORY_LENSES['AI'])
-    return f"What this signal means for leaders thinking about {lens}."
+    return f"{title} highlights fresh questions about {lens} for technology leaders."
 
 
 def build_body(title: str, category: str) -> str:
     lens = CATEGORY_LENSES.get(category, CATEGORY_LENSES['AI'])
-    return f"""## Why this topic matters
+    return f"""## Why this story matters
 
-{title} is useful because it gives DTP readers a concrete signal about {lens}, not just another abstract AI headline. The interesting question is what this changes for teams making delivery, supplier, governance or investment decisions over the next quarter.
+{title} is not just another AI headline. It is an early signal about how quickly questions around {lens} are moving into ordinary business decisions.
 
-## What is changing now
+Leaders do not need every market update. They do need the ones that show where delivery risk, supplier dependence, control, or governance pressure is becoming more concrete. This is one of those stories.
 
-- This story sharpens the conversation about {lens}.
-- It gives leadership teams a fresh reason to review where assumptions, suppliers or workflows could become single points of failure.
-- It also creates a more practical client conversation than generic \"AI opportunity\" chatter because there is a real market signal to point at.
+## What stands out
 
-## What to do next
+The important point is not the headline on its own. It is what the headline suggests about the next layer of operational reality. When a story points directly at {lens}, it usually means the market is starting to spend money, assign ownership, and expose weaknesses that were easier to ignore while AI stayed in pilot mode.
 
-1. Check whether the same pressure point exists in your own stack, partner set or operating model.
-2. Identify which team or workflow would feel the impact first if this signal becomes a broader pattern.
-3. Decide whether the right response is tighter governance, a fallback option, a pilot, or a bigger operating redesign.
+That is why this belongs on a leadership agenda. It is not mainly a technology novelty story. It is a signal that operating choices around tooling, workflow design, access control, fallback planning, and supplier exposure are getting more real.
+
+## What leaders should take from this
+
+The practical response is not to lurch into a new buying cycle every time the market moves. It is to ask where the same pressure could show up inside your own stack, partner set, or delivery model.
+
+For some teams, that may mean tightening governance before agentic or automated workflows spread further. For others, it may mean clarifying ownership, defining fallback routes, or deciding which risks are acceptable before a tool or vendor becomes embedded in day-to-day work.
+
+## Why this matters in practice
+
+The useful question is simple: if this market signal became a real operational issue inside your business, would the process still know what to do? If the answer is unclear, the work is not mature yet.
+
+## Pressure-test your AI dependencies
+
+If AI is becoming part of your operating stack, let’s pressure-test the risks, dependencies and fallback options.
 """
 
 

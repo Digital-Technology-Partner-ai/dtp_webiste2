@@ -16,6 +16,12 @@ PLACEHOLDER_MARKERS = [
     '1. Action one',
     '2. Action two',
     '3. Action three',
+    'is useful because it gives DTP readers a concrete signal about',
+    'The interesting question is what this changes for teams making delivery, supplier, governance or investment decisions over the next quarter.',
+]
+
+OVERVIEW_SCAFFOLD_HEADINGS = [
+    '## What to do next',
 ]
 
 
@@ -26,6 +32,10 @@ def field(text: str, name: str) -> str | None:
 
 def has_placeholder_scaffold(text: str) -> bool:
     return any(marker in text for marker in PLACEHOLDER_MARKERS)
+
+
+def has_overview_scaffold(text: str) -> bool:
+    return any(marker in text for marker in OVERVIEW_SCAFFOLD_HEADINGS)
 
 
 def main() -> int:
@@ -62,6 +72,9 @@ def main() -> int:
 
         if has_placeholder_scaffold(text):
             problems.append(f'{md.name}: placeholder scaffold text still present')
+
+        if has_overview_scaffold(text):
+            problems.append(f'{md.name}: overview-style scaffold heading still present')
 
     if problems:
         print('Approved article validation FAILED:')

@@ -71,13 +71,19 @@ Example:
   --topic-id topic-02
 ```
 
-### 5) Refine the draft
+### 5) Refine the draft into the actual article
 Use normal editorial judgement.
 Keep claims tied to the cited source context.
 Maintain British English.
 Remove filler and replace scaffold text with specific, useful content.
 
-### 6) Publish the draft to a separate here.now review page
+Non-negotiable rule:
+- before any review URL is sent to Steve, the draft must read like the publishable newsroom article itself, not an overview, angle note, outline, commentary scaffold, or internal briefing
+- the here.now review page is for Steve to judge the actual article exactly as it is intended to appear on the live production site
+- the only review-only difference should be one minimal draft strip at the top of the page
+- if the body still reads like notes about what the story might contain, the workflow is not ready for review yet
+
+### 6) Publish the article draft to a separate here.now review page
 Every draft may carry a `reviewToken` in frontmatter, but draft review itself happens on a separate here.now URL, not on `digitaltechnologypartner.ai`.
 
 Rules:
@@ -85,6 +91,7 @@ Rules:
 - there is no extra permission gate before deploying the here.now draft review page
 - it must not sit on the DTP production domain before approval
 - it should look like the final website article, with exactly one minimal draft strip at the top
+- Steve should be able to assess headline, standfirst/description, structure, flow, ending and CTA as if reviewing the live article
 - it must not include metadata/status/source cards, repeated approval warnings, or review boilerplate in the article body/footer
 - `/news` and `/news/[slug]` remain approved-only on the DTP site
 
