@@ -1,26 +1,14 @@
-# Dependencies
-node_modules/
+# Python cache noise
+__pycache__/
+*.py[cod]
 
-# System files
+# macOS cruft
 .DS_Store
 
-# Astro build output
-/company-website/dist/
-/company-website/.astro/
-
-# Generated reports and archives
-/company-website/test-results/
-/company-website/playwright-report/
-/company-website/test-results.json
-/company-website/lighthouse-*.report.html
-/company-website/lighthouse-*.report.json
-/company-website/deploy.zip
-
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Local Netlify folder
-.netlify
-.netlify
+# Generated website test/build artefacts
+company-website/deploy.zip
+company-website/lighthouse-*.report.html
+company-website/lighthouse-*.report.json
+company-website/playwright-report/
+company-website/test-results/
+company-website/test-results.json

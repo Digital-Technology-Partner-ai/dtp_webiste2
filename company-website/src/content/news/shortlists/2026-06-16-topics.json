@@ -1,0 +1,131 @@
+{
+  "date": "2026-06-16",
+  "generatedAt": "2026-06-16T07:05:43.816586",
+  "count": 10,
+  "method": "live-internet-discovery",
+  "sourceWindowDays": 4,
+  "topics": [
+    {
+      "id": "topic-01",
+      "title": "OpenAI acquires Ona to expand Codex for enterprise AI agents ... - eeNews Europe",
+      "category": "AI",
+      "source": "Google News \u2014 AI agents: https://news.google.com/rss/articles/CBMimAFBVV95cUxOWFJUd3dETU5jMEZzcWEtenBuejBQV0lQTURLMzdRbllZem13bDUwazhlZUZoUjFhVmp1cVV0Q1FDbDRlQ3k1TWRqNmFndHVTTWc3cEZrV05Wd0kzWmtFdzVYU0NrdWFmdmlqdHYzUllrYjFZdW9VQ3k5NHpxNU5uU1kxbWZNNjcyZXB2OUI5RzNaTC1lV0pkZQ?oc=5",
+      "sourceName": "Google News \u2014 AI agents",
+      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOWFJUd3dETU5jMEZzcWEtenBuejBQV0lQTURLMzdRbllZem13bDUwazhlZUZoUjFhVmp1cVV0Q1FDbDRlQ3k1TWRqNmFndHVTTWc3cEZrV05Wd0kzWmtFdzVYU0NrdWFmdmlqdHYzUllrYjFZdW9VQ3k5NHpxNU5uU1kxbWZNNjcyZXB2OUI5RzNaTC1lV0pkZQ?oc=5",
+      "publishedAt": "2026-06-16T05:35:47+00:00",
+      "evidence": "Google News \u2014 AI agents headline, published 2026-06-16",
+      "score": 159,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-02",
+      "title": "Cybersecurity vets protest \u2018dangerous\u2019 US government ban on Anthropic\u2019s most powerful models",
+      "category": "Security",
+      "source": "TechCrunch AI: https://techcrunch.com/2026/06/15/cybersecurity-vets-protest-dangerous-us-government-ban-on-anthropics-most-powerful-models/",
+      "sourceName": "TechCrunch AI",
+      "url": "https://techcrunch.com/2026/06/15/cybersecurity-vets-protest-dangerous-us-government-ban-on-anthropics-most-powerful-models/",
+      "publishedAt": "2026-06-15T15:29:51+00:00",
+      "evidence": "TechCrunch AI headline, published 2026-06-15",
+      "score": 146,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-03",
+      "title": "Salesforce\u2019s $3.6 Billion AI Agent Bet Signals a New Era for Business Automation - Times Square Chron\u2026",
+      "category": "AI",
+      "source": "Google News \u2014 AI agents: https://news.google.com/rss/articles/CBMiowFBVV95cUxPekN5VjR1YTBhZi1JTTVBMk1YbTAwVEtXaW95NktuNS00OVlKdUFRNXJhNEVkUUxQY1FWVWFiRWR3TTRqT1EtVzdiVGdvQmJuU08zdVZ1UklIWFpnbThnYkJlYWtxa3VpeEE2Y015ZXFpSXlhZ0lkdVNGZHR4R1c0dE5Pbmp5NlQwX2xkdWpSLW5yNjd2YV9TQjR2OThWaDJUaFJF?oc=5",
+      "sourceName": "Google News \u2014 AI agents",
+      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPekN5VjR1YTBhZi1JTTVBMk1YbTAwVEtXaW95NktuNS00OVlKdUFRNXJhNEVkUUxQY1FWVWFiRWR3TTRqT1EtVzdiVGdvQmJuU08zdVZ1UklIWFpnbThnYkJlYWtxa3VpeEE2Y015ZXFpSXlhZ0lkdVNGZHR4R1c0dE5Pbmp5NlQwX2xkdWpSLW5yNjd2YV9TQjR2OThWaDJUaFJF?oc=5",
+      "publishedAt": "2026-06-16T04:00:21+00:00",
+      "evidence": "Google News \u2014 AI agents headline, published 2026-06-16",
+      "score": 146,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-04",
+      "title": "inecta Adds AI Agents to Food ERP for Workflow Automation - ERP Today",
+      "category": "AI",
+      "source": "Google News \u2014 automation operations: https://news.google.com/rss/articles/CBMickFVX3lxTE5lNW9MaEh5bENIQWxXWERpZXpTX2hBaGhOazRDdEVMUmZxU0xDaVhUUWdib2NsT2F1YTFhS29JdVZzX29sMmFzeE5lRXFscHFzMlFtMFZEWjFNaGxqcDM0M0JLNDRMVGZyNkpXc0Q4QTNldw?oc=5",
+      "sourceName": "Google News \u2014 automation operations",
+      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE5lNW9MaEh5bENIQWxXWERpZXpTX2hBaGhOazRDdEVMUmZxU0xDaVhUUWdib2NsT2F1YTFhS29JdVZzX29sMmFzeE5lRXFscHFzMlFtMFZEWjFNaGxqcDM0M0JLNDRMVGZyNkpXc0Q4QTNldw?oc=5",
+      "publishedAt": "2026-06-15T06:52:23+00:00",
+      "evidence": "Google News \u2014 automation operations headline, published 2026-06-15",
+      "score": 143,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-05",
+      "title": "The US government\u2019s Anthropic models ban was never about an AI jailbreak",
+      "category": "AI",
+      "source": "TechCrunch AI: https://techcrunch.com/2026/06/15/the-us-governments-anthropic-models-ban-was-never-about-an-ai-jailbreak/",
+      "sourceName": "TechCrunch AI",
+      "url": "https://techcrunch.com/2026/06/15/the-us-governments-anthropic-models-ban-was-never-about-an-ai-jailbreak/",
+      "publishedAt": "2026-06-15T21:50:21+00:00",
+      "evidence": "TechCrunch AI headline, published 2026-06-15",
+      "score": 140,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-06",
+      "title": "Gotransverse Launches Workflow to Automate Enterprise Monetization Operations - Yahoo Finance Singapore",
+      "category": "Operations",
+      "source": "Google News \u2014 automation operations: https://news.google.com/rss/articles/CBMioAFBVV95cUxQMzc4X0ZNSktVVWdpV091dWpEZVdBbzBrLVd0ak9MQktqUnlkNkFGR0JSa3NVUmlMVUZCRTNyVkxmZjdVTXI3Yi1pVW9iNVlFanJLNHFJbUFvaU5nRkxrQ3RORjlTb1hsRXozeTNyNzNnNUtSOEJpSk5CeHN2UFdub1RWRGRWd2ZmS3Z3TFkyWU1HTFVDaDJIeVQzTFdHSFhB?oc=5",
+      "sourceName": "Google News \u2014 automation operations",
+      "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQMzc4X0ZNSktVVWdpV091dWpEZVdBbzBrLVd0ak9MQktqUnlkNkFGR0JSa3NVUmlMVUZCRTNyVkxmZjdVTXI3Yi1pVW9iNVlFanJLNHFJbUFvaU5nRkxrQ3RORjlTb1hsRXozeTNyNzNnNUtSOEJpSk5CeHN2UFdub1RWRGRWd2ZmS3Z3TFkyWU1HTFVDaDJIeVQzTFdHSFhB?oc=5",
+      "publishedAt": "2026-06-15T15:00:00+00:00",
+      "evidence": "Google News \u2014 automation operations headline, published 2026-06-15",
+      "score": 125,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-07",
+      "title": "Accenture: Consumers show growing trust in AI shopping agents",
+      "category": "AI",
+      "source": "AI News: https://www.artificialintelligence-news.com/news/ai-shopping-agents-consumer-trust-accenture-report/",
+      "sourceName": "AI News",
+      "url": "https://www.artificialintelligence-news.com/news/ai-shopping-agents-consumer-trust-accenture-report/",
+      "publishedAt": "2026-06-15T10:00:00+00:00",
+      "evidence": "AI News headline, published 2026-06-15",
+      "score": 122,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-08",
+      "title": "iOS 27 envy? 4 features you can already use on an Android phone (including Samsung models)",
+      "category": "AI",
+      "source": "ZDNET AI: https://www.zdnet.com/article/android-has-ios-27-features-but-i-want-these-next/",
+      "sourceName": "ZDNET AI",
+      "url": "https://www.zdnet.com/article/android-has-ios-27-features-but-i-want-these-next/",
+      "publishedAt": "2026-06-15T19:57:00+00:00",
+      "evidence": "ZDNET AI headline, published 2026-06-15",
+      "score": 114,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-09",
+      "title": "How to download the iOS 27 developer beta (and which iPhone models support it)",
+      "category": "AI",
+      "source": "ZDNET AI: https://www.zdnet.com/article/how-to-download-ios-27-developer-beta/",
+      "sourceName": "ZDNET AI",
+      "url": "https://www.zdnet.com/article/how-to-download-ios-27-developer-beta/",
+      "publishedAt": "2026-06-15T18:04:00+00:00",
+      "evidence": "ZDNET AI headline, published 2026-06-15",
+      "score": 112,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-10",
+      "title": "All the news about Anthropic\u2019s new AI fight with the White House",
+      "category": "AI",
+      "source": "The Verge AI: https://www.theverge.com/ai-artificial-intelligence/950026/anthropic-fable-mythos-ban-ai-shutdown",
+      "sourceName": "The Verge AI",
+      "url": "https://www.theverge.com/ai-artificial-intelligence/950026/anthropic-fable-mythos-ban-ai-shutdown",
+      "publishedAt": "2026-06-15T15:04:53-04:00",
+      "evidence": "The Verge AI headline, published 2026-06-15",
+      "score": 111,
+      "status": "shortlisted"
+    }
+  ],
+  "warnings": [],
+  "notes": "Workflow: live discovery -> Steve pick -> generate_draft -> human review -> publish"
+}

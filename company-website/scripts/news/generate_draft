@@ -9,7 +9,6 @@ import argparse
 import json
 import re
 import secrets
-from datetime import datetime
 from pathlib import Path
 
 ALLOWED_CATEGORIES = {
@@ -21,6 +20,13 @@ ALLOWED_CATEGORIES = {
 }
 CATEGORY_MAP = {
     'Security': 'Strategy',
+}
+CATEGORY_LENSES = {
+    'AI': 'AI delivery, governance and operating-model decisions',
+    'Automation': 'automation priorities, handoffs and delivery risk',
+    'Operations': 'operating resilience, workflow design and execution pressure',
+    'Strategy': 'governance, supplier dependence and leadership decision-making',
+    'Digital Transformation': 'change sequencing, ownership and adoption choices',
 }
 
 
@@ -46,6 +52,44 @@ def normalise_category(raw_category: str) -> str:
     if category not in ALLOWED_CATEGORIES:
         return 'AI'
     return category
+
+
+def clean_topic_title(raw_title: str) -> str:
+    title = re.sub(r"\s+", " ", raw_title.strip())
+    if ' - ' in title:
+        parts = [part.strip() for part in title.split(' - ') if part.strip()]
+        if len(parts) >= 2:
+            trailing = parts[-1]
+            has_truncation = '…' in title or '...' in title
+            if '…' in trailing or '...' in trailing or (len(trailing.split()) <= 4 and has_truncation):
+                title = ' - '.join(parts[:-1]).strip()
+    title = title.rstrip(' .…')
+    return title
+
+
+def build_description(title: str, category: str) -> str:
+    lens = CATEGORY_LENSES.get(category, CATEGORY_LENSES['AI'])
+    return f"What this signal means for leaders thinking about {lens}."
+
+
+def build_body(title: str, category: str) -> str:
+    lens = CATEGORY_LENSES.get(category, CATEGORY_LENSES['AI'])
+    return f"""## Why this topic matters
+
+{title} is useful because it gives DTP readers a concrete signal about {lens}, not just another abstract AI headline. The interesting question is what this changes for teams making delivery, supplier, governance or investment decisions over the next quarter.
+
+## What is changing now
+
+- This story sharpens the conversation about {lens}.
+- It gives leadership teams a fresh reason to review where assumptions, suppliers or workflows could become single points of failure.
+- It also creates a more practical client conversation than generic \"AI opportunity\" chatter because there is a real market signal to point at.
+
+## What to do next
+
+1. Check whether the same pressure point exists in your own stack, partner set or operating model.
+2. Identify which team or workflow would feel the impact first if this signal becomes a broader pattern.
+3. Decide whether the right response is tighter governance, a fallback option, a pilot, or a bigger operating redesign.
+"""
 
 
 def load_shortlist(path: Path) -> dict:
@@ -89,14 +133,14 @@ def main() -> int:
         raise SystemExit(f"Topic id not found: {args.topic_id}")
 
     article_date = payload["date"]
-    slug = f"{article_date}-{slugify(topic['title'])[:72]}"
+    topic_title = clean_topic_title(topic['title'])
+    slug = f"{article_date}-{slugify(topic_title)[:72]}"
     review_token = f"rvw-{secrets.token_hex(6)}"
 
     out_dir = Path("src/content/news")
     out_dir.mkdir(parents=True, exist_ok=True)
 
     titles = existing_titles(out_dir)
-    topic_title = topic['title'].strip()
     article_category = normalise_category(str(topic['category']))
     if topic_title.lower() in titles and not args.allow_duplicate:
         raise SystemExit(
@@ -110,8 +154,8 @@ def main() -> int:
         )
 
     markdown = f"""---
-title: \"{topic['title']}\"
-description: \"Draft generated from newsroom shortlist.\"
+title: \"{topic_title}\"
+description: \"{build_description(topic_title, article_category)}\"
 pubDate: {article_date}
 author: \"{args.author}\"
 category: \"{article_category}\"
@@ -119,26 +163,11 @@ tags:
   - newsroom
   - ai-assisted
 approved: false
-reviewToken: "{review_token}"
-source: "{topic['source']}"
+reviewToken: \"{review_token}\"
+source: \"{topic['source']}\"
 ---
 
-## Why this topic matters
-
-Add practical context for operators and decision-makers.
-
-## What is changing now
-
-- Change 1
-- Change 2
-- Change 3
-
-## What to do next
-
-1. Action one
-2. Action two
-3. Action three
-"""
+{build_body(topic_title, article_category)}"""
 
     atomic_write_text(out_file, markdown)
     print(f"Draft created: {out_file}")

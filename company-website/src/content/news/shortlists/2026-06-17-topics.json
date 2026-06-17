@@ -1,0 +1,131 @@
+{
+  "date": "2026-06-17",
+  "generatedAt": "2026-06-17T07:06:41.482686",
+  "count": 10,
+  "method": "live-internet-discovery",
+  "sourceWindowDays": 4,
+  "topics": [
+    {
+      "id": "topic-01",
+      "title": "How to Automate Business Operations with AI Agents Without Hiring an Engineer - Startup Fortune",
+      "category": "AI",
+      "source": "Google News \u2014 AI agents: https://news.google.com/rss/articles/CBMiqAFBVV95cUxNUWcycDB5Q3EzSlAzbmx3RUNfOGxIMndraVNJdmxIS21hdXNUN3hsYVdYM1FWM2xhS05YRTlPMDFEMnFvSC1sZWlBUDRGZC1obUpoLWRmcjlWclVmRi1HWUNnX05EeUhJNU1rYndLMHlSYndHLTVFREVRd29MZGRfanBJM0xjSllOdWN3SFp3U01sS1BPOHp6TmpVTkdJUVdfcDFJSTFaMEk?oc=5",
+      "sourceName": "Google News \u2014 AI agents",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNUWcycDB5Q3EzSlAzbmx3RUNfOGxIMndraVNJdmxIS21hdXNUN3hsYVdYM1FWM2xhS05YRTlPMDFEMnFvSC1sZWlBUDRGZC1obUpoLWRmcjlWclVmRi1HWUNnX05EeUhJNU1rYndLMHlSYndHLTVFREVRd29MZGRfanBJM0xjSllOdWN3SFp3U01sS1BPOHp6TmpVTkdJUVdfcDFJSTFaMEk?oc=5",
+      "publishedAt": "2026-06-16T23:35:42+00:00",
+      "evidence": "Google News \u2014 AI agents headline, published 2026-06-16",
+      "score": 162,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-02",
+      "title": "Europe\u2019s largest cybersecurity seed: NeuralTrust raises $20M to govern enterprise AI agents - Tech Fu\u2026",
+      "category": "Security",
+      "source": "Google News \u2014 AI agents: https://news.google.com/rss/articles/CBMikgFBVV95cUxPbGtyQ2Fhd2hZajBZZ0dYaERWZVBDWTB1dnQ0Z0lvUk4tSV9Mb0tEVmFUYUlwNS14a2FEZjFERGpMZlBPV1BGM1V6b1R3dy1nQU9YN3V3UkcxY0dvWDB6cXhRSG82akVTVFo0aHpMSG14UTdtS2UxZWQ1aWxOeVVGUHA2eXRwU08yRHYtQUxwbTBIUQ?oc=5",
+      "sourceName": "Google News \u2014 AI agents",
+      "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxPbGtyQ2Fhd2hZajBZZ0dYaERWZVBDWTB1dnQ0Z0lvUk4tSV9Mb0tEVmFUYUlwNS14a2FEZjFERGpMZlBPV1BGM1V6b1R3dy1nQU9YN3V3UkcxY0dvWDB6cXhRSG82akVTVFo0aHpMSG14UTdtS2UxZWQ1aWxOeVVGUHA2eXRwU08yRHYtQUxwbTBIUQ?oc=5",
+      "publishedAt": "2026-06-17T06:02:53+00:00",
+      "evidence": "Google News \u2014 AI agents headline, published 2026-06-17",
+      "score": 161,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-03",
+      "title": "Anthropic\u2019s latest feud with the Trump admin may actually help it, sales data suggests",
+      "category": "AI",
+      "source": "TechCrunch AI: https://techcrunch.com/2026/06/16/anthropics-latest-feud-with-the-trump-admin-may-actually-help-it-sales-data-suggests/",
+      "sourceName": "TechCrunch AI",
+      "url": "https://techcrunch.com/2026/06/16/anthropics-latest-feud-with-the-trump-admin-may-actually-help-it-sales-data-suggests/",
+      "publishedAt": "2026-06-16T22:34:17+00:00",
+      "evidence": "TechCrunch AI headline, published 2026-06-16",
+      "score": 127,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-04",
+      "title": "Cybersecurity vets protest \u2018dangerous\u2019 US government ban on Anthropic\u2019s most powerful models",
+      "category": "Security",
+      "source": "TechCrunch AI: https://techcrunch.com/2026/06/15/cybersecurity-vets-protest-dangerous-us-government-ban-on-anthropics-most-powerful-models/",
+      "sourceName": "TechCrunch AI",
+      "url": "https://techcrunch.com/2026/06/15/cybersecurity-vets-protest-dangerous-us-government-ban-on-anthropics-most-powerful-models/",
+      "publishedAt": "2026-06-15T15:29:51+00:00",
+      "evidence": "TechCrunch AI headline, published 2026-06-15",
+      "score": 124,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-05",
+      "title": "Salesforce\u2019s $3.6 Billion AI Agent Bet Signals a New Era for Business Automation - Times Square Chron\u2026",
+      "category": "AI",
+      "source": "Google News \u2014 automation operations: https://news.google.com/rss/articles/CBMiowFBVV95cUxPekN5VjR1YTBhZi1JTTVBMk1YbTAwVEtXaW95NktuNS00OVlKdUFRNXJhNEVkUUxQY1FWVWFiRWR3TTRqT1EtVzdiVGdvQmJuU08zdVZ1UklIWFpnbThnYkJlYWtxa3VpeEE2Y015ZXFpSXlhZ0lkdVNGZHR4R1c0dE5Pbmp5NlQwX2xkdWpSLW5yNjd2YV9TQjR2OThWaDJUaFJF?oc=5",
+      "sourceName": "Google News \u2014 automation operations",
+      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPekN5VjR1YTBhZi1JTTVBMk1YbTAwVEtXaW95NktuNS00OVlKdUFRNXJhNEVkUUxQY1FWVWFiRWR3TTRqT1EtVzdiVGdvQmJuU08zdVZ1UklIWFpnbThnYkJlYWtxa3VpeEE2Y015ZXFpSXlhZ0lkdVNGZHR4R1c0dE5Pbmp5NlQwX2xkdWpSLW5yNjd2YV9TQjR2OThWaDJUaFJF?oc=5",
+      "publishedAt": "2026-06-16T04:30:05+00:00",
+      "evidence": "Google News \u2014 automation operations headline, published 2026-06-16",
+      "score": 121,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-06",
+      "title": "TrackerSuite AI Raises Rs 6 Crore to Help Businesses Automate Everyday Operations with AI - Indian St\u2026",
+      "category": "Operations",
+      "source": "Google News \u2014 automation operations: https://news.google.com/rss/articles/CBMi0gFBVV95cUxNenhLbHEzRkZXSUlLRGNEUDk3UWdxWElGc0w4M0E3Vm9NSDNjb1gwaU5ZRW45SzAydThMdE53RXpsU0ZYa2g4QVNZUW5NQ3duQkxkaXFhM3lfSGJzZEFRazlIdTNEa19wUV9ETE0xVjRnOW5ZUWtnMmlVcmZhWW9sWDlTcjgzNnVmaFNMVEZweE1SUnhFdnNYRDZUS0ZXOGJZQ3RDQk4xaUVTNllnaDVOek94ZzVEaTJKcjFlcjRmUXB6NXNkMXNZWXpibVRKaXJxekE?oc=5",
+      "sourceName": "Google News \u2014 automation operations",
+      "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxNenhLbHEzRkZXSUlLRGNEUDk3UWdxWElGc0w4M0E3Vm9NSDNjb1gwaU5ZRW45SzAydThMdE53RXpsU0ZYa2g4QVNZUW5NQ3duQkxkaXFhM3lfSGJzZEFRazlIdTNEa19wUV9ETE0xVjRnOW5ZUWtnMmlVcmZhWW9sWDlTcjgzNnVmaFNMVEZweE1SUnhFdnNYRDZUS0ZXOGJZQ3RDQk4xaUVTNllnaDVOek94ZzVEaTJKcjFlcjRmUXB6NXNkMXNZWXpibVRKaXJxekE?oc=5",
+      "publishedAt": "2026-06-16T14:34:06+00:00",
+      "evidence": "Google News \u2014 automation operations headline, published 2026-06-16",
+      "score": 115,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-07",
+      "title": "How AI-Powered CMS Platforms Are Transforming Enterprise Content Operations",
+      "category": "Operations",
+      "source": "AI News: https://www.artificialintelligence-news.com/news/how-ai-powered-cms-platforms-are-transforming-enterprise-content-operations/",
+      "sourceName": "AI News",
+      "url": "https://www.artificialintelligence-news.com/news/how-ai-powered-cms-platforms-are-transforming-enterprise-content-operations/",
+      "publishedAt": "2026-06-16T07:49:07+00:00",
+      "evidence": "AI News headline, published 2026-06-16",
+      "score": 112,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-08",
+      "title": "I've had dozens of robot mower brands and models - here's my advice for every yard type",
+      "category": "AI",
+      "source": "ZDNET AI: https://www.zdnet.com/article/how-to-choose-robot-mower-for-yard-expert-advice/",
+      "sourceName": "ZDNET AI",
+      "url": "https://www.zdnet.com/article/how-to-choose-robot-mower-for-yard-expert-advice/",
+      "publishedAt": "2026-06-16T16:00:45+00:00",
+      "evidence": "ZDNET AI headline, published 2026-06-16",
+      "score": 110,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-09",
+      "title": "Accenture: Consumers show growing trust in AI shopping agents",
+      "category": "AI",
+      "source": "AI News: https://www.artificialintelligence-news.com/news/ai-shopping-agents-consumer-trust-accenture-report/",
+      "sourceName": "AI News",
+      "url": "https://www.artificialintelligence-news.com/news/ai-shopping-agents-consumer-trust-accenture-report/",
+      "publishedAt": "2026-06-15T10:00:00+00:00",
+      "evidence": "AI News headline, published 2026-06-15",
+      "score": 106,
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-10",
+      "title": "Amazon security research reportedly led to the White House\u2019s Anthropic Fable ban",
+      "category": "Security",
+      "source": "The Verge AI: https://www.theverge.com/ai-artificial-intelligence/949601/amazon-anthropic-fablemythos-government-ban",
+      "sourceName": "The Verge AI",
+      "url": "https://www.theverge.com/ai-artificial-intelligence/949601/amazon-anthropic-fablemythos-government-ban",
+      "publishedAt": "2026-06-13T17:39:26-04:00",
+      "evidence": "The Verge AI headline, published 2026-06-13",
+      "score": 98,
+      "status": "shortlisted"
+    }
+  ],
+  "warnings": [],
+  "notes": "Workflow: live discovery -> Steve pick -> generate_draft -> human review -> publish"
+}

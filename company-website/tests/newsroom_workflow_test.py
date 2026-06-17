@@ -166,6 +166,43 @@ class NewsroomWorkflowTests(unittest.TestCase):
         text = article.read_text(encoding='utf-8')
         self.assertIn('category: "Strategy"', text)
 
+    def test_generate_draft_cleans_truncated_titles_and_avoids_placeholder_scaffold(self) -> None:
+        shortlist = self.root / 'src' / 'content' / 'news' / 'shortlists' / '2026-06-17-topics.json'
+        shortlist.parent.mkdir(parents=True, exist_ok=True)
+        shortlist.write_text(
+            json.dumps(
+                {
+                    'date': '2026-06-17',
+                    'topics': [
+                        {
+                            'id': 'topic-01',
+                            'title': 'Europe’s largest cybersecurity seed: NeuralTrust raises $20M to govern enterprise AI agents - Tech Fu…',
+                            'category': 'Security',
+                            'source': 'Google News — AI agents: https://example.com/story',
+                        }
+                    ],
+                }
+            )
+            + '\n',
+            encoding='utf-8',
+        )
+        generate = self.run_script(
+            GENERATE,
+            '--shortlist',
+            str(shortlist),
+            '--topic-id',
+            'topic-01',
+        )
+        self.assertEqual(generate.returncode, 0, generate.stderr or generate.stdout)
+        article = next((self.root / 'src' / 'content' / 'news').glob('*.md'))
+        text = article.read_text(encoding='utf-8')
+        self.assertIn('title: "Europe’s largest cybersecurity seed: NeuralTrust raises $20M to govern enterprise AI agents"', text)
+        self.assertNotIn('Tech Fu…', text)
+        self.assertNotIn('Add practical context for operators and decision-makers.', text)
+        self.assertNotIn('- Change 1', text)
+        self.assertNotIn('1. Action one', text)
+        self.assertNotIn('description: "Draft generated from newsroom shortlist."', text)
+
     def test_generate_draft_blocks_duplicates(self) -> None:
         discover = self.run_script(DISCOVER, '--date', '2026-01-03')
         self.assertEqual(discover.returncode, 0, discover.stderr or discover.stdout)
