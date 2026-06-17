@@ -21,6 +21,7 @@ Run a repeatable DTP website newsroom workflow that is safe enough for daily use
 - Social distribution is a later phase and must derive from approved website articles only.
 - here.now may be used for standalone preview slugs only.
 - The workflow must never mount, update, or repoint `digitaltechnologypartner.ai` or `www.digitaltechnologypartner.ai` to here.now unless Steve explicitly approves that domain migration in the current conversation.
+- Change control is part of the workflow: a production article publish task does not automatically include standalone review-page tooling changes. Before any commit/push, inspect the final diff and keep only the files required for the requested outcome. Safe default: approved article/content changes may ship; incidental or experimental review-page-script/workflow changes do not ship unless Steve explicitly asked for that workflow/tooling change as well.
 
 ## Incident note — 2026-06-15 production routing error
 - **What changed:** production DNS/domain was routed through here.now.
@@ -85,6 +86,11 @@ Non-negotiable rule:
 
 ### 6) Publish the article draft to a separate here.now review page
 Every draft may carry a `reviewToken` in frontmatter, but draft review itself happens on a separate here.now URL, not on `digitaltechnologypartner.ai`.
+
+Change-control rule for this stage:
+- if Hudson modifies review-surface tooling, review-page helpers, or standalone here.now workflow scripts while fixing the draft review experience, treat that as a separate workflow/tooling change, not as part of the article publish by default
+- before pushing, inspect the diff and either split the commits or revert the tooling portion unless Steve explicitly asked for that workflow/tooling change too
+- the production branch should carry the approved article change, not accidental review-tooling passengers
 
 Rules:
 - the review page must be hosted on a standalone here.now site URL immediately after Steve selects a topic and Hudson drafts it
