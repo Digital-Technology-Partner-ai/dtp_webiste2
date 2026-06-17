@@ -164,20 +164,21 @@ def build_review_html(article_path: Path, frontmatter: dict[str, Any], body: str
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     :root {{
-      --ma-bg:#0A0A0F;
-      --ma-surface:#1A1A2E;
-      --ma-surface-alt:#111122;
-      --ma-border:#2A2A3E;
-      --ma-mint:#00E5A0;
-      --ma-mint-dim:rgba(0,229,160,0.12);
-      --ma-mint-glow:rgba(0,229,160,0.35);
-      --ma-text:#E0E0E0;
-      --ma-text-dim:#8888A0;
-      --ma-white:#F0F0F5;
+      --ma-bg:#07090d;
+      --ma-surface:#0f141b;
+      --ma-surface-alt:#0b1016;
+      --ma-border:rgba(242,241,236,.12);
+      --ma-border-strong:rgba(5,204,144,.55);
+      --ma-mint:#05cc90;
+      --ma-mint-dim:rgba(5,204,144,.12);
+      --ma-mint-glow:rgba(5,204,144,.32);
+      --ma-text:#c9cfd6;
+      --ma-text-dim:#9aa3ad;
+      --ma-white:#f2f1ec;
       --ma-font-display:'Space Grotesk',system-ui,sans-serif;
       --ma-font-body:'IBM Plex Sans',system-ui,sans-serif;
       --ma-font-mono:'IBM Plex Mono','SF Mono',monospace;
-      --ma-radius:8px;
+      --ma-radius:0px;
       --ma-transition:220ms cubic-bezier(0.4,0,0.2,1);
       --draft:#ffd27d;
     }}
@@ -186,10 +187,14 @@ def build_review_html(article_path: Path, frontmatter: dict[str, Any], body: str
     body {{
       margin:0;
       background:
-        radial-gradient(circle at top, rgba(0,229,160,0.08), transparent 36%),
-        linear-gradient(180deg, #07090d 0%, #0a0a0f 100%);
+        radial-gradient(circle at 14% 12%, rgba(5,204,144,0.08), transparent 22%),
+        radial-gradient(circle at 86% 9%, rgba(242,241,236,0.05), transparent 18%),
+        linear-gradient(180deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px),
+        var(--ma-bg);
+      background-size:auto, auto, 32px 32px, 32px 32px, auto;
       color:var(--ma-text);
-      font:400 16px/1.75 var(--ma-font-body);
+      font:400 16px/1.65 var(--ma-font-body);
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
     }}
@@ -199,12 +204,12 @@ def build_review_html(article_path: Path, frontmatter: dict[str, Any], body: str
       inset:0;
       pointer-events:none;
       background:
-        radial-gradient(circle at 12% 18%, rgba(0,229,160,0.1), transparent 18%),
-        radial-gradient(circle at 82% 12%, rgba(255,255,255,0.05), transparent 20%),
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+        radial-gradient(circle at 12% 18%, rgba(5,204,144,0.08), transparent 16%),
+        radial-gradient(circle at 82% 12%, rgba(255,255,255,0.04), transparent 18%),
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
       background-size:auto, auto, 32px 32px, 32px 32px;
-      opacity:.18;
+      opacity:.28;
       z-index:0;
     }}
     a {{ color:inherit; text-decoration:none; }}
@@ -230,21 +235,23 @@ def build_review_html(article_path: Path, frontmatter: dict[str, Any], body: str
     .ma-btn {{
       display:inline-flex;
       align-items:center;
+      justify-content:center;
       gap:.5rem;
-      font-family:var(--ma-font-display);
-      font-weight:600;
-      font-size:.92rem;
-      padding:.8rem 1.6rem;
+      font-family:var(--ma-font-mono);
+      font-weight:500;
+      font-size:.8rem;
+      letter-spacing:.04em;
+      padding:.95rem 1.7rem;
       border-radius:var(--ma-radius);
       text-decoration:none;
       cursor:pointer;
-      border:none;
+      border:1px solid transparent;
       transition:all var(--ma-transition);
     }}
-    .ma-btn-mint {{ background:var(--ma-mint); color:#0A0A0F; }}
-    .ma-btn-mint:hover {{ background:#00ffb3; transform:translateY(-2px); box-shadow:0 0 24px var(--ma-mint-glow); }}
-    .ma-btn-outline {{ background:transparent; color:var(--ma-text); border:1.5px solid var(--ma-border); }}
-    .ma-btn-outline:hover {{ border-color:var(--ma-mint); color:var(--ma-mint); }}
+    .ma-btn-mint {{ background:var(--ma-mint); color:#04130d; border:0; }}
+    .ma-btn-mint:hover {{ background:#06d89a; border-color:#06d89a; box-shadow:0 0 18px var(--ma-mint-glow); }}
+    .ma-btn-outline {{ background:rgba(5,204,144,.02); color:var(--ma-mint); border:1px solid var(--ma-border-strong); }}
+    .ma-btn-outline:hover {{ background:rgba(5,204,144,.06); color:var(--ma-mint); border-color:var(--ma-mint); }}
     .ma-tag {{
       font-size:.72rem;
       font-weight:600;
@@ -261,9 +268,9 @@ def build_review_html(article_path: Path, frontmatter: dict[str, Any], body: str
       left:0;
       right:0;
       z-index:100;
-      background:rgba(7,9,13,0.86);
-      backdrop-filter:blur(14px);
-      border-bottom:1px solid var(--ma-border);
+      background:linear-gradient(180deg, rgba(7,9,13,.82), rgba(7,9,13,0));
+      border-bottom:1px solid transparent;
+      backdrop-filter:none;
     }}
     .ma-nav-inner {{
       display:flex;
@@ -338,7 +345,40 @@ def build_review_html(article_path: Path, frontmatter: dict[str, Any], body: str
       align-items:center;
       gap:10px;
       text-decoration:none;
+      cursor:pointer;
+      transition:border-color .25s, background .25s;
     }}
+    .ma-nav-index:hover,
+    .ma-nav-gallery-return:hover {{
+      border-color:rgba(242,241,236,.4);
+      background:rgba(242,241,236,.04);
+    }}
+    .ma-nav-index-lines {{
+      position:relative;
+      display:block;
+      width:18px;
+      height:12px;
+      flex:0 0 18px;
+    }}
+    .ma-nav-index i {{
+      position:absolute;
+      left:2px;
+      display:block;
+      width:14px;
+      height:1px;
+      border-radius:999px;
+      background:#f2f1ec;
+      transform-origin:center;
+      transition:background 260ms ease, box-shadow 260ms ease, transform 420ms cubic-bezier(0.34,1.56,0.64,1), width 420ms cubic-bezier(0.34,1.56,0.64,1);
+    }}
+    .ma-nav-index i:first-child {{ top:3px; }}
+    .ma-nav-index i:last-child {{ top:8px; }}
+    .ma-nav-index:hover i {{
+      background:var(--ma-mint);
+      box-shadow:0 0 10px rgba(5,204,144,.72);
+    }}
+    .ma-nav-index:hover i:first-child {{ transform:translateX(3px); width:12px; }}
+    .ma-nav-index:hover i:last-child {{ transform:translateX(-3px); width:16px; }}
     .ma-nav-cube-mark {{
       display:grid;
       grid-template-columns:repeat(3,4px);
@@ -459,6 +499,10 @@ def build_review_html(article_path: Path, frontmatter: dict[str, Any], body: str
           </span>
         </a>
         <a href="https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous" target="_blank" rel="noopener noreferrer" class="ma-btn ma-btn-mint ma-nav-cta">Book a Call</a>
+        <button class="ma-nav-index" type="button" aria-label="Open ecosystem index">
+          <span>INDEX</span>
+          <span class="ma-nav-index-lines" aria-hidden="true"><i></i><i></i></span>
+        </button>
       </div>
     </nav>
   </header>

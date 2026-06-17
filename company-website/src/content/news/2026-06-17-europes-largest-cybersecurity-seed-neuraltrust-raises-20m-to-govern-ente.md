@@ -7,7 +7,9 @@ category: "Strategy"
 tags:
   - newsroom
   - ai-assisted
-approved: false
+approved: true
+approvedBy: "Steve Shearman"
+approvedAt: 2026-06-17
 reviewToken: "rvw-0f2030440017"
 source: "Tech Funding News: https://techfundingnews.com/neuraltrust-20m-europe-largest-cybersecurity-seed-ai-agents/"
 ---
