@@ -23,7 +23,7 @@ CTOs aren’t shopping for “AI.” They’re buying outcomes: fewer incidents,
 - **Integration is the product.** The best models lose if they can’t plug into existing stacks without months of rework.
 - **Risk posture is non‑negotiable.** Security, data governance, and auditability are now baseline requirements, not premium features.
 
-## What to do next
+## What teams should ask now
 
 1. **Demand outcome-based roadmaps.** Ask vendors to map delivery to your metrics (cycle time, incident rate, cost per unit) before pilots begin.
 2. **Make integration a gating criterion.** If it can’t work with your data, workflows, and governance on day one, it’s not ready.

@@ -31,7 +31,7 @@ The latest generation of models (Opus 4.6, Gemini 3.1 Pro, GPT 5.3) can run auto
 4. **Decomposition** — Break work into independently testable components. Autonomy still needs modularity.
 5. **Evaluation design** — Decide how outputs are checked, not just whether they “look OK.”
 
-## What to do next
+## What to change in your workflow now
 
 1. **Rewrite your top 3 prompts as specs.** Include context, acceptance criteria, constraints, and escalation triggers.
 2. **Make decomposition explicit.** Force multi‑step work into phases that can be verified independently.

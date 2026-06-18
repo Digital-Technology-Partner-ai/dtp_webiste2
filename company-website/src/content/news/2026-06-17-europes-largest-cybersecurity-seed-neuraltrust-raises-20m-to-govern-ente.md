@@ -56,6 +56,4 @@ You need to know which agents are live, what they can access, what policies gove
 
 NeuralTrust’s round is a useful signal because it shows that enterprises are starting to spend money on that layer now, not later.
 
-## Pressure-test your AI dependencies
 
-If AI is becoming part of your operating stack, let’s pressure-test the risks, dependencies and fallback options.
