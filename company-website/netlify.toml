@@ -43,6 +43,16 @@
   status = 302
 
 [[redirects]]
+  from = "/go/ai-agents"
+  to = "/news/2026-06-19-rolling-out-ai-agents-4-ways-to-move-fast-and-furious-but-with-extreme-c/"
+  status = 301
+
+[[redirects]]
+  from = "/go/ai-agents/"
+  to = "/news/2026-06-19-rolling-out-ai-agents-4-ways-to-move-fast-and-furious-but-with-extreme-c/"
+  status = 301
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
