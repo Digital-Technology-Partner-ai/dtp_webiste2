@@ -2,9 +2,30 @@
 // STUDIO: ecosystem chrome — gallery-consistent navigation
 
 const currentPath = Astro.url.pathname;
-const navItems = [
+type NavItem = {
+  href: string;
+  label: string;
+  children?: Array<{ href: string; label: string; description: string }>;
+};
+
+const navItems: NavItem[] = [
   { href: '/why-dtp', label: 'Why DTP' },
-  { href: '/programmes', label: 'Programmes' },
+  {
+    href: '/programmes',
+    label: 'Programmes',
+    children: [
+      {
+        href: '/programmes/ai-adoption-readiness/',
+        label: 'AI Readiness',
+        description: 'See what is happening before deciding what to do.',
+      },
+      {
+        href: '/programmes/ai-foundry/',
+        label: 'AI Foundry',
+        description: 'Turn real work into tested AI opportunities.',
+      },
+    ],
+  },
   { href: '/solutions', label: 'Solutions' },
   { href: '/case-studies', label: 'Case Studies' },
   { href: '/insights', label: 'Insights' },
@@ -23,10 +44,29 @@ const isActive = (href: string) => currentPath === href || currentPath.startsWit
 
     <ul class="ma-nav-links" id="desktop-nav">
       {navItems.map((item) => (
-        <li>
-          <a href={item.href} class:list={{ active: isActive(item.href) }} aria-current={isActive(item.href) ? 'page' : undefined}>
+        <li class:list={{ 'ma-nav-has-submenu': item.children }}>
+          <a
+            href={item.href}
+            class:list={{ active: isActive(item.href) }}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+            aria-haspopup={item.children ? 'true' : undefined}
+          >
             {item.label}
           </a>
+          {item.children && (
+            <div class="ma-nav-submenu" aria-label="Programme pages">
+              {item.children.map((child) => (
+                <a
+                  href={child.href}
+                  class:list={{ active: isActive(child.href) }}
+                  aria-current={isActive(child.href) ? 'page' : undefined}
+                >
+                  <strong>{child.label}</strong>
+                  <span>{child.description}</span>
+                </a>
+              ))}
+            </div>
+          )}
         </li>
       ))}
     </ul>
@@ -166,6 +206,83 @@ const isActive = (href: string) => currentPath === href || currentPath.startsWit
   .ma-nav-links a:hover::before {
     opacity: 1;
     box-shadow: 0 0 10px var(--ma-mint-glow);
+  }
+
+  .ma-nav-has-submenu {
+    position: relative;
+  }
+
+  .ma-nav-submenu {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 50%;
+    width: 320px;
+    padding: 0.55rem;
+    border: 1px solid rgba(244, 241, 232, 0.14);
+    background: rgba(7, 9, 13, 0.97);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
+    backdrop-filter: blur(16px);
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, -8px);
+    transition:
+      opacity 180ms ease,
+      visibility 180ms ease,
+      transform 180ms ease;
+  }
+
+  .ma-nav-submenu::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -14px;
+    height: 14px;
+  }
+
+  .ma-nav-has-submenu:hover .ma-nav-submenu,
+  .ma-nav-has-submenu:focus-within .ma-nav-submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+  }
+
+  .ma-nav-links .ma-nav-submenu a {
+    display: grid;
+    gap: 0.28rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid transparent;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .ma-nav-links .ma-nav-submenu a::before {
+    display: none;
+  }
+
+  .ma-nav-links .ma-nav-submenu a + a {
+    margin-top: 0.25rem;
+  }
+
+  .ma-nav-links .ma-nav-submenu a:hover,
+  .ma-nav-links .ma-nav-submenu a.active {
+    border-color: rgba(5, 204, 144, 0.38);
+    background: rgba(5, 204, 144, 0.07);
+  }
+
+  .ma-nav-submenu strong {
+    color: #f4f1e8;
+    font-family: var(--ma-font-display);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .ma-nav-submenu span {
+    color: var(--ma-text-dim);
+    font-family: var(--ma-font-body);
+    font-size: 0.76rem;
+    line-height: 1.45;
+    white-space: normal;
   }
 
   .ma-nav-right {
