@@ -119,18 +119,71 @@ const fitSignals = [
   },
 ];
 
-const proofPoints = [
+const participantCommitments = [
   {
-    stat: '40% faster quotation preparation',
-    text: 'AI-assisted document and calculation workflows show the kind of practical value Foundry is designed to surface.',
+    title: 'Bring real work',
+    text: 'The best raw material is a task, workflow or frustration you already understand. It does not need to be polished before you bring it into the room.',
   },
   {
-    stat: 'Zero missed maintenance tasks',
-    text: 'Operational agents become credible when the workflow, adoption pattern and controls are understood early.',
+    title: 'Try things',
+    text: 'Foundry is hands-on. You will test tools and approaches, compare results and learn from attempts that do not work as expected.',
   },
   {
-    stat: 'Controlled path to delivery',
-    text: 'Strong Foundry outputs can move into Discovery, PoC, MVP, Pilot and Launch without losing governance discipline.',
+    title: 'Share what you notice',
+    text: 'Useful evidence includes what helped, what failed, what felt risky and what would need to change before an idea could be taken further.',
+  },
+];
+
+const faqs = [
+  {
+    question: 'Do I need technical or AI experience?',
+    answer:
+      'No. Foundry is designed for a mixed group, including people who are completely new to AI and people who already experiment with it regularly. You are not expected to perform expertise or hide what you do not know.',
+  },
+  {
+    question: 'Is this a training course?',
+    answer:
+      'Not in the usual sense. There is enough shared learning to give everyone a useful starting point, but the programme runs as a working club. The emphasis is on trying things, discussing what happened and applying the learning to real work.',
+  },
+  {
+    question: 'What will we actually do?',
+    answer:
+      'The activity mix can include AI fundamentals, tool demonstrations, practical challenges, hackathons, peer showcases, failure stories and workshops built around real business problems. The exact mix is shaped around the people in the cohort and the opportunities that surface.',
+  },
+  {
+    question: 'What should I bring to the sessions?',
+    answer:
+      'Bring curiosity and examples of work you understand. A repetitive task, awkward handover, slow document process, information bottleneck or small frustration can all be useful starting points. You do not need to arrive with a finished AI idea.',
+  },
+  {
+    question: 'How much time will it take?',
+    answer:
+      'The Foundry runs over twelve weeks, with a planned rhythm of sessions and practical activity. Your organisation will confirm the detailed schedule. The time is intended to be treated as part of the work, not as an extra hobby squeezed around it.',
+  },
+  {
+    question: 'Which AI tools will we use?',
+    answer:
+      'Tools and access routes are agreed with your organisation. Foundry can work with tools already available to the cohort and may introduce other options where appropriate. Nobody should create new accounts, buy licences or use unapproved tools simply for the sake of a session.',
+  },
+  {
+    question: 'Can I use confidential or sensitive information?',
+    answer:
+      'Only where the tool, information and use have been approved by your organisation. Sessions include practical discussion about confidentiality, accuracy and human review. If you are unsure whether material is safe to use, stop and ask before entering it into an AI tool.',
+  },
+  {
+    question: 'What if my experiment does not work?',
+    answer:
+      'That is useful evidence, not failure. The programme is designed to make it safe to test ideas, compare results and explain what did not work. A clear reason to pause or stop an idea can be as valuable as finding one worth developing.',
+  },
+  {
+    question: 'Will every idea become a software project?',
+    answer:
+      'No. Some ideas may be solved with a better prompt, a simple workflow change, guidance or an existing tool. Others may need more investigation, a proof of concept or no further action. The point is to make a proportionate decision, not to manufacture a build pipeline.',
+  },
+  {
+    question: 'What happens at the end of the twelve weeks?',
+    answer:
+      'The cohort shares what it tried and what it learned. Leadership receives a grounded readout covering practical use cases, adoption signals, risks, ownership questions and recommended next decisions. Strong ideas may move forward, while others may be guided, investigated, paused or stopped.',
   },
 ];
 ---
@@ -153,8 +206,8 @@ const proofPoints = [
             leadership can act on. Energy over syllabus. Evidence over opinion.
           </p>
           <div class="foundry-actions">
-            <a class="ma-btn ma-btn-mint" href="/contact/">
-              Discuss sponsoring a Foundry
+            <a class="ma-btn ma-btn-mint" href="#questions">
+              Read participant FAQs
             </a>
             <a class="ma-btn ma-btn-outline" href="#twelve-weeks"
               >See the twelve weeks</a
@@ -322,19 +375,46 @@ const proofPoints = [
       </div>
     </section>
 
-    <section class="ma-section proof-section">
+    <section class="ma-section participant-section">
       <div class="ma-container">
-        <div class="ma-section-header proof-head">
-          <span class="ma-section-tag">// from_workshop_to_outcome</span>
-          <h2>Foundry is designed to create delivery-grade evidence.</h2>
+        <div class="ma-section-header participant-head">
+          <span class="ma-section-tag">// your_part_in_the_room</span>
+          <h2>You do not need a finished idea. You need something real to explore.</h2>
+          <p>
+            Foundry works when participants bring their knowledge of the work,
+            stay curious and report honestly on what happens.
+          </p>
         </div>
-        <div class="proof-grid">
+        <div class="participant-grid">
           {
-            proofPoints.map((point) => (
+            participantCommitments.map((item) => (
               <article>
-                <strong>{point.stat}</strong>
-                <p>{point.text}</p>
+                <strong>{item.title}</strong>
+                <p>{item.text}</p>
               </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="ma-section faq-section" id="questions">
+      <div class="ma-container faq-grid">
+        <div class="faq-heading">
+          <span class="ma-section-tag">// participant_questions</span>
+          <h2>Useful questions before you start.</h2>
+          <p>
+            The short version: beginners are welcome, real work is encouraged,
+            and nobody is expected to turn every experiment into a project.
+          </p>
+        </div>
+        <div class="faq-list">
+          {
+            faqs.map((faq) => (
+              <details class="ma-faq-item">
+                <summary>{faq.question}</summary>
+                <p>{faq.answer}</p>
+              </details>
             ))
           }
         </div>
@@ -343,16 +423,16 @@ const proofPoints = [
 
     <section class="foundry-cta">
       <div class="ma-container cta-inner">
-        <span class="ma-section-tag">// next_decision</span>
-        <h2>Not sure whether to start with Readiness or Foundry?</h2>
+        <span class="ma-section-tag">// bring_foundry_to_your_team</span>
+        <h2>Thinking about a Foundry for your organisation?</h2>
         <p>
-          If the organisation lacks a current-state map, start with Readiness.
-          If the signal is already clear and the team needs structured
-          exploration, Foundry is the right next move.
+          If people need permission, shared confidence and a practical route
+          from AI interest to useful evidence, we can help you decide whether
+          Foundry is the right fit.
         </p>
         <div class="cta-actions">
           <a class="ma-btn ma-btn-mint ma-btn-lg" href="/contact/">
-            Talk through the route
+            Discuss a Foundry
           </a>
           <a class="ma-btn ma-btn-outline ma-btn-lg" href="/programmes/"
             >Compare all programmes</a
@@ -558,7 +638,8 @@ const proofPoints = [
   .context-grid,
   .readout-grid,
   .leave-grid,
-  .fit-grid {
+  .fit-grid,
+  .faq-grid {
     display: grid;
     grid-template-columns: minmax(0, 0.84fr) minmax(0, 1.16fr);
     gap: 3rem;
@@ -570,7 +651,8 @@ const proofPoints = [
   .readout-grid h2,
   .leave-grid h2,
   .fit-panel h2,
-  .proof-head h2,
+  .participant-head h2,
+  .faq-heading h2,
   .foundry-cta h2 {
     letter-spacing: 0;
   }
@@ -583,6 +665,8 @@ const proofPoints = [
   .context-copy p,
   .readout-grid > div > p,
   .fit-panel p,
+  .participant-head p,
+  .faq-heading p,
   .foundry-cta p {
     color: #d8d6ce;
     font-size: 1.05rem;
@@ -658,7 +742,7 @@ const proofPoints = [
 
   .session-grid article,
   .fit-lists article,
-  .proof-grid article {
+  .participant-grid article {
     border: 1px solid rgba(244, 241, 232, 0.13);
     border-radius: var(--ma-radius);
     background: rgba(11, 16, 26, 0.74);
@@ -678,7 +762,7 @@ const proofPoints = [
 
   .session-grid p,
   .fit-lists li,
-  .proof-grid p {
+  .participant-grid p {
     line-height: 1.58;
   }
 
@@ -783,7 +867,7 @@ const proofPoints = [
     color: var(--ma-text);
   }
 
-  .proof-section {
+  .participant-section {
     background:
       linear-gradient(
         135deg,
@@ -792,27 +876,67 @@ const proofPoints = [
       );
   }
 
-  .proof-head {
+  .participant-head {
     max-width: 760px;
   }
 
-  .proof-grid {
+  .participant-head p {
+    max-width: 680px;
+    margin-top: 1rem;
+  }
+
+  .participant-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1rem;
   }
 
-  .proof-grid article {
+  .participant-grid article {
     padding: 1.3rem;
   }
 
-  .proof-grid strong {
+  .participant-grid strong {
     display: block;
     margin-bottom: 0.55rem;
     color: #f4f1e8;
     font-family: var(--ma-font-display);
     font-size: 1.1rem;
     line-height: 1.25;
+  }
+
+  .faq-section {
+    scroll-margin-top: 5.5rem;
+    border-top: 1px solid var(--ma-border);
+    background: rgba(11, 16, 26, 0.52);
+  }
+
+  .faq-heading {
+    position: sticky;
+    top: 7rem;
+  }
+
+  .faq-heading p {
+    max-width: 430px;
+    margin-top: 1rem;
+  }
+
+  .faq-list {
+    display: grid;
+    border-top: 1px solid var(--ma-border);
+  }
+
+  .faq-list .ma-faq-item {
+    padding: 1.45rem 0;
+  }
+
+  .faq-list .ma-faq-item summary {
+    font-size: 1.08rem;
+  }
+
+  .faq-list .ma-faq-item p {
+    max-width: 720px;
+    color: #c9c7c0;
+    font-size: 0.98rem;
   }
 
   .foundry-cta {
@@ -844,13 +968,14 @@ const proofPoints = [
     .context-grid,
     .readout-grid,
     .leave-grid,
-    .fit-grid {
+    .fit-grid,
+    .faq-grid {
       grid-template-columns: 1fr;
     }
 
     .session-grid,
     .readout-piles,
-    .proof-grid {
+    .participant-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
@@ -896,8 +1021,12 @@ const proofPoints = [
     .session-grid,
     .readout-piles,
     .fit-lists,
-    .proof-grid {
+    .participant-grid {
       grid-template-columns: 1fr;
+    }
+
+    .faq-heading {
+      position: static;
     }
 
     .console-core {
