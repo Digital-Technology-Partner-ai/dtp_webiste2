@@ -95,24 +95,54 @@ const nextRouteLinks = [
 
 const faqs = [
   {
+    question: 'What is an AI Adoption Readiness Sprint?',
+    answer:
+      'It is a time-boxed assessment of how AI is already touching the organisation. It gives leadership a clearer view of current use, practical opportunities, risks, confidence gaps and the decisions that need to be made next.',
+  },
+  {
+    question: 'Who should be involved?',
+    answer:
+      'That depends on the question being answered. A useful group normally includes a leadership sponsor and a proportionate mix of people who understand operations, technology, data, governance and day-to-day work. It does not require the whole organisation to take part.',
+  },
+  {
     question: 'Is this a technical audit?',
     answer:
-      'Not only. It looks at technology, but the real value is connecting tool use, workflow, governance, confidence and leadership decision-making.',
+      'No. Technology is part of the picture, but the assessment also looks at workflow, governance, confidence, permission, ownership and leadership decision-making. It is about operating reality, not simply producing a tool inventory.',
   },
   {
-    question: 'Do we need to know exactly what AI tools people are using?',
+    question: 'Do we need to know exactly which AI tools people are using?',
     answer:
-      'No. Part of the assessment is establishing what is visible, what is assumed and where there may be shadow adoption or unclear ownership.',
+      'No. Part of the assessment is establishing what is visible, what is assumed and where informal or unmanaged use may exist. You do not need a complete inventory before starting.',
   },
   {
-    question: 'Will this expose individuals?',
+    question: 'Will this expose individuals who are already experimenting?',
     answer:
-      'No. Quiet experimentation is signal, not misconduct. The assessment maps patterns and workflows, not names, and staff are told that up front.',
+      'The purpose is to understand patterns, workflows and organisational conditions, not to catch people out. How individual input is handled is agreed at the start so participants understand the scope and can contribute honestly.',
+  },
+  {
+    question: 'How much time will our team need to give it?',
+    answer:
+      'The sprint is designed to be proportionate. Time depends on the level selected, the number of stakeholder groups and the complexity of the decision. We agree the people, inputs and timetable before work begins rather than creating an open-ended commitment.',
+  },
+  {
+    question: 'Do we need an AI strategy or policy before starting?',
+    answer:
+      'No. A live strategy, policy question, Copilot rollout, near miss or staff request for guidance can all be reasons to run the assessment. Existing policies and guidance are useful evidence, but they are not prerequisites.',
+  },
+  {
+    question: 'What will leadership receive?',
+    answer:
+      'The depth depends on the chosen level, but the result is a plain-English decision view of current AI use, risks, opportunities and readiness gaps, with practical recommendations on what to encourage, control, investigate, pause or stop.',
+  },
+  {
+    question: 'Is this a legal compliance review or a training course?',
+    answer:
+      'No. It is not legal advice, a certification exercise, generic AI training or a mini-Foundry. Where specialist legal, regulatory or security advice is needed, that is identified rather than quietly implied to be covered.',
   },
   {
     question: 'What happens after the sprint?',
     answer:
-      'You may choose guidance, AI Foundry, Discovery, a focused PoC, leadership coaching or no further action. The point is to make the next decision clearer.',
+      'The evidence may point to clearer guidance, staff development, AI Foundry, Discovery, a focused proof of concept, leadership coaching or no further action. The sprint does not assume that a tool purchase or larger DTP programme follows.',
   },
 ];
 ---
@@ -139,8 +169,8 @@ const faqs = [
             <a class="ma-btn ma-btn-mint" href="/contact/">
               Book a readiness call
             </a>
-            <a class="ma-btn ma-btn-outline" href="#levels"
-              >Compare the levels</a
+            <a class="ma-btn ma-btn-outline" href="#questions"
+              >Read the FAQs</a
             >
           </div>
           <dl class="readiness-stats" aria-label="Readiness sprint summary">
@@ -333,7 +363,7 @@ const faqs = [
       </div>
     </section>
 
-    <section class="ma-section faq-section">
+    <section class="ma-section faq-section" id="questions">
       <div class="ma-container faq-grid">
         <div>
           <span class="ma-section-tag">// questions</span>
@@ -1112,6 +1142,7 @@ const faqs = [
   }
 
   .faq-section {
+    scroll-margin-top: 5.5rem;
     border-top: 1px solid var(--ma-border);
     background: rgba(11, 16, 26, 0.5);
   }
