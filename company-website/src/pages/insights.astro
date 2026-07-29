@@ -79,8 +79,7 @@ const cleanCopy = (value: string) =>
           data-insights-reveal
         >
           <div class="signal-console-top">
-            <span>signal atlas</span>
-            <strong id="signal-console-title">Leadership</strong>
+            <span>current signal</span>
           </div>
           <div class="signal-visual">
             <canvas id="signal-atlas-scene" aria-hidden="true"></canvas>
@@ -88,8 +87,11 @@ const cleanCopy = (value: string) =>
             <span class="signal-label signal-label-delivery">delivery</span>
             <span class="signal-label signal-label-risk">risk</span>
           </div>
-          <div class="signal-readout" aria-live="polite">
-            <span id="signal-console-value">{themes[0].title}</span>
+          <div class="signal-readout">
+            <span>
+              AI moves faster than any leadership team can reasonably track. We
+              filter what matters.
+            </span>
           </div>
         </aside>
       </div>
@@ -627,7 +629,7 @@ const cleanCopy = (value: string) =>
     text-transform: uppercase;
   }
 
-  .signal-console-top strong {
+  .signal-console-top > span {
     color: var(--ma-mint);
     font-weight: 500;
   }
