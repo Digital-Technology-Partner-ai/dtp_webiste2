@@ -4,6 +4,24 @@ import Layout from '../layouts/Layout.astro';
 
 const cases = [
   {
+    id: 'travel-risk',
+    sector: 'Global energy services',
+    vignette:
+      'A new trip is confirmed. The risk picture may have changed, and the paperwork still starts from scratch.',
+    title: 'Up-to-date travel risk documentation in under 60 seconds.',
+    summary:
+      'A global energy services business needed one fast route from a new travel requirement to a current risk assessment, Journey Management Plan and approval documentation.',
+    signal: 'outdated risk + document drag',
+    route: 'Mobile-first travel workflow + live risk intelligence',
+    outcomes: [
+      'Under 60 seconds',
+      'Up-to-date risk data',
+      'Three approval-ready documents',
+    ],
+    proof:
+      'The guided flow reuses traveller data and current destination intelligence to generate the travel request, risk assessment and Journey Management Plan on mobile or desktop in under 60 seconds.',
+  },
+  {
     id: 'quotation',
     sector: 'Manufacturing',
     vignette: 'Someone in the quoting team is measuring PDF drawings by hand.',
@@ -63,6 +81,12 @@ const cases = [
 
 const lenses = [
   {
+    id: 'travel-risk',
+    label: 'Travel risk',
+    value:
+      'turn current destination intelligence into approval-ready documents in under 60 seconds',
+  },
+  {
     id: 'quotation',
     label: 'Quotation',
     value: 'turn complex documents into faster commercial decisions',
@@ -81,8 +105,8 @@ const lenses = [
 ---
 
 <Layout
-  title="Case Studies, three patterns from real operations | Digital Technology Partner"
-  description="Workflow drag, missed visibility, missing capability: three real engagements turned into working systems. The industry doesn't need to match. The pattern does."
+  title="Case Studies, four patterns from real operations | Digital Technology Partner"
+  description="Travel risk, workflow drag, missed visibility and missing capability: four real engagements turned into working systems. The industry doesn't need to match. The pattern does."
 >
   <Header />
   <main class="case-page">
@@ -96,10 +120,9 @@ const lenses = [
             problem.
           </h1>
           <p>
-            Three patterns from real operations: workflow drag, missed
-            visibility, specialist capability. Each built into a system that
-            paid for itself. The industry doesn't need to match. The pattern
-            does.
+            Four patterns from real operations: travel risk, workflow drag,
+            missed visibility and specialist capability. Each became a working
+            system. The industry doesn't need to match. The pattern does.
           </p>
           <div class="case-actions">
             <a class="ma-btn ma-btn-mint" href="/contact/"
@@ -117,18 +140,19 @@ const lenses = [
           data-case-reveal
         >
           <div class="proof-console-top">
-            <span>proof constellation</span>
-            <strong id="proof-console-title">Quotation</strong>
+            <span>// how_we_solve</span>
           </div>
           <div class="proof-visual">
             <canvas id="proof-constellation-scene" aria-hidden="true"></canvas>
-            <span class="proof-label proof-label-workflow">workflow</span>
-            <span class="proof-label proof-label-agent">agent</span>
-            <span class="proof-label proof-label-search">search</span>
+            <span class="proof-label proof-label-travel">signal</span>
+            <span class="proof-label proof-label-workflow">evidence</span>
+            <span class="proof-label proof-label-agent">prototype</span>
+            <span class="proof-label proof-label-search">system</span>
           </div>
           <div class="proof-readout" aria-live="polite">
             <span id="proof-console-value"
-              >turn complex documents into faster commercial decisions</span
+              >Follow the signal, test the idea, then build what earns its
+              place.</span
             >
           </div>
         </aside>
@@ -142,10 +166,11 @@ const lenses = [
             <button
               type="button"
               data-proof-lens={lens.id}
-              data-proof-label={lens.label}
-              data-proof-value={lens.value}
-              class:list={['lens-button', { active: lens.id === 'quotation' }]}
-              aria-pressed={lens.id === 'quotation' ? 'true' : 'false'}
+              class:list={[
+                'lens-button',
+                { active: lens.id === 'travel-risk' },
+              ]}
+              aria-pressed={lens.id === 'travel-risk' ? 'true' : 'false'}
             >
               <span>{lens.label}</span>
               <strong>{lens.value}</strong>
@@ -158,10 +183,10 @@ const lenses = [
     <section class="ma-section case-stack-section">
       <div class="ma-container">
         <div class="case-stack-head" data-case-reveal>
-          <span class="ma-section-tag">// three_patterns</span>
-          <h2>Three patterns, told properly.</h2>
+          <span class="ma-section-tag">// four_patterns</span>
+          <h2>Four patterns, told properly.</h2>
           <p>
-            Three engagements told properly beat thirty logos told vaguely. Each
+            Four engagements told properly beat thirty logos told vaguely. Each
             one is a pattern you can test against your own operation.
           </p>
         </div>
@@ -206,6 +231,11 @@ const lenses = [
         <span class="ma-section-tag">// which_pattern_is_yours</span>
         <h2>Recognise one of these patterns?</h2>
         <div class="pattern-match" aria-label="Case study pattern matching">
+          <p>
+            <strong>Travel risk built from stale information</strong><span
+              >the travel risk pattern</span
+            >
+          </p>
           <p>
             <strong>Time lost to documents</strong><span
               >the quotation pattern</span
@@ -252,39 +282,14 @@ const lenses = [
   const lensButtons = Array.from(
     document.querySelectorAll('[data-proof-lens]')
   ) as HTMLButtonElement[];
-  const proofTitle = document.getElementById('proof-console-title');
-  const proofValue = document.getElementById('proof-console-value');
 
-  const setProofLens = async (button: HTMLButtonElement) => {
+  const setProofLens = (button: HTMLButtonElement) => {
     lensButtons.forEach((item) => {
       const active = item === button;
       item.classList.toggle('active', active);
       item.setAttribute('aria-pressed', active ? 'true' : 'false');
     });
 
-    if (proofTitle) proofTitle.textContent = button.dataset.proofLabel || '';
-    if (proofValue) {
-      if (reducedMotion) {
-        proofValue.textContent = button.dataset.proofValue || '';
-      } else {
-        const { gsap } = await gsapReady;
-        gsap.to(proofValue, {
-          opacity: 0,
-          y: 6,
-          duration: 0.12,
-          ease: 'power2.out',
-          onComplete: () => {
-            proofValue.textContent = button.dataset.proofValue || '';
-            gsap.to(proofValue, {
-              opacity: 1,
-              y: 0,
-              duration: 0.24,
-              ease: 'power3.out',
-            });
-          },
-        });
-      }
-    }
     document.dispatchEvent(
       new CustomEvent('proof-lens-focus', {
         detail: { id: button.dataset.proofLens },
@@ -293,9 +298,9 @@ const lenses = [
   };
 
   lensButtons.forEach((button) => {
-    button.addEventListener('pointerenter', () => void setProofLens(button));
-    button.addEventListener('focus', () => void setProofLens(button));
-    button.addEventListener('click', () => void setProofLens(button));
+    button.addEventListener('pointerenter', () => setProofLens(button));
+    button.addEventListener('focus', () => setProofLens(button));
+    button.addEventListener('click', () => setProofLens(button));
   });
 
   if (canvas) {
@@ -323,13 +328,14 @@ const lenses = [
     const nodes: THREE.Mesh[] = [];
     const lines: THREE.Line[] = [];
     const focusState = {
-      yaw: -0.16,
-      pitch: -0.18,
-      zoom: 8.4,
-      particleOpacity: 0.66,
+      yaw: 0,
+      pitch: -0.08,
+      zoom: 8.1,
+      particleOpacity: 0.82,
     };
 
     const points = {
+      travelRisk: [0, 2.08, 0.1],
       quotation: [-2.35, 0.8, 0.05],
       maintenance: [2.15, 0.72, -0.08],
       infrastructure: [0, -1.75, 0.12],
@@ -337,22 +343,29 @@ const lenses = [
     } as Record<string, [number, number, number]>;
 
     const focusMap = {
-      quotation: {
+      'travel-risk': {
         node: 0,
+        yaw: 0,
+        pitch: -0.08,
+        zoom: 8.1,
+        particleOpacity: 0.82,
+      },
+      quotation: {
+        node: 1,
         yaw: -0.18,
         pitch: -0.12,
         zoom: 8.1,
         particleOpacity: 0.74,
       },
       maintenance: {
-        node: 1,
+        node: 2,
         yaw: 0.2,
         pitch: -0.18,
         zoom: 8.0,
         particleOpacity: 0.82,
       },
       infrastructure: {
-        node: 2,
+        node: 3,
         yaw: 0.02,
         pitch: -0.32,
         zoom: 7.9,
@@ -372,24 +385,33 @@ const lenses = [
     };
 
     [
+      points.travelRisk,
       points.quotation,
       points.maintenance,
       points.infrastructure,
       points.centre,
     ].forEach((point, index) => {
       const color =
-        index === 0 ? mint : index === 1 ? amber : index === 2 ? blue : ivory;
+        index === 0
+          ? ivory
+          : index === 1
+            ? mint
+            : index === 2
+              ? amber
+              : index === 3
+                ? blue
+                : ivory;
       const node = new THREE.Mesh(
-        new THREE.SphereGeometry(index === 3 ? 0.11 : 0.09, 24, 24),
-        makeMaterial(color, index === 3 ? 0.9 : 0.84)
+        new THREE.SphereGeometry(index === 4 ? 0.11 : 0.09, 24, 24),
+        makeMaterial(color, index === 4 ? 0.9 : 0.84)
       );
       node.position.set(...point);
-      node.userData.focusScale = index === 0 ? 1.35 : index === 3 ? 1.1 : 0.95;
+      node.userData.focusScale = index === 0 ? 1.35 : index === 4 ? 1.1 : 0.95;
       group.add(node);
       nodes.push(node);
 
       const aura = new THREE.Mesh(
-        new THREE.SphereGeometry(index === 3 ? 0.42 : 0.32, 24, 24),
+        new THREE.SphereGeometry(index === 4 ? 0.42 : 0.32, 24, 24),
         makeMaterial(color, index === 0 ? 0.13 : 0.07)
       );
       aura.position.set(...point);
@@ -419,6 +441,7 @@ const lenses = [
       group.add(line);
       lines.push(line);
     };
+    createLine(points.centre, points.travelRisk, ivory);
     createLine(points.centre, points.quotation, mint);
     createLine(points.centre, points.maintenance, amber);
     createLine(points.centre, points.infrastructure, blue);
@@ -462,7 +485,7 @@ const lenses = [
 
     const focusLens = (id: keyof typeof focusMap | string) => {
       const target =
-        focusMap[id as keyof typeof focusMap] || focusMap.quotation;
+        focusMap[id as keyof typeof focusMap] || focusMap['travel-risk'];
       gsap.to(focusState, {
         yaw: target.yaw,
         pitch: target.pitch,
@@ -474,7 +497,7 @@ const lenses = [
       nodes.forEach((node, index) => {
         const pair = Math.floor(index / 2);
         const active = pair === target.node;
-        const centre = pair === 3;
+        const centre = pair === 4;
         gsap.to(node.userData, {
           focusScale: active ? 1.45 : centre ? 1.08 : 0.92,
           duration: reducedMotion ? 0 : 0.45,
@@ -495,7 +518,7 @@ const lenses = [
       focusLens(lensEvent.detail.id);
     };
     document.addEventListener('proof-lens-focus', onLens as EventListener);
-    focusLens('quotation');
+    focusLens('travel-risk');
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
@@ -688,9 +711,8 @@ const lenses = [
     text-transform: uppercase;
   }
 
-  .proof-console-top strong {
+  .proof-console-top > span {
     color: var(--ma-mint);
-    font-weight: 500;
   }
 
   .proof-visual {
@@ -714,6 +736,13 @@ const lenses = [
     letter-spacing: 0.22em;
     text-transform: uppercase;
     pointer-events: none;
+  }
+
+  .proof-label-travel {
+    left: 50%;
+    top: 12%;
+    color: #f4f1e8;
+    transform: translateX(-50%);
   }
 
   .proof-label-workflow {
@@ -754,7 +783,7 @@ const lenses = [
 
   .lens-strip {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1rem;
   }
 
@@ -922,12 +951,11 @@ const lenses = [
   .case-cta {
     padding: 5.8rem 0;
     text-align: center;
-    background:
-      radial-gradient(
-        circle at 50% 8%,
-        rgba(5, 204, 144, 0.14),
-        transparent 27rem
-      );
+    background: radial-gradient(
+      circle at 50% 8%,
+      rgba(5, 204, 144, 0.14),
+      transparent 27rem
+    );
   }
 
   .case-cta-inner {
@@ -940,7 +968,7 @@ const lenses = [
 
   .pattern-match {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1rem;
     margin-top: 1.5rem;
   }
