@@ -235,38 +235,13 @@ const cleanCopy = (value: string) =>
   const themeButtons = Array.from(
     document.querySelectorAll('[data-signal-theme]')
   ) as HTMLButtonElement[];
-  const signalTitle = document.getElementById('signal-console-title');
-  const signalValue = document.getElementById('signal-console-value');
 
-  const setTheme = async (button: HTMLButtonElement) => {
+  const setTheme = (button: HTMLButtonElement) => {
     themeButtons.forEach((item) => {
       const active = item === button;
       item.classList.toggle('active', active);
       item.setAttribute('aria-pressed', active ? 'true' : 'false');
     });
-    if (signalTitle) signalTitle.textContent = button.dataset.signalLabel || '';
-    if (signalValue) {
-      if (reducedMotion) {
-        signalValue.textContent = button.dataset.signalValue || '';
-      } else {
-        const { gsap } = await gsapReady;
-        gsap.to(signalValue, {
-          opacity: 0,
-          y: 6,
-          duration: 0.12,
-          ease: 'power2.out',
-          onComplete: () => {
-            signalValue.textContent = button.dataset.signalValue || '';
-            gsap.to(signalValue, {
-              opacity: 1,
-              y: 0,
-              duration: 0.24,
-              ease: 'power3.out',
-            });
-          },
-        });
-      }
-    }
     document.dispatchEvent(
       new CustomEvent('signal-theme-focus', {
         detail: { id: button.dataset.signalTheme },
@@ -275,9 +250,9 @@ const cleanCopy = (value: string) =>
   };
 
   themeButtons.forEach((button) => {
-    button.addEventListener('pointerenter', () => void setTheme(button));
-    button.addEventListener('focus', () => void setTheme(button));
-    button.addEventListener('click', () => void setTheme(button));
+    button.addEventListener('pointerenter', () => setTheme(button));
+    button.addEventListener('focus', () => setTheme(button));
+    button.addEventListener('click', () => setTheme(button));
   });
 
   if (canvas) {
@@ -292,7 +267,7 @@ const cleanCopy = (value: string) =>
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.6));
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 80);
-    camera.position.set(0, 0.1, 8.4);
+    camera.position.set(0, 0.1, 9.3);
     const group = new THREE.Group();
     scene.add(group);
 
@@ -306,7 +281,7 @@ const cleanCopy = (value: string) =>
     const focusState = {
       yaw: -0.12,
       pitch: -0.18,
-      zoom: 8.4,
+      zoom: 9.3,
       particleOpacity: 0.66,
     };
 
@@ -315,21 +290,21 @@ const cleanCopy = (value: string) =>
         node: 0,
         yaw: -0.16,
         pitch: -0.08,
-        zoom: 8.15,
+        zoom: 9.3,
         particleOpacity: 0.72,
       },
       delivery: {
         node: 1,
         yaw: 0.18,
         pitch: -0.22,
-        zoom: 8.05,
+        zoom: 9.2,
         particleOpacity: 0.82,
       },
       governance: {
         node: 2,
         yaw: 0.02,
         pitch: -0.34,
-        zoom: 7.95,
+        zoom: 9.1,
         particleOpacity: 0.9,
       },
     } as const;
@@ -571,8 +546,8 @@ const cleanCopy = (value: string) =>
     position: relative;
     z-index: 1;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(420px, 0.78fr);
-    gap: 3rem;
+    grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.05fr);
+    gap: 4rem;
     align-items: center;
   }
 
@@ -636,15 +611,15 @@ const cleanCopy = (value: string) =>
 
   .signal-visual {
     position: relative;
-    min-height: 430px;
-    margin: 0.45rem 0 0.9rem;
+    min-height: 350px;
+    margin: 0.7rem 0 0;
     overflow: hidden;
   }
 
   .signal-visual canvas {
     display: block;
     width: 100%;
-    height: 430px;
+    height: 350px;
   }
 
   .signal-label {
@@ -677,13 +652,11 @@ const cleanCopy = (value: string) =>
 
   .signal-readout {
     display: block;
-    min-height: 56px;
-    padding: 0.82rem;
-    border: 1px solid rgba(244, 241, 232, 0.1);
-    border-radius: var(--ma-radius);
-    background: rgba(0, 0, 0, 0.36);
+    min-height: 0;
+    padding: 0.7rem 0 0.1rem;
+    background: transparent;
     color: #d8d6ce;
-    line-height: 1.4;
+    line-height: 1.5;
   }
 
   .theme-section {
@@ -960,11 +933,11 @@ const cleanCopy = (value: string) =>
     }
 
     .signal-visual {
-      min-height: 330px;
+      min-height: 300px;
     }
 
     .signal-visual canvas {
-      height: 330px;
+      height: 300px;
     }
   }
 </style>
