@@ -1,0 +1,1085 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Browser-depth transformation — self-contained review</title>
+  <style>
+    html, body { margin: 0; min-height: 100%; background: #050507; color: #ebebeb; font: 14px/1.45 Inter, ui-sans-serif, system-ui, sans-serif; }
+    body { display: grid; grid-template-rows: auto 1fr; }
+    header { padding: 14px 16px; border-bottom: 1px solid rgba(235,235,235,0.14); background: rgba(5,5,7,0.96); position: sticky; top: 0; }
+    h1 { margin: 0 0 6px; font-size: 15px; }
+    p { margin: 0; color: #9ca0b2; }
+    .controls { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    button { appearance: none; border: 1px solid rgba(235,235,235,0.16); background: rgba(12,13,18,0.92); color: #ebebeb; border-radius: 999px; padding: 8px 12px; cursor: pointer; font: inherit; }
+    #art { width: min(100vw, 1200px); aspect-ratio: 16 / 9; margin: 18px auto; background: #050507; }
+
+    /* Website embed mode: preserve the supplied artwork and remove review chrome. */
+    html, body { width: 100%; height: 100%; min-height: 0; overflow: hidden; background: #050507; }
+    body { display: block; }
+    header { display: none; }
+    #art { width: 100vw; height: 100vh; aspect-ratio: auto; margin: 0; background: #050507; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Browser-depth transformation — self-contained review</h1>
+    <p>Direct-file compatible review build showing discrete rear inputs crossing clear browser stages into a calm front-right decision board.</p>
+    <div class="controls">
+      <button data-phase="opening">Opening / rear inputs</button>
+      <button data-phase="transit">Transit / channels</button>
+      <button data-phase="strongest">Strongest / decision board</button>
+      <button data-phase="weakest">Weakest / late sort</button>
+      <button data-phase="reduced">Reduced-motion still</button>
+      <button id="toggleMotion">Pause</button>
+    </div>
+  </header>
+  <div id="art"></div>
+  <script>
+const DEFAULT_OPTIONS = {
+  seed: 11092026,
+  loopSeconds: 9,
+  dprCap: 2,
+  background: '#050507',
+  reducedMotionStill: 0.56,
+  frontMint: '#05CC90',
+  paper: '#EBEBEB',
+  coolGrey: '#8888A0',
+  indigo: '#4D5675',
+  cyan: '#5FD7D1',
+  reviewPhases: {
+    opening: 0,
+    transit: 0.22,
+    strongest: 0.56,
+    weakest: 0.8,
+    reduced: 0.56,
+  },
+};
+
+function createMulberry32(seed) {
+  let t = seed >>> 0;
+  return function rand() {
+    t += 0x6D2B79F5;
+    let r = Math.imul(t ^ (t >>> 15), 1 | t);
+    r ^= r + Math.imul(r ^ (r >>> 7), 61 | r);
+    return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function mix(a, b, t) {
+  return a + (b - a) * t;
+}
+
+function invLerp(a, b, value) {
+  return a === b ? 0 : clamp((value - a) / (b - a), 0, 1);
+}
+
+function smoothstep(a, b, value) {
+  const t = invLerp(a, b, value);
+  return t * t * (3 - 2 * t);
+}
+
+function hexToRgb(hex) {
+  const clean = hex.replace('#', '');
+  const full = clean.length === 3 ? clean.split('').map((c) => c + c).join('') : clean;
+  const n = parseInt(full, 16);
+  return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+}
+
+function rgba(hex, alpha) {
+  const { r, g, b } = hexToRgb(hex);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+function mixColour(a, b, t, alpha = 1) {
+  const ca = hexToRgb(a);
+  const cb = hexToRgb(b);
+  return `rgba(${Math.round(mix(ca.r, cb.r, t))}, ${Math.round(mix(ca.g, cb.g, t))}, ${Math.round(mix(ca.b, cb.b, t))}, ${alpha})`;
+}
+
+function loopSin(phase, harmonic, amplitude = 1, offset = 0) {
+  return Math.sin((phase * Math.PI * 2 * harmonic) + offset) * amplitude;
+}
+
+function loopCos(phase, harmonic, amplitude = 1, offset = 0) {
+  return Math.cos((phase * Math.PI * 2 * harmonic) + offset) * amplitude;
+}
+
+function roundedRectPath(ctx, x, y, w, h, r) {
+  const radius = Math.min(r, w * 0.5, h * 0.5);
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + w - radius, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + radius);
+  ctx.lineTo(x + w, y + h - radius);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
+  ctx.lineTo(x + radius, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+}
+
+function fillRoundedRect(ctx, x, y, w, h, r, fillStyle) {
+  ctx.fillStyle = fillStyle;
+  roundedRectPath(ctx, x, y, w, h, r);
+  ctx.fill();
+}
+
+function strokeRoundedRect(ctx, x, y, w, h, r, strokeStyle, lineWidth = 1) {
+  ctx.strokeStyle = strokeStyle;
+  ctx.lineWidth = lineWidth;
+  roundedRectPath(ctx, x, y, w, h, r);
+  ctx.stroke();
+}
+
+function getPalette(options) {
+  return [options.frontMint, options.cyan, options.paper, options.coolGrey];
+}
+
+function getModel(options) {
+  if (options.__sceneModel) return options.__sceneModel;
+  const rand = createMulberry32(options.seed);
+  const laneCount = 4;
+  const slotsPerLane = 6;
+  const records = [];
+  const palette = getPalette(options);
+  for (let lane = 0; lane < laneCount; lane += 1) {
+    for (let slot = 0; slot < slotsPerLane; slot += 1) {
+      const id = records.length;
+      records.push({
+        id,
+        lane,
+        slot,
+        accentIndex: (lane + slot) % palette.length,
+        keyIndex: id % 4,
+        sizeBias: 0.88 + rand() * 0.42,
+        noiseX: rand(),
+        noiseY: rand(),
+        pulseOffset: rand() * Math.PI * 2,
+        sourceSpread: 0.08 + rand() * 0.62,
+        sourceDepth: rand(),
+        laneDrift: rand() * 2 - 1,
+      });
+    }
+  }
+
+  const packetCount = 18;
+  const packets = records.slice(0, packetCount).map((record, index) => ({
+    id: index,
+    recordId: record.id,
+    offset: (index / packetCount + rand() * 0.03) % 1,
+    speed: 0.92 + rand() * 0.16,
+    brightness: 0.86 + rand() * 0.2,
+    size: 0.92 + rand() * 0.26,
+    targetCell: Math.floor(rand() * 12),
+  }));
+
+  options.__sceneModel = { records, packets, laneCount, slotsPerLane, palette };
+  return options.__sceneModel;
+}
+
+function createLayout(width, height) {
+  const aspect = width / height;
+  const base = Math.min(width, height);
+  const compact = aspect < 1.62;
+  const front = {
+    x: compact ? width * 0.27 : width * 0.42,
+    y: compact ? height * 0.22 : height * 0.3,
+    w: compact ? width * 0.68 : width * 0.44,
+    h: compact ? height * 0.68 : height * 0.5,
+    r: base * 0.025,
+  };
+  return {
+    width,
+    height,
+    base,
+    compact,
+    rearCount: compact ? 3 : 4,
+    titleBar: Math.max(16, height * 0.05),
+    pad: compact ? Math.max(8, width * 0.016) : Math.max(12, width * 0.0135),
+    cascadeVector: compact ? { x: -width * 0.08, y: -height * 0.075 } : { x: -width * 0.062, y: -height * 0.058 },
+    front,
+  };
+}
+
+function createFrameRects(layout, phase) {
+  const frames = [];
+  for (let i = 0; i <= layout.rearCount; i += 1) {
+    const stage = i / layout.rearCount;
+    const depth = 1 - stage;
+    const driftX = loopSin(phase, 1, layout.base * 0.0024, i * 0.7) * depth;
+    const driftY = loopCos(phase, 1, layout.base * 0.0018, i * 0.5) * depth;
+    const scale = mix(0.88, 1, stage);
+    frames.push({
+      stage,
+      x: layout.front.x + layout.cascadeVector.x * depth * layout.rearCount + driftX,
+      y: layout.front.y + layout.cascadeVector.y * depth * layout.rearCount + driftY,
+      w: layout.front.w * scale,
+      h: layout.front.h * scale,
+      r: layout.front.r * mix(0.9, 1, stage),
+      titleBar: layout.titleBar * mix(0.92, 1, stage),
+      pad: layout.pad * mix(0.9, 1, stage),
+    });
+  }
+  return frames;
+}
+
+function getFrameContentRect(frame) {
+  return {
+    x: frame.x + frame.pad,
+    y: frame.y + frame.titleBar + frame.pad,
+    w: frame.w - frame.pad * 2,
+    h: frame.h - frame.titleBar - frame.pad * 2,
+  };
+}
+
+function getStageAnchors(bounds, record) {
+  const source = {
+    x: bounds.x + bounds.w * (0.05 + record.sourceSpread * 0.34),
+    y: bounds.y + bounds.h * (0.12 + record.sourceDepth * 0.75),
+  };
+  const channelIndex = Math.floor(record.slot / 2) % 3;
+  const channel = {
+    x: bounds.x + bounds.w * (0.3 + channelIndex * 0.17 + record.laneDrift * 0.012),
+    y: bounds.y + bounds.h * (0.22 + channelIndex * 0.24 + record.laneDrift * 0.02),
+  };
+  const sorted = {
+    x: bounds.x + bounds.w * (0.24 + (record.slot / 5) * 0.64),
+    y: bounds.y + bounds.h * (0.18 + (record.lane / 3) * 0.62),
+  };
+  const front = {
+    x: bounds.x + bounds.w * (0.46 + (record.slot / 5) * 0.4),
+    y: bounds.y + bounds.h * (0.22 + (record.lane / 3) * 0.52),
+  };
+  return { source, channel, sorted, front };
+}
+
+function getRecordState(bounds, record, stage) {
+  const anchors = getStageAnchors(bounds, record);
+  const tChannels = smoothstep(0.12, 0.36, stage);
+  const tSorted = smoothstep(0.38, 0.72, stage);
+  const tFront = smoothstep(0.7, 0.98, stage);
+  const cX = mix(anchors.source.x, anchors.channel.x, tChannels);
+  const cY = mix(anchors.source.y, anchors.channel.y, tChannels);
+  const sX = mix(cX, anchors.sorted.x, tSorted);
+  const sY = mix(cY, anchors.sorted.y, tSorted);
+  return {
+    x: mix(sX, anchors.front.x, tFront),
+    y: mix(sY, anchors.front.y, tFront),
+    capsuleW: bounds.w * mix(0.016, 0.026, smoothstep(0.28, 0.92, stage)) * record.sizeBias,
+    capsuleH: bounds.h * mix(0.018, 0.036, smoothstep(0.28, 0.92, stage)),
+    keySize: bounds.h * mix(0.012, 0.02, smoothstep(0.22, 0.88, stage)),
+    channelIndex: Math.floor(record.slot / 2) % 3,
+    channelProgress: tChannels,
+    sortedProgress: tSorted,
+    frontProgress: tFront,
+  };
+}
+
+function getPacketFill(options, record, alpha = 1) {
+  const palette = getPalette(options);
+  return rgba(palette[record.accentIndex % palette.length], alpha);
+}
+
+function getPacketKeyFill(options, record, alpha = 1) {
+  const palette = [options.paper, options.frontMint, options.cyan, options.coolGrey];
+  return rgba(palette[record.keyIndex % palette.length], alpha);
+}
+
+function drawBackground(ctx, width, height, options, phase) {
+  ctx.fillStyle = options.background;
+  ctx.fillRect(0, 0, width, height);
+
+  const broad = ctx.createRadialGradient(width * 0.77, height * 0.52, 0, width * 0.77, height * 0.52, width * 0.46);
+  broad.addColorStop(0, rgba(options.frontMint, 0.055));
+  broad.addColorStop(0.48, rgba(options.indigo, 0.05));
+  broad.addColorStop(1, rgba(options.background, 0));
+  ctx.fillStyle = broad;
+  ctx.fillRect(0, 0, width, height);
+
+  const rear = ctx.createRadialGradient(width * 0.16, height * 0.2, 0, width * 0.16, height * 0.2, width * 0.28);
+  rear.addColorStop(0, rgba(options.paper, 0.035 + (loopSin(phase, 1) + 1) * 0.005));
+  rear.addColorStop(1, rgba(options.background, 0));
+  ctx.fillStyle = rear;
+  ctx.fillRect(0, 0, width, height);
+}
+
+function drawBrowserChrome(ctx, frame, options, active = false) {
+  const baseAlpha = active ? 0.96 : mix(0.62, 0.78, frame.stage);
+  const fill = ctx.createLinearGradient(frame.x, frame.y, frame.x + frame.w, frame.y + frame.h);
+  fill.addColorStop(0, rgba(options.paper, active ? 0.055 : 0.03));
+  fill.addColorStop(0.65, rgba(options.indigo, active ? 0.04 : 0.021));
+  fill.addColorStop(1, rgba(options.paper, active ? 0.022 : 0.016));
+  fillRoundedRect(ctx, frame.x, frame.y, frame.w, frame.h, frame.r, fill);
+
+  strokeRoundedRect(
+    ctx,
+    frame.x,
+    frame.y,
+    frame.w,
+    frame.h,
+    frame.r,
+    active ? rgba(options.frontMint, 0.72) : mixColour(options.coolGrey, options.paper, 0.44, baseAlpha),
+    active ? 1.5 : 1.25,
+  );
+
+  const barFill = ctx.createLinearGradient(frame.x, frame.y, frame.x + frame.w, frame.y + frame.titleBar);
+  barFill.addColorStop(0, rgba(options.paper, active ? 0.082 : 0.045));
+  barFill.addColorStop(1, rgba(options.background, active ? 0.12 : 0.065));
+  fillRoundedRect(ctx, frame.x + 1, frame.y + 1, frame.w - 2, frame.titleBar, frame.r * 0.75, barFill);
+
+  const cy = frame.y + frame.titleBar * 0.54;
+  const cx = frame.x + frame.pad * 1.05;
+  const cr = Math.max(1.6, frame.titleBar * 0.11);
+  for (let i = 0; i < 3; i += 1) {
+    ctx.beginPath();
+    ctx.arc(cx + i * cr * 3, cy, cr, 0, Math.PI * 2);
+    ctx.fillStyle = rgba(i === 2 && active ? options.frontMint : options.paper, active ? (i === 2 ? 0.62 : 0.28) : 0.18);
+    ctx.fill();
+  }
+
+  ctx.strokeStyle = rgba(active ? options.paper : options.coolGrey, active ? 0.22 : 0.12);
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(frame.x + frame.w * 0.2, cy);
+  ctx.lineTo(frame.x + frame.w * 0.78, cy);
+  ctx.stroke();
+}
+
+function drawStageScaffold(ctx, bounds, stage, options, layout, phase) {
+  const rawAlpha = 0.34 * (1 - smoothstep(0.18, 0.42, stage));
+  const channelsAlpha = 0.28 * smoothstep(0.2, 0.54, stage) * (1 - smoothstep(0.54, 0.8, stage));
+  const rowsAlpha = 0.24 * smoothstep(0.48, 0.9, stage);
+
+  if (rawAlpha > 0.001) {
+    for (let i = 0; i < 4; i += 1) {
+      const y = bounds.y + bounds.h * (0.1 + i * 0.14);
+      fillRoundedRect(ctx, bounds.x + bounds.w * 0.04, y, bounds.w * (0.12 + (i % 3) * 0.04), bounds.h * 0.024, bounds.h * 0.012, rgba(options.paper, rawAlpha * (0.9 - i * 0.08)));
+      fillRoundedRect(ctx, bounds.x + bounds.w * 0.2, y + bounds.h * 0.008, bounds.w * (0.08 + (i % 2) * 0.03), bounds.h * 0.016, bounds.h * 0.008, rgba(options.coolGrey, rawAlpha * 0.8));
+    }
+  }
+
+  if (channelsAlpha > 0.001) {
+    for (let channel = 0; channel < 3; channel += 1) {
+      const y = bounds.y + bounds.h * (0.22 + channel * 0.24);
+      const h = bounds.h * 0.16;
+      fillRoundedRect(ctx, bounds.x + bounds.w * 0.18, y, bounds.w * 0.64, h, h * 0.34, rgba(options.paper, channelsAlpha * 0.11));
+      fillRoundedRect(ctx, bounds.x + bounds.w * 0.22, y + h * 0.25, bounds.w * 0.54, h * 0.18, h * 0.12, rgba(channel === 1 ? options.cyan : options.frontMint, channelsAlpha * 0.45));
+      for (let mark = 0; mark < 4; mark += 1) {
+        fillRoundedRect(ctx, bounds.x + bounds.w * (0.24 + mark * 0.13), y + h * 0.56, bounds.w * 0.06, h * 0.15, h * 0.08, rgba(options.paper, channelsAlpha * 0.4));
+      }
+    }
+  }
+
+  if (rowsAlpha > 0.001) {
+    const startX = bounds.x + bounds.w * 0.16;
+    const lineStart = bounds.x + bounds.w * 0.3;
+    const lineW = bounds.w * (layout.compact ? 0.56 : 0.58);
+    for (let lane = 0; lane < 4; lane += 1) {
+      const y = bounds.y + bounds.h * (0.18 + lane * 0.18);
+      fillRoundedRect(ctx, startX, y, bounds.w * 0.1, bounds.h * 0.058, bounds.h * 0.02, rgba(options.paper, rowsAlpha * 0.18));
+      fillRoundedRect(ctx, startX + bounds.w * 0.016, y + bounds.h * 0.017, bounds.w * 0.05, bounds.h * 0.014, bounds.h * 0.007, rgba(options.frontMint, rowsAlpha * 0.36));
+      ctx.strokeStyle = rgba(options.paper, rowsAlpha * 0.22);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(lineStart, y + bounds.h * 0.03);
+      ctx.lineTo(lineStart + lineW, y + bounds.h * 0.03);
+      ctx.stroke();
+    }
+  }
+
+  if (stage > 0.78) {
+    const stripAlpha = smoothstep(0.78, 0.98, stage) * 0.08;
+    fillRoundedRect(ctx, bounds.x, bounds.y, bounds.w * 0.28, bounds.h, bounds.h * 0.04, rgba(options.paper, stripAlpha));
+    fillRoundedRect(ctx, bounds.x + bounds.w * 0.31, bounds.y + bounds.h * 0.08, bounds.w * 0.63, bounds.h * 0.12, bounds.h * 0.04, rgba(options.paper, stripAlpha));
+  }
+}
+
+function drawRecord(ctx, state, bounds, record, stage, options) {
+  const opening = 1 - smoothstep(0.16, 0.42, stage);
+  const channeling = smoothstep(0.18, 0.54, stage) * (1 - smoothstep(0.56, 0.82, stage));
+  const sorted = smoothstep(0.5, 0.94, stage);
+  const capsuleColour = getPacketFill(options, record, mix(0.2, 0.34, sorted));
+  const keyColour = getPacketKeyFill(options, record, mix(0.28, 0.46, sorted));
+
+  if (opening > 0.001) {
+    const spread = bounds.h * 0.018;
+    for (let i = 0; i < 2; i += 1) {
+      const dx = (i === 0 ? -1 : 1) * state.capsuleW * (1.4 + record.noiseX * 0.8) * opening;
+      const dy = (i === 0 ? -1 : 1) * spread * (0.4 + record.noiseY) * opening;
+      drawCapsulePacket(
+        ctx,
+        state.x + dx,
+        state.y + dy,
+        state.capsuleW * 0.92,
+        state.capsuleH * 0.64,
+        state.keySize * 0.8,
+        capsuleColour,
+        keyColour,
+        rgba(options.paper, 0.2 * opening),
+      );
+    }
+  }
+
+  if (channeling > 0.001) {
+    fillRoundedRect(
+      ctx,
+      state.x - state.capsuleW * 1.3,
+      state.y - state.capsuleH * 0.75,
+      state.capsuleW * 2.8,
+      state.capsuleH * 1.5,
+      state.capsuleH * 0.6,
+      rgba(state.channelIndex === 1 ? options.cyan : options.frontMint, 0.07 * channeling),
+    );
+  }
+
+  if (sorted > 0.001) {
+    drawCapsulePacket(
+      ctx,
+      state.x,
+      state.y,
+      state.capsuleW,
+      state.capsuleH,
+      state.keySize,
+      capsuleColour,
+      keyColour,
+      rgba(options.paper, 0.18 + sorted * 0.14),
+    );
+  }
+}
+
+function drawCapsulePacket(ctx, x, y, w, h, keySize, fillStyle, keyStyle, strokeStyle) {
+  fillRoundedRect(ctx, x - w * 0.5, y - h * 0.5, w, h, h * 0.5, fillStyle);
+  strokeRoundedRect(ctx, x - w * 0.5, y - h * 0.5, w, h, h * 0.5, strokeStyle, 1);
+  const keyX = x - w * 0.5 + h * 0.28;
+  const keyY = y - keySize * 0.5;
+  fillRoundedRect(ctx, keyX, keyY, keySize, keySize, keySize * 0.22, keyStyle);
+  fillRoundedRect(ctx, keyX + keySize * 1.55, y - h * 0.08, w * 0.18, h * 0.16, h * 0.08, rgba('#050507', 0.34));
+}
+
+function renderPlaneContent(ctx, frame, model, options, layout, phase, emphasis = 1) {
+  const bounds = getFrameContentRect(frame);
+  ctx.save();
+  roundedRectPath(ctx, frame.x + 1, frame.y + frame.titleBar, frame.w - 2, frame.h - frame.titleBar - 1, Math.max(2, frame.r * 0.82));
+  ctx.clip();
+
+  const interior = ctx.createLinearGradient(bounds.x, bounds.y, bounds.x + bounds.w, bounds.y + bounds.h);
+  interior.addColorStop(0, rgba(options.background, 0.22));
+  interior.addColorStop(0.7, rgba(options.paper, 0.012 * emphasis));
+  interior.addColorStop(1, rgba(options.background, 0.06));
+  ctx.fillStyle = interior;
+  ctx.fillRect(bounds.x, bounds.y, bounds.w, bounds.h);
+
+  drawStageScaffold(ctx, bounds, frame.stage, options, layout, phase);
+  for (let i = 0; i < model.records.length; i += 1) {
+    drawRecord(ctx, getRecordState(bounds, model.records[i], frame.stage), bounds, model.records[i], frame.stage, options);
+  }
+  ctx.restore();
+}
+
+function interpolateFrame(frames, z) {
+  const total = frames.length - 1;
+  const scaled = clamp(z, 0, 1) * total;
+  const index = Math.min(total - 1, Math.floor(scaled));
+  const t = scaled - index;
+  const a = frames[index];
+  const b = frames[index + 1] || frames[index];
+  return {
+    stage: mix(a.stage, b.stage, t),
+    x: mix(a.x, b.x, t),
+    y: mix(a.y, b.y, t),
+    w: mix(a.w, b.w, t),
+    h: mix(a.h, b.h, t),
+    r: mix(a.r, b.r, t),
+    titleBar: mix(a.titleBar, b.titleBar, t),
+    pad: mix(a.pad, b.pad, t),
+  };
+}
+
+function getPacketState(packet, model, frames, phase) {
+  const z = (phase * packet.speed + packet.offset) % 1;
+  const frame = interpolateFrame(frames, z);
+  const bounds = getFrameContentRect(frame);
+  const record = model.records[packet.recordId % model.records.length];
+  const recordState = getRecordState(bounds, record, z);
+  return { z, frame, bounds, record, recordState };
+}
+
+function drawPacket(ctx, packet, model, frames, phase, options) {
+  const current = getPacketState(packet, model, frames, phase);
+  if (current.z >= 0.88) return;
+  const previous = getPacketState(packet, model, frames, (phase - 0.012 + 1) % 1);
+  const lineAlpha = current.z < 0.34 ? 0.09 : current.z < 0.68 ? 0.13 : 0.08;
+  ctx.strokeStyle = rgba(current.z < 0.52 ? options.coolGrey : options.frontMint, lineAlpha * packet.brightness);
+  ctx.lineWidth = Math.max(0.8, current.recordState.capsuleH * 0.18 * packet.size);
+  ctx.beginPath();
+  ctx.moveTo(previous.recordState.x, previous.recordState.y);
+  ctx.lineTo(current.recordState.x, current.recordState.y);
+  ctx.stroke();
+
+  drawCapsulePacket(
+    ctx,
+    current.recordState.x,
+    current.recordState.y,
+    current.recordState.capsuleW * 0.98 * packet.size,
+    current.recordState.capsuleH * 0.92,
+    current.recordState.keySize * 0.92,
+    getPacketFill(options, current.record, 0.68 + current.recordState.sortedProgress * 0.18),
+    getPacketKeyFill(options, current.record, 0.92),
+    rgba(options.paper, 0.28),
+  );
+}
+
+function getArrivalState(packet, phase) {
+  const z = (phase * packet.speed + packet.offset) % 1;
+  const entry = smoothstep(0.83, 0.865, z) * (1 - smoothstep(0.88, 0.905, z)) * packet.brightness;
+  const confirm = smoothstep(0.875, 0.91, z) * (1 - smoothstep(0.925, 0.96, z)) * packet.brightness;
+  const travel = smoothstep(0.84, 0.915, z) * (1 - smoothstep(0.935, 0.97, z)) * packet.brightness;
+  return { z, entry, confirm, travel };
+}
+
+function drawFrontDecisionModules(ctx, front, model, options, phase, layout) {
+  const bounds = getFrameContentRect(front);
+  const leftW = bounds.w * (layout.compact ? 0.34 : 0.28);
+  const rightX = bounds.x + leftW + bounds.w * 0.05;
+  const rightW = bounds.w - leftW - bounds.w * 0.05;
+  const summaryInset = bounds.w * 0.02;
+
+  ctx.save();
+  roundedRectPath(ctx, front.x + 1, front.y + front.titleBar, front.w - 2, front.h - front.titleBar - 1, Math.max(2, front.r * 0.82));
+  ctx.clip();
+  ctx.fillStyle = rgba(options.background, 0.94);
+  ctx.fillRect(bounds.x - front.pad, bounds.y - front.pad, bounds.w + front.pad * 2, bounds.h + front.pad * 2);
+
+  fillRoundedRect(ctx, bounds.x, bounds.y, leftW, bounds.h, bounds.h * 0.05, rgba(options.paper, 0.065));
+  strokeRoundedRect(ctx, bounds.x, bounds.y, leftW, bounds.h, bounds.h * 0.05, rgba(options.paper, 0.13), 1);
+  fillRoundedRect(ctx, bounds.x + summaryInset, bounds.y + bounds.h * 0.07, leftW - summaryInset * 2, bounds.h * 0.18, bounds.h * 0.04, rgba(options.paper, 0.085));
+  fillRoundedRect(ctx, bounds.x + summaryInset * 1.2, bounds.y + bounds.h * 0.11, leftW * 0.3, bounds.h * 0.034, bounds.h * 0.014, rgba(options.frontMint, 0.58));
+  fillRoundedRect(ctx, bounds.x + summaryInset * 1.2, bounds.y + bounds.h * 0.17, leftW * 0.46, bounds.h * 0.016, bounds.h * 0.008, rgba(options.paper, 0.34));
+  fillRoundedRect(ctx, bounds.x + summaryInset * 1.2, bounds.y + bounds.h * 0.205, leftW * 0.36, bounds.h * 0.016, bounds.h * 0.008, rgba(options.coolGrey, 0.25));
+
+  for (let i = 0; i < 3; i += 1) {
+    const y = bounds.y + bounds.h * (0.36 + i * 0.16);
+    fillRoundedRect(ctx, bounds.x + summaryInset, y, leftW - summaryInset * 2, bounds.h * 0.09, bounds.h * 0.03, rgba(options.paper, 0.055));
+    fillRoundedRect(ctx, bounds.x + summaryInset * 1.2, y + bounds.h * 0.026, leftW * (i === 0 ? 0.18 : i === 1 ? 0.12 : 0.09), bounds.h * 0.022, bounds.h * 0.01, rgba(i === 0 ? options.frontMint : options.cyan, i === 2 ? 0.24 : 0.46));
+    fillRoundedRect(ctx, bounds.x + leftW * 0.58, y + bounds.h * 0.028, leftW * 0.16, bounds.h * 0.018, bounds.h * 0.008, rgba(options.paper, 0.24));
+  }
+
+  const rows = layout.compact ? 3 : 4;
+  const rowGap = bounds.h * (layout.compact ? 0.06 : 0.052);
+  const rowH = (bounds.h - rowGap * (rows - 1)) / rows;
+  const slotsPerRow = 3;
+  const arrivalStates = new Array(rows * slotsPerRow).fill(null).map(() => ({ z: 0, entry: 0, confirm: 0, travel: 0 }));
+  for (let i = 0; i < model.packets.length; i += 1) {
+    const packet = model.packets[i];
+    const cell = packet.targetCell % arrivalStates.length;
+    const incoming = getArrivalState(packet, phase);
+    if (incoming.entry + incoming.confirm + incoming.travel > arrivalStates[cell].entry + arrivalStates[cell].confirm + arrivalStates[cell].travel) {
+      arrivalStates[cell] = incoming;
+    }
+  }
+  for (let row = 0; row < rows; row += 1) {
+    const y = bounds.y + row * (rowH + rowGap);
+    const rowStates = arrivalStates.slice(row * slotsPerRow, (row + 1) * slotsPerRow);
+    const rowEntry = Math.max(...rowStates.map((state) => state.entry));
+    if (rowEntry > 0.01) {
+      const wash = ctx.createLinearGradient(rightX, y, rightX + rightW, y);
+      wash.addColorStop(0, rgba(options.frontMint, 0.07 * rowEntry));
+      wash.addColorStop(0.58, rgba(options.frontMint, 0.105 * rowEntry));
+      wash.addColorStop(1, rgba(options.cyan, 0.018 * rowEntry));
+      fillRoundedRect(ctx, rightX, y, rightW, rowH, rowH * 0.24, wash);
+    }
+    fillRoundedRect(ctx, rightX, y, rightW, rowH, rowH * 0.24, rgba(options.paper, 0.058 + rowEntry * 0.035));
+    strokeRoundedRect(ctx, rightX, y, rightW, rowH, rowH * 0.24, rgba(rowEntry > 0.06 ? options.frontMint : options.paper, 0.105 + rowEntry * 0.3), 1 + rowEntry * 0.45);
+    fillRoundedRect(ctx, rightX + rightW * 0.045, y + rowH * 0.28, rightW * 0.18, rowH * 0.18, rowH * 0.09, rgba(options.paper, 0.24));
+    fillRoundedRect(ctx, rightX + rightW * 0.045, y + rowH * 0.54, rightW * 0.11, rowH * 0.12, rowH * 0.06, rgba(options.coolGrey, 0.2));
+    fillRoundedRect(ctx, rightX + rightW * 0.25, y + rowH * 0.43, rightW * 0.024, rowH * 0.14, rowH * 0.07, rgba(options.frontMint, 0.12 + rowEntry * 0.86));
+    for (let slot = 0; slot < slotsPerRow; slot += 1) {
+      const px = rightX + rightW * (0.4 + slot * 0.19);
+      const packetW = rightW * 0.13;
+      const packetH = rowH * 0.36;
+      const highlight = (row === 0 && slot === 1) || (row === rows - 1 && slot === 0);
+      const alt = row === 1 && slot === 2;
+      const arrival = arrivalStates[row * slotsPerRow + slot];
+      const arrivalPulse = arrival.confirm;
+      const live = arrivalPulse > 0.025;
+      if (arrival.travel > 0.02) {
+        const startX = rightX + rightW * 0.275;
+        const endX = px - packetW * 0.68;
+        const routeProgress = smoothstep(0.84, 0.915, arrival.z);
+        ctx.strokeStyle = rgba(options.frontMint, 0.16 + arrival.travel * 0.46);
+        ctx.lineWidth = 1 + arrival.travel * 0.75;
+        ctx.beginPath();
+        ctx.moveTo(startX, y + rowH * 0.5);
+        ctx.lineTo(mix(startX, endX, routeProgress), y + rowH * 0.5);
+        ctx.stroke();
+      }
+      ctx.save();
+      if (live) {
+        ctx.shadowColor = rgba(options.frontMint, 0.72 * arrivalPulse);
+        ctx.shadowBlur = rowH * (0.18 + arrivalPulse * 0.32);
+      }
+      drawCapsulePacket(
+        ctx,
+        px,
+        y + rowH * 0.5,
+        packetW,
+        packetH,
+        packetH * 0.36,
+        rgba(live ? options.frontMint : highlight ? options.frontMint : alt ? options.cyan : options.paper, live ? 0.34 + arrivalPulse * 0.62 : highlight ? 0.62 : alt ? 0.44 : 0.18),
+        rgba(live ? options.paper : highlight ? options.paper : alt ? options.frontMint : options.coolGrey, live ? 0.76 + arrivalPulse * 0.22 : highlight ? 0.94 : 0.7),
+        rgba(live ? options.frontMint : options.paper, live ? 0.34 + arrivalPulse * 0.52 : highlight ? 0.36 : 0.16),
+      );
+      ctx.restore();
+    }
+    if (row < rows - 1) {
+      ctx.strokeStyle = rgba(options.paper, 0.08);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(rightX, y + rowH + rowGap * 0.5);
+      ctx.lineTo(rightX + rightW, y + rowH + rowGap * 0.5);
+      ctx.stroke();
+    }
+  }
+
+  const calmTint = ctx.createLinearGradient(bounds.x, bounds.y, bounds.x + bounds.w, bounds.y + bounds.h);
+  calmTint.addColorStop(0, rgba(options.paper, 0.012));
+  calmTint.addColorStop(0.62, rgba(options.frontMint, 0.02 + smoothstep(0.3, 0.8, phase) * 0.008));
+  calmTint.addColorStop(1, rgba(options.background, 0));
+  ctx.fillStyle = calmTint;
+  roundedRectPath(ctx, front.x, front.y, front.w, front.h, front.r);
+  ctx.fill();
+  ctx.restore();
+}
+
+function computeState(width, height, phase, options) {
+  const layout = createLayout(width, height);
+  const frames = createFrameRects(layout, phase);
+  const model = getModel(options);
+  const front = frames[frames.length - 1];
+  const bounds = {
+    minX: Math.min(...frames.map((frame) => frame.x)),
+    minY: Math.min(...frames.map((frame) => frame.y)),
+    maxX: Math.max(...frames.map((frame) => frame.x + frame.w)),
+    maxY: Math.max(...frames.map((frame) => frame.y + frame.h)),
+  };
+  return { phase, layout, frames, front, model, bounds, dprCap: options.dprCap };
+}
+
+function renderTransformationNarrative(ctx, width, height, phase, options) {
+  const state = computeState(width, height, phase, options);
+  drawBackground(ctx, width, height, options, phase);
+
+  for (let i = 0; i < state.frames.length - 1; i += 1) {
+    drawBrowserChrome(ctx, state.frames[i], options, false);
+    renderPlaneContent(ctx, state.frames[i], state.model, options, state.layout, phase, mix(0.8, 1, state.frames[i].stage));
+  }
+
+  for (let i = 0; i < state.model.packets.length; i += 1) {
+    drawPacket(ctx, state.model.packets[i], state.model, state.frames, phase, options);
+  }
+
+  drawBrowserChrome(ctx, state.front, options, true);
+  drawFrontDecisionModules(ctx, state.front, state.model, options, phase, state.layout);
+
+  ctx.strokeStyle = rgba(options.paper, 0.1);
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(state.front.x - state.layout.base * 0.02, state.front.y + state.front.h * 0.18);
+  ctx.lineTo(state.front.x - state.layout.base * 0.02, state.front.y + state.front.h * 0.88);
+  ctx.stroke();
+
+  return state;
+}
+
+function renderContourStack(ctx, width, height, phase, options) {
+  const state = computeState(width, height, phase, options);
+  drawBackground(ctx, width, height, options, phase);
+  for (let i = 0; i < state.frames.length; i += 1) {
+    const frame = state.frames[i];
+    const emphasis = i === state.frames.length - 1;
+    for (let band = 0; band < 4; band += 1) {
+      const inset = band * frame.pad * 0.42;
+      strokeRoundedRect(
+        ctx,
+        frame.x + inset,
+        frame.y + inset * 0.78,
+        frame.w - inset * 2,
+        frame.h - inset * 1.56,
+        Math.max(4, frame.r - inset * 0.28),
+        rgba(band < 2 ? options.frontMint : options.paper, emphasis ? 0.16 - band * 0.025 : 0.12 - band * 0.02),
+        band === 0 ? 1.2 : 1,
+      );
+    }
+    renderPlaneContent(ctx, frame, state.model, options, state.layout, phase, emphasis ? 1 : 0.82);
+  }
+  return state;
+}
+
+function renderRibbonPlanes(ctx, width, height, phase, options) {
+  const state = computeState(width, height, phase, options);
+  drawBackground(ctx, width, height, options, phase);
+  for (let i = 0; i < state.frames.length; i += 1) {
+    const frame = state.frames[i];
+    drawBrowserChrome(ctx, frame, options, i === state.frames.length - 1);
+    renderPlaneContent(ctx, frame, state.model, options, state.layout, phase, 0.9);
+    const bounds = getFrameContentRect(frame);
+    ctx.save();
+    roundedRectPath(ctx, frame.x, frame.y, frame.w, frame.h, frame.r);
+    ctx.clip();
+    for (let channel = 0; channel < 3; channel += 1) {
+      const y = bounds.y + bounds.h * (0.26 + channel * 0.24);
+      ctx.strokeStyle = rgba(channel === 1 ? options.cyan : options.frontMint, 0.12 + frame.stage * 0.08);
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(bounds.x + bounds.w * 0.16, y);
+      ctx.bezierCurveTo(
+        bounds.x + bounds.w * 0.34,
+        y - bounds.h * 0.04,
+        bounds.x + bounds.w * 0.6,
+        y + bounds.h * 0.04,
+        bounds.x + bounds.w * 0.84,
+        y,
+      );
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+  for (let i = 0; i < state.model.packets.length; i += 2) {
+    drawPacket(ctx, state.model.packets[i], state.model, state.frames, phase, options);
+  }
+  return state;
+}
+
+const STUDY_RENDERERS = {
+  studyA: {
+    name: 'A — Packet-screen transformation narrative',
+    description: 'Selected master. Clear rear inputs pass through broad channels, sorted rows and a calm front-right decision board.',
+    render: renderTransformationNarrative,
+  },
+  studyB: {
+    name: 'B — Contour processing stack',
+    description: 'Pushes clearer browser layering and ordered records, but with less visible in-flight packet motion than the selected master.',
+    render: renderContourStack,
+  },
+  studyC: {
+    name: 'C — Channel transit planes',
+    description: 'Pushes broad transit lanes and packet movement, but lands with a less calm final board than the selected master.',
+    render: renderRibbonPlanes,
+  },
+};
+
+function renderStudy(ctx, width, height, phase, options, studyId = 'studyA') {
+  const renderer = STUDY_RENDERERS[studyId] || STUDY_RENDERERS.studyA;
+  return renderer.render(ctx, width, height, phase, options);
+}
+
+class ArtworkInstance {
+  constructor(container, options = {}) {
+    this.container = container;
+    this.options = {
+      ...DEFAULT_OPTIONS,
+      ...options,
+      reviewPhases: { ...DEFAULT_OPTIONS.reviewPhases, ...(options.reviewPhases || {}) },
+    };
+    this.phase = this.options.reviewPhases.strongest;
+    this.manualPause = false;
+    this.destroyed = false;
+    this.animating = false;
+    this.rafId = 0;
+    this.lastTs = 0;
+    this.frameSamples = [];
+    this.lastState = null;
+    this.lastPixelBounds = null;
+    this.canvas = document.createElement('canvas');
+    this.canvas.setAttribute('aria-hidden', 'true');
+    this.canvas.style.width = '100%';
+    this.canvas.style.height = '100%';
+    this.canvas.style.display = 'block';
+    this.canvas.style.background = this.options.background;
+    this.ctx = this.canvas.getContext('2d', { alpha: false, desynchronized: true });
+    this.container.appendChild(this.canvas);
+    this.inViewport = true;
+    this.pageVisible = !document.hidden;
+    this.resizeObserver = new ResizeObserver(() => this.resize());
+    this.resizeObserver.observe(this.container);
+    this.intersectionObserver = new IntersectionObserver((entries) => {
+      const entry = entries[0];
+      this.inViewport = !!(entry && entry.isIntersecting);
+      this.syncPlayback();
+    }, { threshold: 0.05 });
+    this.intersectionObserver.observe(this.container);
+    this.reducedMotionQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false, addEventListener() {}, removeEventListener() {} };
+    this.handleReducedMotion = () => {
+      if (this.reducedMotionQuery.matches) {
+        this.renderStatic();
+        this.stopLoop();
+      } else {
+        this.syncPlayback();
+      }
+    };
+    this.reducedMotionQuery.addEventListener?.('change', this.handleReducedMotion);
+    this.handleVisibility = () => {
+      this.pageVisible = !document.hidden;
+      this.syncPlayback();
+    };
+    document.addEventListener('visibilitychange', this.handleVisibility);
+    this.resize();
+    this.syncPlayback();
+  }
+
+  resize() {
+    const rect = this.container.getBoundingClientRect();
+    const width = Math.max(1, Math.round(rect.width || this.container.clientWidth || 960));
+    const height = Math.max(1, Math.round(rect.height || this.container.clientHeight || 540));
+    const dpr = Math.min(window.devicePixelRatio || 1, this.options.dprCap);
+    this.dpr = dpr;
+    this.width = width;
+    this.height = height;
+    this.canvas.width = Math.round(width * dpr);
+    this.canvas.height = Math.round(height * dpr);
+    this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    this.renderPhase(this.phase);
+    return { width: this.width, height: this.height, dpr: this.dpr };
+  }
+
+  renderPhase(phase01) {
+    this.phase = ((phase01 % 1) + 1) % 1;
+    const state = renderTransformationNarrative(this.ctx, this.width, this.height, this.phase, this.options);
+    this.lastState = state;
+    this.lastPixelBounds = this.computePixelBounds();
+    return state;
+  }
+
+  renderStatic() {
+    return this.renderPhase(this.options.reducedMotionStill);
+  }
+
+  computePixelBounds() {
+    const sampleWidth = Math.max(1, Math.floor(this.width / 6));
+    const sampleHeight = Math.max(1, Math.floor(this.height / 6));
+    const off = document.createElement('canvas');
+    off.width = sampleWidth;
+    off.height = sampleHeight;
+    const octx = off.getContext('2d', { alpha: false });
+    octx.drawImage(this.canvas, 0, 0, sampleWidth, sampleHeight);
+    const data = octx.getImageData(0, 0, sampleWidth, sampleHeight).data;
+    const bg = hexToRgb(this.options.background);
+    let minX = sampleWidth;
+    let minY = sampleHeight;
+    let maxX = -1;
+    let maxY = -1;
+    let lit = 0;
+    for (let y = 0; y < sampleHeight; y += 1) {
+      for (let x = 0; x < sampleWidth; x += 1) {
+        const idx = (y * sampleWidth + x) * 4;
+        const dr = Math.abs(data[idx] - bg.r);
+        const dg = Math.abs(data[idx + 1] - bg.g);
+        const db = Math.abs(data[idx + 2] - bg.b);
+        if (dr + dg + db > 18) {
+          lit += 1;
+          minX = Math.min(minX, x);
+          minY = Math.min(minY, y);
+          maxX = Math.max(maxX, x);
+          maxY = Math.max(maxY, y);
+        }
+      }
+    }
+    return { lit, minX, minY, maxX, maxY, sampleWidth, sampleHeight };
+  }
+
+  tick = (ts) => {
+    if (this.destroyed || !this.animating) return;
+    if (!this.lastTs) this.lastTs = ts;
+    const dt = Math.min(64, ts - this.lastTs);
+    this.lastTs = ts;
+    this.phase = (this.phase + dt / (this.options.loopSeconds * 1000)) % 1;
+    const before = performance.now();
+    this.renderPhase(this.phase);
+    const after = performance.now();
+    this.frameSamples.push(after - before);
+    if (this.frameSamples.length > 240) this.frameSamples.shift();
+    this.rafId = requestAnimationFrame(this.tick);
+  };
+
+  start() {
+    this.manualPause = false;
+    this.syncPlayback();
+  }
+
+  pause(userIntent = true) {
+    if (userIntent) this.manualPause = true;
+    this.stopLoop();
+  }
+
+  stopLoop() {
+    this.animating = false;
+    if (this.rafId) cancelAnimationFrame(this.rafId);
+    this.rafId = 0;
+  }
+
+  syncPlayback() {
+    if (this.destroyed) return;
+    if (this.reducedMotionQuery.matches) {
+      this.renderStatic();
+      this.stopLoop();
+      return;
+    }
+    const shouldRun = !this.manualPause && this.inViewport && this.pageVisible;
+    if (shouldRun && !this.animating) {
+      this.animating = true;
+      this.lastTs = 0;
+      this.rafId = requestAnimationFrame(this.tick);
+    } else if (!shouldRun) {
+      this.stopLoop();
+    }
+  }
+
+  destroy() {
+    this.destroyed = true;
+    this.stopLoop();
+    this.resizeObserver.disconnect();
+    this.intersectionObserver.disconnect();
+    this.reducedMotionQuery.removeEventListener?.('change', this.handleReducedMotion);
+    document.removeEventListener('visibilitychange', this.handleVisibility);
+    this.canvas.remove();
+  }
+
+  getDebugState() {
+    return {
+      width: this.width,
+      height: this.height,
+      dpr: this.dpr,
+      phase: this.phase,
+      manualPause: this.manualPause,
+      animating: this.animating,
+      reducedMotion: !!this.reducedMotionQuery.matches,
+      lastState: this.lastState,
+      pixelBounds: this.lastPixelBounds,
+      frameStats: summariseSamples(this.frameSamples),
+      hasActiveRAF: !!this.rafId,
+    };
+  }
+}
+
+function summariseSamples(samples) {
+  if (!samples.length) return { count: 0, p50: 0, p95: 0, max: 0 };
+  const sorted = samples.slice().sort((a, b) => a - b);
+  const pick = (p) => sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * p))];
+  return {
+    count: samples.length,
+    p50: Number(pick(0.5).toFixed(3)),
+    p95: Number(pick(0.95).toFixed(3)),
+    max: Number(sorted[sorted.length - 1].toFixed(3)),
+  };
+}
+
+function mount(container, options = {}) {
+  if (!container) throw new Error('mount(container, options) requires a container element');
+  return new ArtworkInstance(container, options);
+}
+
+function resize(instance) {
+  return instance.resize();
+}
+
+function start(instance) {
+  return instance.start();
+}
+
+function pause(instance) {
+  return instance.pause(true);
+}
+
+function renderStatic(instance) {
+  return instance.renderStatic();
+}
+
+function renderPhase(instance, phase01) {
+  return instance.renderPhase(phase01);
+}
+
+function destroy(instance) {
+  return instance.destroy();
+}
+
+function createDetachedRenderer(options = {}) {
+  const merged = { ...DEFAULT_OPTIONS, ...options, reviewPhases: { ...DEFAULT_OPTIONS.reviewPhases, ...(options.reviewPhases || {}) } };
+  return {
+    renderToCanvas(canvas, phase = merged.reviewPhases.strongest) {
+      const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
+      return renderTransformationNarrative(ctx, canvas.width, canvas.height, phase, merged);
+    },
+  };
+}
+
+function getManifestData() {
+  return {
+    selectedStudy: 'studyA',
+    seed: DEFAULT_OPTIONS.seed,
+    loopSeconds: DEFAULT_OPTIONS.loopSeconds,
+    reviewPhases: DEFAULT_OPTIONS.reviewPhases,
+    palette: {
+      background: DEFAULT_OPTIONS.background,
+      paper: DEFAULT_OPTIONS.paper,
+      coolGrey: DEFAULT_OPTIONS.coolGrey,
+      mint: DEFAULT_OPTIONS.frontMint,
+      indigo: DEFAULT_OPTIONS.indigo,
+      cyan: DEFAULT_OPTIONS.cyan,
+    },
+  };
+}
+
+function getStudyMeta() {
+  return STUDY_RENDERERS;
+}
+
+function renderStudyFrame(canvas, studyId, phase = DEFAULT_OPTIONS.reviewPhases.strongest, options = {}) {
+  const merged = { ...DEFAULT_OPTIONS, ...options, reviewPhases: { ...DEFAULT_OPTIONS.reviewPhases, ...(options.reviewPhases || {}) } };
+  const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
+  return renderStudy(ctx, canvas.width, canvas.height, phase, merged, studyId);
+}
+
+if (typeof window !== 'undefined') {
+  window.DTPBrowserDepthArt = {
+    mount,
+    resize,
+    start,
+    pause,
+    renderStatic,
+    renderPhase,
+    destroy,
+    getManifestData,
+    getStudyMeta,
+    renderStudyFrame,
+  };
+}
+
+  </script>
+  <script>
+    const host = document.getElementById('art');
+    const artwork = window.DTPBrowserDepthArt.mount(host, {});
+    window.__artwork = artwork;
+    const phases = artwork.options.reviewPhases;
+    document.querySelectorAll('[data-phase]').forEach((button) => {
+      button.addEventListener('click', () => {
+        artwork.pause(false);
+        artwork.renderPhase(phases[button.dataset.phase]);
+      });
+    });
+    document.getElementById('toggleMotion').addEventListener('click', (event) => {
+      if (artwork.animating) {
+        artwork.pause(true);
+        event.currentTarget.textContent = 'Resume';
+      } else {
+        artwork.start();
+        event.currentTarget.textContent = 'Pause';
+      }
+    });
+  </script>
+</body>
+</html>
