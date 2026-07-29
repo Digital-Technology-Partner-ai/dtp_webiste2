@@ -232,13 +232,16 @@ const faqs = [
         <aside class="foundry-console" aria-label="AI Foundry output console">
           <div class="console-top">
             <span>foundry output</span>
-            <strong>Club, not course</strong>
           </div>
-          <div class="console-core">
-            <span>Workflow</span>
-            <span>Evidence</span>
-            <span>Adoption</span>
-            <span>Delivery</span>
+          <div class="console-core convergence-visual">
+            <iframe
+              src="/media/programmes/combining-shapes.html"
+              title="Animated fragments combining into one shared decision"
+              loading="eager"
+              sandbox="allow-scripts"
+              referrerpolicy="no-referrer"
+              tabindex="-1"
+            ></iframe>
           </div>
           <ul>
             {foundryOutputs.map((output) => <li>{output}</li>)}
@@ -376,14 +379,27 @@ const faqs = [
     </section>
 
     <section class="ma-section participant-section">
-      <div class="ma-container">
-        <div class="ma-section-header participant-head">
-          <span class="ma-section-tag">// your_part_in_the_room</span>
-          <h2>You do not need a finished idea. You need something real to explore.</h2>
-          <p>
-            Foundry works when participants bring their knowledge of the work,
-            stay curious and report honestly on what happens.
-          </p>
+      <div class="ma-container participant-shell">
+        <div class="participant-stage">
+          <div class="ma-section-header participant-head">
+            <span class="ma-section-tag">// your_part_in_the_room</span>
+            <h2>You do not need a finished idea. You need something real to explore.</h2>
+            <p>
+              Foundry works when participants bring their knowledge of the work,
+              stay curious and report honestly on what happens.
+            </p>
+          </div>
+          <div class="participant-neural-art">
+            <iframe
+              src="/media/programmes/synapse-tracers.html"
+              title="Animated neural connections forming and moving"
+              loading="lazy"
+              sandbox="allow-scripts"
+              referrerpolicy="no-referrer"
+              tabindex="-1"
+            ></iframe>
+            <span>// curiosity_becomes_connection</span>
+          </div>
         </div>
         <div class="participant-grid">
           {
@@ -586,34 +602,20 @@ const faqs = [
 
   .console-core {
     min-height: 260px;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.8rem;
-    padding: 1rem;
+    padding: 0;
     border: 1px solid rgba(244, 241, 232, 0.1);
     border-radius: var(--ma-radius);
-    background:
-      linear-gradient(rgba(244, 241, 232, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(244, 241, 232, 0.04) 1px, transparent 1px),
-      rgba(0, 0, 0, 0.26);
-    background-size: 36px 36px;
+    background: #080b09;
+    overflow: hidden;
   }
 
-  .console-core span {
-    display: grid;
-    place-items: center;
-    min-height: 106px;
-    border: 1px solid rgba(244, 241, 232, 0.12);
-    border-radius: var(--ma-radius);
-    color: #f4f1e8;
-    font-family: var(--ma-font-display);
-    font-weight: 600;
-    background: rgba(11, 16, 26, 0.78);
-  }
-
-  .console-core span:first-child {
-    border-color: rgba(5, 204, 144, 0.55);
-    background: rgba(5, 204, 144, 0.09);
+  .convergence-visual iframe {
+    display: block;
+    width: 100%;
+    height: 320px;
+    border: 0;
+    background: #080b09;
+    pointer-events: none;
   }
 
   .foundry-console ul {
@@ -876,6 +878,49 @@ const faqs = [
       );
   }
 
+  .participant-shell {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .participant-stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1.04fr) minmax(400px, 0.96fr);
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .participant-neural-art {
+    position: relative;
+    min-height: 320px;
+    overflow: hidden;
+    border: 1px solid rgba(5, 204, 144, 0.26);
+    border-radius: var(--ma-radius);
+    background: #000;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+  }
+
+  .participant-neural-art iframe {
+    display: block;
+    width: 100%;
+    height: 320px;
+    border: 0;
+    background: #000;
+    pointer-events: none;
+  }
+
+  .participant-neural-art span {
+    position: absolute;
+    left: 1rem;
+    bottom: 1.1rem;
+    color: rgba(244, 241, 232, 0.72);
+    font-family: var(--ma-font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+
   .participant-head {
     max-width: 760px;
   }
@@ -969,7 +1014,8 @@ const faqs = [
     .readout-grid,
     .leave-grid,
     .fit-grid,
-    .faq-grid {
+    .faq-grid,
+    .participant-stage {
       grid-template-columns: 1fr;
     }
 
@@ -1017,7 +1063,6 @@ const faqs = [
       width: 100%;
     }
 
-    .console-core,
     .session-grid,
     .readout-piles,
     .fit-lists,
@@ -1029,8 +1074,14 @@ const faqs = [
       position: static;
     }
 
-    .console-core {
-      min-height: auto;
+    .convergence-visual iframe {
+      height: 280px;
+    }
+
+    .participant-neural-art,
+    .participant-neural-art iframe {
+      min-height: 300px;
+      height: 300px;
     }
   }
 </style>

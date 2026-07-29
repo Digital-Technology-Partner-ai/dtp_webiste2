@@ -24,9 +24,15 @@ const navItems: NavItem[] = [
         label: 'AI Foundry',
         description: 'Turn real work into tested AI opportunities.',
       },
+      {
+        href: '/programmes/leadership-ai-coaching/',
+        label: 'Leadership AI Coaching',
+        description: 'Private AI support for business leaders.',
+      },
     ],
   },
   { href: '/solutions', label: 'Solutions' },
+  { href: '/process', label: 'Process' },
   { href: '/case-studies', label: 'Case Studies' },
   { href: '/insights', label: 'Insights' },
   { href: '/contact', label: 'Contact' },
@@ -485,7 +491,23 @@ const isActive = (href: string) => currentPath === href || currentPath.startsWit
     }
   }
 
-  @media (max-width: 1170px) {
+  @media (max-width: 1535px) {
+    .ma-nav-gallery-return {
+      display: none;
+    }
+  }
+
+  @media (max-width: 1439px) {
+    .ma-nav-logo {
+      gap: 0;
+    }
+
+    .ma-logo-wordmark {
+      display: none;
+    }
+  }
+
+  @media (max-width: 1239px) {
     .ma-nav-links {
       display: none;
     }

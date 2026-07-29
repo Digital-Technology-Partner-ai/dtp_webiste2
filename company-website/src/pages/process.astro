@@ -8,7 +8,7 @@ const phases = [
     code: '01',
     title: 'Discover',
     question: 'Is the problem clear enough to deserve money?',
-    promise: 'Make the problem clear enough to choose a responsible route.',
+    promise: 'Give every idea a route, and every stage the guardrails it requires.',
     detail:
       'Understand users, workflow, data, systems, risk, ownership and the business decision the work must improve.',
     evidence:
@@ -134,13 +134,17 @@ const routeLinks = [
         >
           <div class="delivery-console-top">
             <span>delivery corridor</span>
-            <strong id="phase-console-title">Discover</strong>
           </div>
           <div class="delivery-visual">
-            <canvas id="delivery-corridor-scene" aria-hidden="true"></canvas>
-            <span class="gate-label gate-label-one">scope</span>
-            <span class="gate-label gate-label-two">proof</span>
-            <span class="gate-label gate-label-three">pilot</span>
+            <iframe
+              class="delivery-progress-motion"
+              src="/media/process/product-progress-motion.html"
+              title="DTP delivery progression from idea through proof of concept, MVP and pilot to launch"
+              loading="eager"
+              sandbox="allow-scripts"
+              referrerpolicy="no-referrer"
+              tabindex="-1"
+            ></iframe>
           </div>
           <div class="phase-readout" aria-live="polite">
             <span id="phase-console-promise">{phases[0].promise}</span>
@@ -260,14 +264,12 @@ const routeLinks = [
   const phasePanels = Array.from(
     document.querySelectorAll('[data-phase-id]')
   ) as HTMLElement[];
-  const consoleTitle = document.getElementById('phase-console-title');
   const consolePromise = document.getElementById('phase-console-promise');
 
   const setActivePhaseDom = async (panel: HTMLElement) => {
     phasePanels.forEach((item) =>
       item.classList.toggle('active', item === panel)
     );
-    if (consoleTitle) consoleTitle.textContent = panel.dataset.phaseTitle || '';
     if (consolePromise) {
       if (reducedMotion) {
         consolePromise.textContent = panel.dataset.phasePromise || '';
@@ -341,6 +343,9 @@ const routeLinks = [
     };
 
     const gateX = [-2.8, -1.4, 0, 1.4, 2.8];
+    // Keep Launch at its existing rendered size, set Idea to 150% of its
+    // original displayed size, then reduce the diameter by a constant amount.
+    const ringFunnelScales = [2.07, 1.7775, 1.485, 1.1925, 0.9];
 
     const makeMaterial = (color: THREE.Color, opacity: number) => {
       const material = new THREE.MeshBasicMaterial({
@@ -368,7 +373,10 @@ const routeLinks = [
         makeMaterial(color, index === 0 ? 0.78 : 0.28)
       );
       ring.position.set(x, 0, 0);
-      ring.rotation.y = Math.PI / 2;
+      ring.rotation.y = Math.PI * 0.4;
+      ring.visible = false;
+      ring.userData.isRing = true;
+      ring.userData.funnelScale = ringFunnelScales[index];
       ring.userData.focusOpacity = index === 0 ? 0.78 : 0.28;
       ring.userData.focusScale = index === 0 ? 1.18 : 0.92;
       group.add(ring);
@@ -379,6 +387,7 @@ const routeLinks = [
         makeMaterial(color, index === 0 ? 0.95 : 0.54)
       );
       core.position.set(x, 0, 0);
+      core.visible = false;
       core.userData.focusOpacity = index === 0 ? 0.95 : 0.54;
       core.userData.focusScale = index === 0 ? 1.2 : 0.92;
       group.add(core);
@@ -461,7 +470,13 @@ const routeLinks = [
         const passed = phaseIndex < clamped;
         gsap.to(gate.userData, {
           focusScale: active ? 1.38 : passed ? 1.08 : 0.9,
-          focusOpacity: active ? 0.92 : passed ? 0.5 : 0.22,
+          focusOpacity: active
+            ? 0.92
+            : passed
+              ? 0.5
+              : gate.userData.isRing
+                ? 0.42
+                : 0.22,
           duration: reducedMotion ? 0 : 0.45,
           ease: 'back.out(1.5)',
         });
@@ -553,10 +568,17 @@ const routeLinks = [
           0.04;
         gates.forEach((gate, index) => {
           const material = gate.material as THREE.MeshBasicMaterial;
-          const pulse = Math.sin(t * 1.75 + index * 0.4) * 0.045;
-          gate.scale.setScalar((gate.userData.focusScale ?? 1) + pulse);
+          const pulse = gate.userData.isRing
+            ? Math.sin(t * 1.75) * 0.025
+            : Math.sin(t * 1.75 + index * 0.4) * 0.045;
+          const visualScale = gate.userData.isRing
+            ? gate.userData.funnelScale
+            : gate.userData.focusScale ?? 1;
+          gate.scale.setScalar(visualScale + pulse);
           material.opacity = gate.userData.focusOpacity ?? material.opacity;
-          gate.rotation.z = t * (0.08 + Math.floor(index / 2) * 0.01);
+          gate.rotation.z = gate.userData.isRing
+            ? 0
+            : t * (0.08 + Math.floor(index / 2) * 0.01);
         });
         lanes.forEach((lane, index) => {
           const material = lane.material as THREE.LineBasicMaterial;
@@ -666,8 +688,8 @@ const routeLinks = [
     position: relative;
     z-index: 1;
     display: grid;
-    grid-template-columns: minmax(0, 0.98fr) minmax(420px, 0.82fr);
-    gap: 3rem;
+    grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.05fr);
+    gap: 4rem;
     align-items: center;
   }
 
@@ -696,6 +718,8 @@ const routeLinks = [
 
   .delivery-console {
     position: relative;
+    align-self: start;
+    margin-top: 3rem;
     padding: 1.25rem;
     border: 1px solid var(--ma-border);
     background:
@@ -723,51 +747,111 @@ const routeLinks = [
     text-transform: uppercase;
   }
 
-  .delivery-console-top strong {
+  .delivery-console-top > span {
     color: var(--ma-mint);
     font-weight: 500;
   }
 
   .delivery-visual {
     position: relative;
-    min-height: 430px;
+    min-height: auto;
     margin: 0.45rem 0 0.9rem;
     overflow: hidden;
   }
 
-  .delivery-visual canvas {
+  .delivery-progress-motion {
     display: block;
     width: 100%;
-    height: 430px;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    border: 0;
+    background: #02090a;
+    filter: brightness(1.18) saturate(1.06);
+    pointer-events: none;
+  }
+
+  .delivery-gate {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: var(--gate-left);
+    width: var(--ring-width);
+    height: var(--ring-height);
+    transform: translate(-50%, -50%);
+    color: var(--gate-color);
+    pointer-events: none;
+  }
+
+  .delivery-ring {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 1.4px solid currentColor;
+    border-radius: 50%;
+    box-shadow: 0 0 18px color-mix(in srgb, currentColor 28%, transparent);
+  }
+
+  .delivery-ring::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 12px currentColor;
+    transform: translate(-50%, -50%);
   }
 
   .gate-label {
     position: absolute;
-    z-index: 2;
-    color: var(--ma-mint);
+    left: 50%;
+    bottom: calc(100% + 12px);
+    transform: translateX(-50%);
+    color: currentColor;
     font-family: var(--ma-font-mono);
     font-size: 0.68rem;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    text-shadow: 0 0 18px rgba(0, 229, 160, 0.48);
-    pointer-events: none;
+    text-shadow: 0 0 18px color-mix(in srgb, currentColor 40%, transparent);
+    white-space: nowrap;
   }
 
-  .gate-label-one {
-    left: 16%;
-    top: 32%;
+  .delivery-gate-idea {
+    --gate-left: 10%;
+    --ring-width: 52px;
+    --ring-height: 140px;
+    --gate-color: #00e5a0;
   }
 
-  .gate-label-two {
-    left: 47%;
-    top: 20%;
-    color: #7c8bff;
+  .delivery-gate-poc {
+    --gate-left: 30%;
+    --ring-width: 41px;
+    --ring-height: 111px;
+    --gate-color: #f4f1e8;
   }
 
-  .gate-label-three {
-    right: 12%;
-    bottom: 28%;
-    color: #f4c84a;
+  .delivery-gate-mvp {
+    --gate-left: 50%;
+    --ring-width: 33px;
+    --ring-height: 89px;
+    --gate-color: #7c8bff;
+  }
+
+  .delivery-gate-pilot {
+    --gate-left: 70%;
+    --ring-width: 26px;
+    --ring-height: 70px;
+    --gate-color: #f4f1e8;
+  }
+
+  .delivery-gate-launch {
+    --gate-left: 90%;
+    --ring-width: 18px;
+    --ring-height: 49px;
+    --gate-color: #f4c84a;
   }
 
   .phase-readout {
@@ -826,8 +910,8 @@ const routeLinks = [
     height: 100%;
     transform: scaleX(0.04);
     transform-origin: left center;
-    background: linear-gradient(90deg, var(--ma-mint), #f4c84a, #7c8bff);
-    box-shadow: 0 0 24px rgba(0, 229, 160, 0.42);
+    background: var(--ma-mint);
+    box-shadow: 0 0 24px rgba(5, 204, 144, 0.42);
   }
 
   .phase-stack {
@@ -1034,12 +1118,41 @@ const routeLinks = [
       position: static;
     }
 
+    .delivery-console {
+      margin-top: 0;
+    }
+
     .route-grid {
       grid-template-columns: 1fr;
     }
   }
 
   @media (max-width: 720px) {
+    .delivery-gate-idea {
+      --ring-width: 37px;
+      --ring-height: 101px;
+    }
+
+    .delivery-gate-poc {
+      --ring-width: 30px;
+      --ring-height: 80px;
+    }
+
+    .delivery-gate-mvp {
+      --ring-width: 24px;
+      --ring-height: 64px;
+    }
+
+    .delivery-gate-pilot {
+      --ring-width: 19px;
+      --ring-height: 51px;
+    }
+
+    .delivery-gate-launch {
+      --ring-width: 15px;
+      --ring-height: 40px;
+    }
+
     .process-hero {
       min-height: auto;
       padding: 7rem 0 3.5rem;
@@ -1081,11 +1194,12 @@ const routeLinks = [
     }
 
     .delivery-visual {
-      min-height: 330px;
+      min-height: auto;
     }
 
-    .delivery-visual canvas {
-      height: 330px;
+    .delivery-progress-motion {
+      height: auto;
+      aspect-ratio: 16 / 9;
     }
   }
 </style>

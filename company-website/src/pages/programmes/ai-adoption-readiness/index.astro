@@ -195,15 +195,17 @@ const faqs = [
           data-readiness-reveal
         >
           <div class="radar-topline">
-            <span>readiness radar</span>
-            <strong>decision view</strong>
+            <span>where AI touches work</span>
           </div>
-          <div class="radar-visual" aria-hidden="true">
-            <canvas id="readiness-radar-scene" aria-hidden="true"></canvas>
-            <div class="radar-label radar-label-signal">Signal</div>
-            <div class="radar-label radar-label-risk">Risk</div>
-            <div class="radar-label radar-label-noise">Noise</div>
-            <div class="radar-label radar-label-decision">Decision</div>
+          <div class="radar-visual thumbprint-visual">
+            <iframe
+              src="/media/programmes/thumbprint-atlas.html"
+              title="Animated thumbprint atlas mapping AI adoption signals"
+              loading="eager"
+              sandbox="allow-scripts"
+              referrerpolicy="no-referrer"
+              tabindex="-1"
+            ></iframe>
           </div>
           <div class="radar-callouts">
             <article>
@@ -774,24 +776,9 @@ const faqs = [
     padding: 1.4rem;
     border: 1px solid rgba(244, 241, 232, 0.13);
     border-radius: 28px;
-    background:
-      radial-gradient(
-        circle at 48% 44%,
-        rgba(5, 204, 144, 0.12),
-        transparent 20rem
-      ),
-      linear-gradient(145deg, rgba(13, 13, 22, 0.8), rgba(0, 0, 0, 0.32));
+    background: #040608;
     box-shadow: 0 28px 90px rgba(0, 0, 0, 0.28);
     overflow: hidden;
-  }
-
-  .radar-panel::before {
-    content: '';
-    position: absolute;
-    inset: 4.2rem 4rem 8.2rem;
-    border: 1px solid rgba(5, 204, 144, 0.08);
-    border-radius: 50%;
-    pointer-events: none;
   }
 
   .radar-topline {
@@ -808,22 +795,27 @@ const faqs = [
     text-transform: uppercase;
   }
 
-  .radar-topline strong {
-    color: var(--ma-mint);
+  .radar-topline > span {
+    color: #05cc90;
     font-weight: 500;
+    text-shadow: 0 0 16px rgba(5, 204, 144, 0.28);
   }
 
   .radar-visual {
     position: relative;
-    min-height: 420px;
+    min-height: 460px;
     margin: 0.2rem 0 0.9rem;
     overflow: hidden;
   }
 
-  .radar-visual canvas {
+  .thumbprint-visual iframe {
     display: block;
     width: 100%;
-    height: 420px;
+    height: 460px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    pointer-events: none;
   }
 
   .radar-label {
@@ -1257,11 +1249,11 @@ const faqs = [
     }
 
     .radar-visual {
-      min-height: 330px;
+      min-height: 360px;
     }
 
-    .radar-visual canvas {
-      height: 330px;
+    .thumbprint-visual iframe {
+      height: 360px;
     }
 
     .radar-label {

@@ -1,0 +1,997 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#050507"><title>Living Synaptic Brain</title><style>:root{color-scheme:dark;--bg:#050507}*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;background:var(--bg)}body{overflow:hidden}.study,.frame{position:relative;width:100%;height:100%;min-height:100svh;overflow:hidden;background:radial-gradient(ellipse at 50% 50%,#0b1012 0,#050507 58%,#030304 100%);isolation:isolate}.brain-root,.brain-root canvas{position:absolute;inset:0;width:100%;height:100%}.brain-root canvas{display:block;pointer-events:none}</style></head><body><main class="study"><section class="frame" aria-label="Animated living synaptic brain"><div class="brain-root" data-brain-root></div></section></main><script>const TAU = Math.PI * 2;
+const HALF_PI = Math.PI * 0.5;
+const FIXED_SEED = 20260728;
+const REDUCED_STILL_PHASE = 0.74;
+
+const DEFAULT_PARAMS = Object.freeze({
+  seed: FIXED_SEED,
+  loopSeconds: 12,
+  maxFps: 30,
+  dprCap: 2,
+  mobileDprCap: 1.5,
+  textSafeFraction: 0,
+  background: '#050507',
+  colours: Object.freeze({
+    background: '#050507',
+    structureDark: '#485158',
+    structureMid: '#9da6ac',
+    structureBright: '#dde3e6',
+    mint: '#05CC90',
+    cyan: '#79d7e4',
+  }),
+  longCount: 24,
+  ringCount: 30,
+  shellScales: Object.freeze([1, 0.82, 0.64]),
+});
+
+const REVIEW_STATES = Object.freeze({
+  playback: {label: 'Normal playback', phase: null, rotationY: null},
+  front: {label: 'Front', phase: 0, rotationY: 0},
+  side: {label: 'Side', phase: 0.25, rotationY: Math.PI * 0.43},
+  back: {label: 'Back', phase: 0.5, rotationY: Math.PI},
+  opposite: {label: 'Opposite side', phase: 0.75, rotationY: -Math.PI * 0.43},
+  climax: {label: 'Synaptic climax', phase: 0.72, rotationY: 0.72 * TAU},
+  reduced: {label: 'Reduced-motion still', phase: REDUCED_STILL_PHASE, rotationY: REDUCED_STILL_PHASE * TAU},
+});
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function lerp(a, b, t) {
+  return a + (b - a) * t;
+}
+
+function smoothstep(edge0, edge1, x) {
+  const t = clamp((x - edge0) / Math.max(1e-6, edge1 - edge0), 0, 1);
+  return t * t * (3 - 2 * t);
+}
+
+function peak(phase, start, mid, end) {
+  if (phase <= start || phase >= end) return 0;
+  if (phase <= mid) return smoothstep(start, mid, phase);
+  return 1 - smoothstep(mid, end, phase);
+}
+
+function wrapPhase(phase01) {
+  let wrapped = phase01 % 1;
+  if (wrapped < 0) wrapped += 1;
+  if (wrapped >= 1) wrapped -= 1;
+  return wrapped;
+}
+
+function mulberry32(seed) {
+  let state = seed >>> 0;
+  return () => {
+    state = (state + 0x6D2B79F5) >>> 0;
+    let t = Math.imul(state ^ (state >>> 15), 1 | state);
+    t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function hash01(value, seed) {
+  let x = (value ^ seed) >>> 0;
+  x = Math.imul(x ^ (x >>> 16), 0x45d9f3b);
+  x = Math.imul(x ^ (x >>> 16), 0x45d9f3b);
+  return ((x ^ (x >>> 16)) >>> 0) / 4294967295;
+}
+
+function vectorLength(x, y, z) {
+  return Math.hypot(x, y, z);
+}
+
+function normaliseVector(x, y, z) {
+  const length = Math.max(1e-9, vectorLength(x, y, z));
+  return {x: x / length, y: y / length, z: z / length};
+}
+
+function rotatePoint(point, rotationY, rotationX, rollZ) {
+  const cy = Math.cos(rotationY);
+  const sy = Math.sin(rotationY);
+  const cx = Math.cos(rotationX);
+  const sx = Math.sin(rotationX);
+  const cz = Math.cos(rollZ);
+  const sz = Math.sin(rollZ);
+
+  const x1 = point.x * cy - point.z * sy;
+  const z1 = point.x * sy + point.z * cy;
+  const y2 = point.y * cx - z1 * sx;
+  const z2 = point.y * sx + z1 * cx;
+  return {
+    x: x1 * cz - y2 * sz,
+    y: x1 * sz + y2 * cz,
+    z: z2,
+  };
+}
+
+function regionNameForNode(node) {
+  if (node.longitudinal > 0.42) return node.y > 0.02 ? 'frontal' : 'temporal';
+  if (node.longitudinal < -0.42) return node.y > 0.0 ? 'occipital' : 'cerebellar';
+  if (node.y > 0.14) return 'parietal';
+  return 'temporal';
+}
+
+function addEdge(edges, adjacency, edgeLookup, a, b, kind = 'grid') {
+  if (a === b) return;
+  const key = a < b ? `${a}-${b}` : `${b}-${a}`;
+  if (edgeLookup.has(key)) return;
+  const edgeId = edges.length;
+  const length = vectorLength(
+    adjacency._nodes[a].x - adjacency._nodes[b].x,
+    adjacency._nodes[a].y - adjacency._nodes[b].y,
+    adjacency._nodes[a].z - adjacency._nodes[b].z,
+  );
+  edges.push({id: edgeId, a, b, kind, length});
+  adjacency[a].push(edgeId);
+  adjacency[b].push(edgeId);
+  edgeLookup.set(key, edgeId);
+}
+
+function collectRegionCandidates(nodes) {
+  const regions = {
+    leftFrontal: [], rightFrontal: [], leftTemporal: [], rightTemporal: [],
+    leftParietal: [], rightParietal: [], leftOccipital: [], rightOccipital: [],
+    bridge: [], leftWhole: [], rightWhole: [],
+  };
+  for (const node of nodes) {
+    if (node.shell > 1) continue;
+    const hemi = node.hemisphere < 0 ? 'left' : 'right';
+    const area = regionNameForNode(node);
+    const key = `${hemi}${area.charAt(0).toUpperCase()}${area.slice(1)}`;
+    if (regions[key]) regions[key].push(node.id);
+    if (regions[`${hemi}Whole`]) regions[`${hemi}Whole`].push(node.id);
+    if (Math.abs(node.x) < 0.52 && Math.abs(node.longitudinal) < 0.42 && node.y > -0.2) {
+      regions.bridge.push(node.id);
+    }
+  }
+  return regions;
+}
+
+function chooseWeightedNode(candidateIds, nodes, seed, salt = 0) {
+  let bestId = candidateIds[0];
+  let bestScore = -Infinity;
+  for (const id of candidateIds) {
+    const node = nodes[id];
+    const score = node.y * 0.3 + node.depthCue * 0.15 + hash01(id * 2654435761 + salt, seed) * 0.55;
+    if (score > bestScore) {
+      bestScore = score;
+      bestId = id;
+    }
+  }
+  return bestId;
+}
+
+function edgeScore(model, currentId, edgeId, previousDirection, spec, branchDepth, stepIndex, visitedEdges, seedSalt) {
+  const edge = model.edges[edgeId];
+  const nextId = edge.a === currentId ? edge.b : edge.a;
+  const current = model.nodes[currentId];
+  const next = model.nodes[nextId];
+  const dx = next.x - current.x;
+  const dy = next.y - current.y;
+  const dz = next.z - current.z;
+  const dir = normaliseVector(dx, dy, dz);
+  let score = hash01(edgeId * 7919 + seedSalt, model.seed) * 0.18;
+  score += (edge.kind === 'commissure' ? 1.6 : edge.kind === 'tract' ? 0.65 : 0.28);
+  if (!spec.allowCommissure && edge.kind === 'commissure') score -= 2.2;
+  if (spec.preferCommissure && edge.kind === 'commissure') score += 2.1;
+  if (spec.regional && edge.kind === 'tract') score -= 0.3;
+  if (spec.targetHemisphere !== 0 && Math.sign(next.hemisphere) === Math.sign(spec.targetHemisphere)) score += 0.18;
+  if (previousDirection) {
+    score += Math.max(-0.4, previousDirection.x * dir.x + previousDirection.y * dir.y + previousDirection.z * dir.z) * 0.8;
+  }
+  if (spec.forwardBias) score += dz * spec.forwardBias;
+  if (spec.verticalBias) score += dy * spec.verticalBias;
+  if (spec.lateralBias) score += dx * spec.lateralBias;
+  if (Math.abs(next.x) < 0.18) score += spec.preferMidline ? 0.55 : -0.15;
+  if (visitedEdges.has(edgeId)) score -= 3;
+  score += model.nodes[nextId].degree * 0.03;
+  score -= branchDepth * 0.06;
+  score -= stepIndex * 0.015;
+  return {edgeId, score, nextId, direction: dir};
+}
+
+function buildBranch(model, startNodeId, enteringEdgeId, previousDirection, spec, branchDepth, startOffset, seedSalt, inheritedVisited) {
+  const visitedEdges = new Set(inheritedVisited);
+  const segments = [];
+  const children = [];
+  let currentId = startNodeId;
+  let currentEntering = enteringEdgeId;
+  let currentDirection = previousDirection;
+  let branchElapsed = 0;
+  const edgeBudget = spec.baseLength + Math.floor(hash01(seedSalt * 11939 + branchDepth * 17, model.seed) * spec.lengthVariance);
+
+  for (let step = 0; step < edgeBudget; step += 1) {
+    const candidateScores = [];
+    for (const edgeId of model.adjacency[currentId]) {
+      if (edgeId === currentEntering) continue;
+      candidateScores.push(edgeScore(model, currentId, edgeId, currentDirection, spec, branchDepth, step, visitedEdges, seedSalt + step));
+    }
+    candidateScores.sort((a, b) => b.score - a.score);
+    const chosen = candidateScores[0] || candidateScores[1];
+    if (!chosen || chosen.score < -0.4) break;
+    const chosenEdgeId = chosen.edgeId;
+    const chosenEdge = model.edges[chosenEdgeId];
+    const nextId = chosenEdge.a === currentId ? chosenEdge.b : chosenEdge.a;
+    const direction = chosen.direction;
+    const duration = chosenEdge.length * spec.speed + 0.006 + branchDepth * 0.001;
+    segments.push({
+      edgeId: chosenEdgeId,
+      fromNode: currentId,
+      toNode: nextId,
+      start: branchElapsed,
+      end: branchElapsed + duration,
+      duration,
+    });
+    branchElapsed += duration;
+    visitedEdges.add(chosenEdgeId);
+    currentId = nextId;
+    currentEntering = chosenEdgeId;
+    currentDirection = direction;
+
+    const branchGate = spec.branchChance * (1 - branchDepth * 0.22) * (step > 0 ? 1 : 0.35);
+    if (
+      branchDepth < spec.maxDepth &&
+      model.nodes[currentId].degree >= (spec.preferCommissure ? 4 : 5) &&
+      hash01(seedSalt * 92821 + currentId * 13 + step * 17, model.seed) < branchGate
+    ) {
+      const child = buildBranch(
+        model,
+        currentId,
+        currentEntering,
+        currentDirection,
+        {...spec, regional: false, branchChance: spec.branchChance * 0.82},
+        branchDepth + 1,
+        startOffset + branchElapsed - duration * 0.32,
+        seedSalt + 1000 + step * 37 + branchDepth * 101,
+        visitedEdges,
+      );
+      if (child.segments.length) children.push(child);
+    }
+  }
+
+  const childEnd = children.reduce((max, child) => Math.max(max, child.endOffset), startOffset + branchElapsed);
+  return {
+    startNodeId,
+    startOffset,
+    endOffset: childEnd,
+    branchDepth,
+    segments,
+    children,
+  };
+}
+
+function buildPulse(model, spec, index) {
+  let candidates = model.regionCandidates[spec.region] || model.regionCandidates.bridge;
+  if (spec.preferCommissure) {
+    const commissuralStarts = [];
+    for (const edge of model.edges) {
+      if (edge.kind !== 'commissure') continue;
+      for (const nodeId of [edge.a, edge.b]) {
+        const node = model.nodes[nodeId];
+        if (!spec.targetHemisphere || Math.sign(node.hemisphere) === Math.sign(spec.targetHemisphere)) commissuralStarts.push(nodeId);
+      }
+    }
+    if (commissuralStarts.length) candidates = commissuralStarts;
+  }
+  const originId = chooseWeightedNode(candidates, model.nodes, model.seed, 400 + index * 23);
+  const origin = model.nodes[originId];
+  const initialDirection = normaliseVector(origin.x, origin.y + 0.05, origin.z + (spec.forwardBias || 0));
+  const tree = buildBranch(model, originId, -1, initialDirection, spec, 0, 0, 7000 + index * 97, new Set());
+  return {
+    id: index,
+    startPhase: spec.startPhase,
+    colour: spec.colour,
+    intensity: spec.intensity,
+    width: spec.width,
+    tail: spec.tail,
+    wholeBrain: !!spec.wholeBrain,
+    tree,
+    duration: Math.min(0.24, tree.endOffset + 0.06),
+    spec,
+  };
+}
+
+function createBrainModel(seed = FIXED_SEED, options = {}) {
+  const params = {...DEFAULT_PARAMS, ...options};
+  const nodes = [];
+  const nodeIndex = new Map();
+  const longCount = params.longCount;
+  const ringCount = params.ringCount;
+
+  for (const hemisphere of [-1, 1]) {
+    for (let shellIndex = 0; shellIndex < params.shellScales.length; shellIndex += 1) {
+      const shellScale = params.shellScales[shellIndex];
+      for (let i = 0; i < longCount; i += 1) {
+        const f = -1 + (2 * i) / (longCount - 1);
+        const frontBulge = 0.12 * Math.exp(-(((f - 0.58) / 0.21) ** 2));
+        const rearBulge = 0.08 * Math.exp(-(((f + 0.66) / 0.24) ** 2));
+        const trunk = Math.sqrt(Math.max(0.05, 1 - 0.78 * f * f));
+        for (let j = 0; j < ringCount; j += 1) {
+          const a = (j / ringCount) * TAU;
+          const foldA = 0.08 * Math.sin(5 * a + f * 7.3 + hemisphere * 0.42);
+          const foldB = 0.05 * Math.cos(11 * a - f * 5.1);
+          const foldC = 0.035 * Math.sin(17 * a + shellIndex * 1.4);
+          const corrugation = 1 + foldA + foldB + foldC;
+          const sideFactor = 0.03 + 0.97 * Math.pow(0.5 + 0.5 * Math.cos(a), 3.2);
+          const rx = (0.72 + 0.08 * Math.cos(Math.PI * f) + frontBulge + rearBulge) * trunk * shellScale;
+          const ry = (0.62 + 0.04 * Math.cos(Math.PI * (f + 0.12)) + frontBulge * 0.38) * Math.sqrt(Math.max(0.05, 1 - 0.34 * f * f)) * shellScale;
+          const medialTuck = 0.018 * Math.cos(a) * (1 - 0.35 * Math.abs(f));
+          const x = hemisphere * (0.035 + rx * sideFactor * corrugation + medialTuck);
+          const temporalDrop = 0.10 * Math.exp(-(((f - 0.10) / 0.46) ** 2)) * (0.5 - 0.5 * Math.sin(a));
+          const y = ry * Math.sin(a) * corrugation * (0.94 - 0.06 * Math.abs(f)) - 0.065 * (1 - f * f) - temporalDrop + frontBulge * 0.22;
+          const z = 0.92 * f + 0.075 * Math.sin(a * 2 + f * 1.7) * (1 - f * f) - 0.08 * Math.exp(-(((f + 0.72) / 0.18) ** 2)) * (0.3 + 0.7 * (0.5 + 0.5 * Math.sin(a)));
+          const node = {
+            id: nodes.length,
+            x,
+            y,
+            z,
+            hemisphere,
+            shell: shellIndex,
+            longitudinal: f,
+            ring: j,
+            corrugation,
+            prominence: foldA + foldB,
+            depthCue: shellScale,
+          };
+          node.region = regionNameForNode(node);
+          nodes.push(node);
+          nodeIndex.set(`${hemisphere}:${shellIndex}:${i}:${j}`, node.id);
+        }
+      }
+    }
+  }
+
+  const cerebellarLongCount = 8;
+  const cerebellarRingCount = 16;
+  for (const hemisphere of [-1, 1]) {
+    for (let shellIndex = 0; shellIndex < 2; shellIndex += 1) {
+      const shellScale = shellIndex === 0 ? 1 : 0.68;
+      for (let i = 0; i < cerebellarLongCount; i += 1) {
+        const q = -1 + (2 * i) / (cerebellarLongCount - 1);
+        const span = Math.sqrt(Math.max(0.05, 1 - q * q));
+        for (let j = 0; j < cerebellarRingCount; j += 1) {
+          const a = (j / cerebellarRingCount) * TAU;
+          const ridge = 1 + 0.07 * Math.sin(a * 6 + q * 4.2 + hemisphere * 0.4);
+          const node = {
+            id: nodes.length,
+            x: hemisphere * (0.11 + 0.20 * shellScale * span * (0.5 + 0.5 * Math.cos(a)) * ridge),
+            y: -0.49 + 0.17 * shellScale * span * Math.sin(a) * ridge,
+            z: -0.63 + 0.24 * q + 0.025 * Math.cos(a * 2),
+            hemisphere,
+            shell: shellIndex + params.shellScales.length,
+            longitudinal: -0.72 + q * 0.12,
+            ring: j,
+            corrugation: ridge,
+            prominence: ridge - 1,
+            depthCue: shellScale * 0.9,
+            region: 'cerebellar',
+            cerebellar: true,
+          };
+          nodes.push(node);
+          nodeIndex.set(`c:${hemisphere}:${shellIndex}:${i}:${j}`, node.id);
+        }
+      }
+    }
+  }
+
+  const adjacency = Array.from({length: nodes.length}, () => []);
+  adjacency._nodes = nodes;
+  const edges = [];
+  const edgeLookup = new Map();
+
+  const by = (hemisphere, shellIndex, i, j) => nodeIndex.get(`${hemisphere}:${shellIndex}:${i}:${(j + ringCount) % ringCount}`);
+  const byC = (hemisphere, shellIndex, i, j) => nodeIndex.get(`c:${hemisphere}:${shellIndex}:${i}:${(j + cerebellarRingCount) % cerebellarRingCount}`);
+
+  for (const hemisphere of [-1, 1]) {
+    for (let shellIndex = 0; shellIndex < params.shellScales.length; shellIndex += 1) {
+      for (let i = 0; i < longCount; i += 1) {
+        for (let j = 0; j < ringCount; j += 1) {
+          const id = by(hemisphere, shellIndex, i, j);
+          addEdge(edges, adjacency, edgeLookup, id, by(hemisphere, shellIndex, i, j + 1), 'grid');
+          if (i + 1 < longCount) addEdge(edges, adjacency, edgeLookup, id, by(hemisphere, shellIndex, i + 1, j), 'grid');
+          if (shellIndex + 1 < params.shellScales.length) addEdge(edges, adjacency, edgeLookup, id, by(hemisphere, shellIndex + 1, i, j), 'grid');
+          if (shellIndex === 0 && i + 1 < longCount) addEdge(edges, adjacency, edgeLookup, id, by(hemisphere, shellIndex, i + 1, j + 1), 'grid');
+          if (shellIndex < 2 && i + 2 < longCount && j % 3 === 0) addEdge(edges, adjacency, edgeLookup, id, by(hemisphere, shellIndex, i + 2, j), 'tract');
+        }
+      }
+    }
+  }
+
+  for (const hemisphere of [-1, 1]) {
+    for (let shellIndex = 0; shellIndex < 2; shellIndex += 1) {
+      for (let i = 0; i < cerebellarLongCount; i += 1) {
+        for (let j = 0; j < cerebellarRingCount; j += 1) {
+          const id = byC(hemisphere, shellIndex, i, j);
+          addEdge(edges, adjacency, edgeLookup, id, byC(hemisphere, shellIndex, i, j + 1), 'cerebellar');
+          if (i + 1 < cerebellarLongCount) addEdge(edges, adjacency, edgeLookup, id, byC(hemisphere, shellIndex, i + 1, j), 'cerebellar');
+          if (shellIndex === 0) addEdge(edges, adjacency, edgeLookup, id, byC(hemisphere, 1, i, j), 'cerebellar');
+        }
+      }
+    }
+    addEdge(edges, adjacency, edgeLookup, byC(hemisphere, 0, cerebellarLongCount - 2, 4), by(hemisphere, 1, 5, 27), 'tract');
+    addEdge(edges, adjacency, edgeLookup, byC(hemisphere, 0, cerebellarLongCount - 3, 12), by(hemisphere, 2, 6, 25), 'tract');
+  }
+
+  const medialRings = [16, 17, 18, 19, 20];
+  for (let shellIndex = 1; shellIndex < params.shellScales.length; shellIndex += 1) {
+    for (let i = 6; i < longCount - 6; i += 2) {
+      for (const j of medialRings) {
+        addEdge(edges, adjacency, edgeLookup, by(-1, shellIndex, i, j), by(1, shellIndex, i, j), 'commissure');
+      }
+    }
+  }
+
+  for (let i = 4; i < longCount - 4; i += 4) {
+    for (const hemisphere of [-1, 1]) {
+      addEdge(edges, adjacency, edgeLookup, by(hemisphere, 0, i, 9), by(hemisphere, 1, i + 1, 13), 'tract');
+      addEdge(edges, adjacency, edgeLookup, by(hemisphere, 0, i, 25), by(hemisphere, 1, Math.max(0, i - 1), 22), 'tract');
+      addEdge(edges, adjacency, edgeLookup, by(hemisphere, 1, i, 0), by(hemisphere, 1, Math.min(longCount - 1, i + 3), 3), 'tract');
+    }
+  }
+
+  for (const node of nodes) node.degree = adjacency[node.id].length;
+
+  const model = {
+    seed,
+    params,
+    nodes,
+    edges,
+    adjacency,
+  };
+  model.regionCandidates = collectRegionCandidates(nodes);
+
+  const pulseSpecs = [
+    {startPhase: 0.06, region: 'leftFrontal', baseLength: 4, lengthVariance: 3, maxDepth: 1, branchChance: 0.12, speed: 0.050, width: 1.6, tail: 0.34, colour: 'mint', intensity: 0.72, regional: true, targetHemisphere: -1, forwardBias: 0.15, verticalBias: 0.08, lateralBias: -0.05},
+    {startPhase: 0.12, region: 'rightTemporal', baseLength: 4, lengthVariance: 2, maxDepth: 1, branchChance: 0.16, speed: 0.047, width: 1.5, tail: 0.32, colour: 'cyan', intensity: 0.68, regional: true, targetHemisphere: 1, forwardBias: -0.05, verticalBias: -0.02, lateralBias: 0.08},
+    {startPhase: 0.20, region: 'leftOccipital', baseLength: 5, lengthVariance: 3, maxDepth: 2, branchChance: 0.20, speed: 0.046, width: 1.7, tail: 0.34, colour: 'mint', intensity: 0.74, regional: true, targetHemisphere: -1, forwardBias: 0.1, verticalBias: 0.05, lateralBias: -0.04},
+    {startPhase: 0.30, region: 'rightParietal', baseLength: 5, lengthVariance: 4, maxDepth: 2, branchChance: 0.24, speed: 0.044, width: 1.75, tail: 0.34, colour: 'cyan', intensity: 0.76, regional: true, targetHemisphere: 1, forwardBias: 0.04, verticalBias: 0.12, lateralBias: 0.03},
+    {startPhase: 0.40, region: 'bridge', baseLength: 6, lengthVariance: 4, maxDepth: 2, branchChance: 0.30, speed: 0.043, width: 1.9, tail: 0.38, colour: 'mint', intensity: 0.82, regional: false, targetHemisphere: 0, allowCommissure: true, preferCommissure: true, preferMidline: true, forwardBias: 0.04, verticalBias: 0.05, lateralBias: 0.0},
+    {startPhase: 0.52, region: 'leftTemporal', baseLength: 7, lengthVariance: 5, maxDepth: 2, branchChance: 0.32, speed: 0.041, width: 2.0, tail: 0.38, colour: 'mint', intensity: 0.84, regional: false, targetHemisphere: -1, allowCommissure: true, preferCommissure: false, forwardBias: 0.12, verticalBias: 0.02, lateralBias: -0.05},
+    {startPhase: 0.55, region: 'rightWhole', baseLength: 11, lengthVariance: 7, maxDepth: 4, branchChance: 0.56, speed: 0.040, width: 2.15, tail: 0.44, colour: 'cyan', intensity: 0.94, regional: false, targetHemisphere: 1, allowCommissure: true, preferCommissure: true, preferMidline: true, forwardBias: 0.08, verticalBias: 0.10, lateralBias: 0.02, wholeBrain: true},
+    {startPhase: 0.57, region: 'leftWhole', baseLength: 12, lengthVariance: 8, maxDepth: 4, branchChance: 0.60, speed: 0.039, width: 2.25, tail: 0.46, colour: 'mint', intensity: 1.00, regional: false, targetHemisphere: -1, allowCommissure: true, preferCommissure: true, preferMidline: true, forwardBias: 0.06, verticalBias: 0.08, lateralBias: -0.02, wholeBrain: true},
+    {startPhase: 0.59, region: 'leftParietal', baseLength: 10, lengthVariance: 7, maxDepth: 3, branchChance: 0.52, speed: 0.041, width: 2.0, tail: 0.42, colour: 'cyan', intensity: 0.90, regional: false, targetHemisphere: -1, allowCommissure: true, preferCommissure: false, preferMidline: true, forwardBias: -0.08, verticalBias: 0.12, lateralBias: 0.04, wholeBrain: true},
+    {startPhase: 0.61, region: 'rightOccipital', baseLength: 10, lengthVariance: 7, maxDepth: 3, branchChance: 0.50, speed: 0.041, width: 2.0, tail: 0.42, colour: 'mint', intensity: 0.90, regional: false, targetHemisphere: 1, allowCommissure: true, preferCommissure: false, preferMidline: true, forwardBias: 0.10, verticalBias: 0.05, lateralBias: -0.04, wholeBrain: true},
+  ];
+
+  model.pulses = pulseSpecs.map((spec, index) => buildPulse(model, {...spec, allowCommissure: !!spec.allowCommissure, preferCommissure: !!spec.preferCommissure, preferMidline: !!spec.preferMidline}, index));
+  return model;
+}
+
+function phaseProfile(phase) {
+  return {
+    local: peak(phase, 0.02, 0.16, 0.34),
+    regional: peak(phase, 0.18, 0.36, 0.58),
+    inter: peak(phase, 0.36, 0.56, 0.78),
+    climax: peak(phase, 0.60, 0.72, 0.86),
+    settle: peak(phase, 0.78, 0.90, 1.0),
+  };
+}
+
+function collectSignals(model, phase01) {
+  const phase = wrapPhase(phase01);
+  const profile = phaseProfile(phase);
+  const nodeExcitation = new Float32Array(model.nodes.length);
+  const activeSignals = [];
+  const activeEdgeIds = new Set();
+
+  function visitBranch(branch, pulse, age) {
+    if (age < branch.startOffset) return;
+    const localAge = age - branch.startOffset;
+    for (const segment of branch.segments) {
+      const edge = model.edges[segment.edgeId];
+      if (localAge >= segment.start && localAge <= segment.end + segment.duration * pulse.tail) {
+        const raw = (localAge - segment.start) / segment.duration;
+        const head = clamp(raw, 0, 1);
+        const trail = clamp(head - pulse.tail, 0, 1);
+        const residue = clamp(1 - Math.max(0, raw - 1) / pulse.tail, 0, 1);
+        const intensity = pulse.intensity * (raw <= 1 ? 1 : residue * 0.65);
+        activeSignals.push({
+          edgeId: segment.edgeId,
+          fromNode: segment.fromNode,
+          toNode: segment.toNode,
+          head,
+          trail,
+          intensity,
+          width: pulse.width,
+          colour: pulse.colour,
+        });
+        activeEdgeIds.add(segment.edgeId);
+        nodeExcitation[segment.fromNode] = Math.max(nodeExcitation[segment.fromNode], intensity * (1 - head * 0.7));
+        nodeExcitation[segment.toNode] = Math.max(nodeExcitation[segment.toNode], intensity * head);
+      }
+      if (localAge < segment.end) break;
+    }
+    for (const child of branch.children) visitBranch(child, pulse, age);
+  }
+
+  for (const pulse of model.pulses) {
+    const age = phase - pulse.startPhase;
+    if (age < 0 || age > pulse.duration) continue;
+    visitBranch(pulse.tree, pulse, age);
+  }
+
+  return {phase, profile, activeSignals, activeEdgeIds, nodeExcitation};
+}
+
+function getPlaybackTransform(phase) {
+  return {
+    rotationY: phase * TAU,
+    rotationX: 0.20 + Math.sin(phase * TAU) * 0.06,
+    rollZ: Math.sin(phase * TAU * 2) * 0.03,
+  };
+}
+
+function getReviewTransform(reviewKey) {
+  const review = REVIEW_STATES[reviewKey] || REVIEW_STATES.playback;
+  if (reviewKey === 'playback') return null;
+  return {
+    phase: review.phase,
+    rotationY: review.rotationY,
+    rotationX: reviewKey === 'climax' ? 0.17 : 0.2,
+    rollZ: reviewKey === 'side' || reviewKey === 'opposite' ? 0.01 : 0,
+  };
+}
+
+function computeLayout(width, height, options = {}) {
+  const ratio = width / Math.max(1, height);
+  const portrait = ratio < 0.88;
+  const squareish = ratio >= 0.88 && ratio < 1.18;
+  const safeFraction = 0;
+  const scale = Math.min(width, height) * (portrait ? 0.72 : squareish ? 0.88 : 1);
+  const centreX = width * 0.5;
+  const centreY = height * 0.5;
+  const edgeFade = portrait ? 0.12 : 0.08;
+  return {
+    portrait,
+    squareish,
+    textSafeFraction: safeFraction,
+    centreX,
+    centreY,
+    scale,
+    edgeFade,
+  };
+}
+
+function buildScene(model, phase01, viewport, options = {}) {
+  const width = viewport.width;
+  const height = viewport.height;
+  const reviewKey = options.reviewState || 'playback';
+  const reviewTransform = getReviewTransform(reviewKey);
+  const phase = wrapPhase(reviewTransform ? reviewTransform.phase : phase01);
+  const signals = collectSignals(model, phase);
+  const layout = computeLayout(width, height, options);
+  const transform = reviewTransform || getPlaybackTransform(phase);
+  const quality = clamp(options.quality ?? (layout.portrait ? 0.6 : layout.squareish ? 0.78 : 1), 0.42, 1);
+  const nodeStep = quality >= 0.95 ? 1 : quality >= 0.74 ? 2 : 3;
+  const edgeStep = quality >= 0.95 ? 1 : quality >= 0.74 ? 2 : 3;
+  const depthBase = 3.35;
+  const nodes2d = [];
+  const allProjected = new Array(model.nodes.length);
+
+  for (const node of model.nodes) {
+    const rotated = rotatePoint(node, transform.rotationY, transform.rotationX, transform.rollZ);
+    const depth = depthBase + rotated.z;
+    const perspective = 1 / Math.max(1.5, depth);
+    const x = layout.centreX + rotated.x * layout.scale * perspective * 1.72;
+    const y = layout.centreY + rotated.y * layout.scale * perspective * 1.78;
+    const leftFade = smoothstep(width * layout.edgeFade, width * (layout.edgeFade + 0.09), x);
+    const rightFade = 1 - smoothstep(width * (1 - layout.edgeFade - 0.07), width * (1 - layout.edgeFade), x);
+    const topFade = smoothstep(height * 0.06, height * 0.16, y);
+    const bottomFade = 1 - smoothstep(height * 0.82, height * 0.95, y);
+    const visibility = clamp(Math.min(leftFade, rightFade, topFade, bottomFade), 0, 1);
+    const structureAlpha = visibility * (0.08 + node.depthCue * 0.18) * (0.64 + perspective * 0.8);
+    const size = (0.9 + node.depthCue * 1.4 + Math.max(0, node.prominence) * 1.1) * (0.72 + perspective * 1.3);
+    const excitation = signals.nodeExcitation[node.id];
+    allProjected[node.id] = {x, y, depth: rotated.z, perspective, structureAlpha, size, excitation, visibility, node};
+    if (node.id % nodeStep === 0 || excitation > 0.06 || node.shell === 0) {
+      nodes2d.push({id: node.id, x, y, depth: rotated.z, perspective, structureAlpha, size, excitation, visibility, hemisphere: node.hemisphere, shell: node.shell});
+    }
+  }
+
+  const edges2d = [];
+  const activeSignals = [];
+  for (const edge of model.edges) {
+    const a = allProjected[edge.a];
+    const b = allProjected[edge.b];
+    const visible = Math.min(a.visibility, b.visibility);
+    if (visible <= 0.01) continue;
+    const isActive = signals.activeEdgeIds.has(edge.id);
+    if (!isActive && edge.id % edgeStep !== 0 && edge.kind === 'grid') continue;
+    const midpointDepth = (a.depth + b.depth) * 0.5;
+    const structureAlpha = visible * (edge.kind === 'commissure' ? 0.025 : edge.kind === 'tract' ? 0.17 : 0.10) * (0.65 + (a.perspective + b.perspective) * 0.55);
+    edges2d.push({
+      id: edge.id,
+      kind: edge.kind,
+      ax: a.x,
+      ay: a.y,
+      bx: b.x,
+      by: b.y,
+      depth: midpointDepth,
+      alpha: structureAlpha,
+      width: edge.kind === 'commissure' ? 0.65 : edge.kind === 'tract' ? 1.15 : 0.8,
+    });
+  }
+
+  for (const signal of signals.activeSignals) {
+    const edge = model.edges[signal.edgeId];
+    const a = allProjected[edge.a];
+    const b = allProjected[edge.b];
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const headX = a.x + dx * signal.head;
+    const headY = a.y + dy * signal.head;
+    const trailX = a.x + dx * signal.trail;
+    const trailY = a.y + dy * signal.trail;
+    activeSignals.push({
+      edgeId: signal.edgeId,
+      ax: trailX,
+      ay: trailY,
+      bx: headX,
+      by: headY,
+      headX,
+      headY,
+      depth: (a.depth + b.depth) * 0.5,
+      width: signal.width * (0.8 + ((a.perspective + b.perspective) * 0.5)),
+      colour: signal.colour,
+      intensity: signal.intensity,
+    });
+  }
+
+  nodes2d.sort((left, right) => left.depth - right.depth);
+  edges2d.sort((left, right) => left.depth - right.depth);
+  activeSignals.sort((left, right) => left.depth - right.depth);
+
+  return {
+    phase,
+    profile: signals.profile,
+    layout,
+    transform,
+    nodes: nodes2d,
+    edges: edges2d,
+    signals: activeSignals,
+    wholeBrainPulse: peak(phase, 0.62, 0.73, 0.86),
+  };
+}
+
+function summariseScene(scene) {
+  return {
+    phase: Number(scene.phase.toFixed(6)),
+    nodeCount: scene.nodes.length,
+    edgeCount: scene.edges.length,
+    signalCount: scene.signals.length,
+    wholeBrainPulse: Number(scene.wholeBrainPulse.toFixed(6)),
+    centreX: Number(scene.layout.centreX.toFixed(2)),
+    centreY: Number(scene.layout.centreY.toFixed(2)),
+  };
+}
+
+
+function createCanvasContext(canvas) {
+  return canvas.getContext('2d', {alpha: true, desynchronized: true});
+}
+
+function rgba(hex, alpha) {
+  const value = hex.replace('#', '');
+  const r = parseInt(value.slice(0, 2), 16);
+  const g = parseInt(value.slice(2, 4), 16);
+  const b = parseInt(value.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+function qualityForSize(width, height) {
+  const area = width * height;
+  if (width < 500 || area < 260000) return 0.48;
+  if (width < 760 || area < 480000) return 0.68;
+  return 0.80;
+}
+
+function drawScene(ctx, width, height, scene, colours) {
+  ctx.clearRect(0, 0, width, height);
+  ctx.save();
+
+  for (const edge of scene.edges) {
+    const alpha = Math.max(0, edge.alpha * (edge.kind === 'grid' ? 1 : 1.08));
+    if (alpha < 0.004) continue;
+    ctx.strokeStyle = edge.kind === 'commissure'
+      ? colours.structureBright
+      : edge.kind === 'tract'
+        ? colours.structureMid
+        : colours.structureDark;
+    ctx.globalAlpha = edge.kind === 'commissure' ? alpha * 0.56 : edge.kind === 'tract' ? alpha * 0.78 : alpha * 0.92;
+    ctx.lineWidth = edge.width;
+    ctx.beginPath();
+    ctx.moveTo(edge.ax, edge.ay);
+    ctx.lineTo(edge.bx, edge.by);
+    ctx.stroke();
+  }
+
+  for (const node of scene.nodes) {
+    const baseAlpha = Math.max(0, node.structureAlpha * (node.shell === 0 ? 1 : node.shell === 1 ? 0.78 : 0.54));
+    if (baseAlpha < 0.01) continue;
+    ctx.fillStyle = node.shell === 0 ? colours.structureBright : colours.structureMid;
+    ctx.globalAlpha = baseAlpha;
+    const size = Math.max(0.8, node.size);
+    ctx.fillRect(node.x - size * 0.5, node.y - size * 0.5, size, size);
+    if (node.excitation > 0.08) {
+      const tint = node.hemisphere < 0 ? colours.mint : colours.cyan;
+      ctx.fillStyle = tint;
+      ctx.globalAlpha = Math.min(0.7, 0.18 + node.excitation * 0.42);
+      const halo = 0.8 + node.excitation * 2.2;
+      ctx.fillRect(node.x - halo * 0.5, node.y - halo * 0.5, halo, halo);
+    }
+  }
+
+  for (const signal of scene.signals) {
+    const tint = signal.colour === 'mint' ? colours.mint : colours.cyan;
+    ctx.strokeStyle = tint;
+    ctx.globalAlpha = Math.min(0.84, 0.24 + signal.intensity * 0.54);
+    ctx.lineWidth = signal.width;
+    ctx.beginPath();
+    ctx.moveTo(signal.ax, signal.ay);
+    ctx.lineTo(signal.bx, signal.by);
+    ctx.stroke();
+    ctx.fillStyle = tint;
+    ctx.globalAlpha = Math.min(0.95, 0.38 + signal.intensity * 0.52);
+    const dot = Math.max(1.1, signal.width * 0.92);
+    ctx.beginPath();
+    ctx.arc(signal.headX, signal.headY, dot, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  if (scene.wholeBrainPulse > 0.04) {
+    ctx.globalAlpha = 1;
+    const pulse = scene.wholeBrainPulse;
+    const layout = scene.layout;
+    const gradient = ctx.createRadialGradient(
+      layout.centreX,
+      layout.centreY,
+      layout.scale * 0.12,
+      layout.centreX,
+      layout.centreY,
+      layout.scale * 1.28,
+    );
+    gradient.addColorStop(0, rgba(colours.mint, pulse * 0.06));
+    gradient.addColorStop(0.45, rgba(colours.cyan, pulse * 0.035));
+    gradient.addColorStop(1, rgba(colours.background, 0));
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+  }
+
+  ctx.globalAlpha = 1;
+  ctx.restore();
+}
+
+function nowOrZero() {
+  return typeof performance !== 'undefined' && performance.now ? performance.now() : 0;
+}
+
+function createLivingSynapticBrain(container, options = {}) {
+  if (!container) throw new Error('createLivingSynapticBrain requires a container element');
+  const params = {...DEFAULT_PARAMS, ...options, seed: options.seed ?? FIXED_SEED};
+  const colours = params.colours || DEFAULT_PARAMS.colours;
+  const canvas = (container.ownerDocument || document).createElement('canvas');
+  canvas.setAttribute('aria-hidden', 'true');
+  canvas.className = 'living-synaptic-brain__canvas';
+  container.append(canvas);
+  const ctx = createCanvasContext(canvas);
+  const model = options.model || createBrainModel(params.seed, params);
+
+  let width = 1;
+  let height = 1;
+  let dpr = 1;
+  let rafId = 0;
+  let destroyed = false;
+  let requestedRunning = true;
+  let pageVisible = !(container.ownerDocument || document).hidden;
+  let intersecting = true;
+  let reducedMotion = !!(globalThis.matchMedia && globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  let reviewState = 'playback';
+  let startedAt = nowOrZero();
+  let lastPhase = 0;
+  let frameCount = 0;
+  let lastRenderedAt = 0;
+
+  const doc = container.ownerDocument || document;
+  const win = doc.defaultView || window;
+  const motionQuery = win.matchMedia ? win.matchMedia('(prefers-reduced-motion: reduce)') : {matches: false, addEventListener() {}, removeEventListener() {}};
+  const frameInterval = 1000 / params.maxFps;
+
+  function activePhase(timestamp) {
+    const elapsed = timestamp - startedAt;
+    return wrapPhase(elapsed / (params.loopSeconds * 1000));
+  }
+
+  function currentQuality() {
+    return qualityForSize(width, height);
+  }
+
+  function renderAtPhase(phase, reason = 'manual') {
+    if (destroyed) return null;
+    lastPhase = wrapPhase(phase);
+    const scene = buildScene(model, lastPhase, {width, height}, {
+      quality: currentQuality(),
+      textSafeFraction: params.textSafeFraction,
+      reviewState,
+    });
+    drawScene(ctx, width, height, scene, colours);
+    frameCount += 1;
+    return {reason, scene};
+  }
+
+  function cancelFrame() {
+    if (rafId) {
+      win.cancelAnimationFrame(rafId);
+      rafId = 0;
+    }
+  }
+
+  function shouldAnimate() {
+    return !destroyed && requestedRunning && pageVisible && intersecting && !reducedMotion && reviewState === 'playback';
+  }
+
+  function tick(timestamp) {
+    rafId = 0;
+    if (!shouldAnimate()) return;
+    if (timestamp - lastRenderedAt >= frameInterval) {
+      renderAtPhase(activePhase(timestamp), 'raf');
+      lastRenderedAt = timestamp - ((timestamp - lastRenderedAt) % frameInterval);
+    }
+    rafId = win.requestAnimationFrame(tick);
+  }
+
+  function syncPlayback() {
+    cancelFrame();
+    if (reducedMotion) {
+      reviewState = 'reduced';
+      renderAtPhase(REDUCED_STILL_PHASE, 'reduced-motion');
+      return;
+    }
+    if (reviewState !== 'playback') {
+      const fixed = REVIEW_STATES[reviewState] || REVIEW_STATES.playback;
+      renderAtPhase(fixed.phase ?? lastPhase, 'review-state');
+      return;
+    }
+    if (shouldAnimate()) {
+      rafId = win.requestAnimationFrame(tick);
+    } else {
+      renderAtPhase(lastPhase, 'suspended');
+    }
+  }
+
+  function resize() {
+    const rect = container.getBoundingClientRect ? container.getBoundingClientRect() : {width: container.clientWidth || 1, height: container.clientHeight || 1};
+    width = Math.max(1, Math.round(rect.width || container.clientWidth || 1));
+    height = Math.max(1, Math.round(rect.height || container.clientHeight || 1));
+    const dprCap = width < 760 ? params.mobileDprCap : params.dprCap;
+    dpr = Math.min(win.devicePixelRatio || 1, dprCap);
+    canvas.width = Math.max(1, Math.round(width * dpr));
+    canvas.height = Math.max(1, Math.round(height * dpr));
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    renderAtPhase(reviewState === 'playback' ? lastPhase : (REVIEW_STATES[reviewState]?.phase ?? lastPhase), 'resize');
+  }
+
+  function start() {
+    if (destroyed) return;
+    requestedRunning = true;
+    if (reviewState !== 'playback' && !reducedMotion) reviewState = 'playback';
+    syncPlayback();
+  }
+
+  function pause() {
+    requestedRunning = false;
+    cancelFrame();
+    renderAtPhase(lastPhase, 'pause');
+  }
+
+  function renderStatic() {
+    reviewState = 'reduced';
+    requestedRunning = false;
+    cancelFrame();
+    return renderAtPhase(REDUCED_STILL_PHASE, 'render-static');
+  }
+
+  function setReviewState(key) {
+    reviewState = REVIEW_STATES[key] ? key : 'playback';
+    if (reviewState === 'playback') {
+      if (requestedRunning && !reducedMotion) {
+        start();
+      } else {
+        syncPlayback();
+      }
+      return;
+    }
+    cancelFrame();
+    renderAtPhase(REVIEW_STATES[reviewState].phase, 'review-state');
+  }
+
+  function onMotionChange(event) {
+    reducedMotion = !!event.matches;
+    if (!reducedMotion && reviewState === 'reduced' && requestedRunning) {
+      reviewState = 'playback';
+    }
+    syncPlayback();
+  }
+
+  function onVisibilityChange() {
+    pageVisible = !doc.hidden;
+    syncPlayback();
+  }
+
+  const resizeObserver = new win.ResizeObserver(() => resize());
+  const intersectionObserver = new win.IntersectionObserver((entries) => {
+    intersecting = !!entries[0]?.isIntersecting;
+    syncPlayback();
+  }, {rootMargin: '80px'});
+
+  resizeObserver.observe(container);
+  intersectionObserver.observe(container);
+  motionQuery.addEventListener('change', onMotionChange);
+  doc.addEventListener('visibilitychange', onVisibilityChange);
+
+  startedAt = nowOrZero();
+  resize();
+  syncPlayback();
+
+  return {
+    canvas,
+    model,
+    mount() {
+      startedAt = nowOrZero() - lastPhase * params.loopSeconds * 1000;
+      syncPlayback();
+    },
+    resize,
+    start,
+    pause,
+    renderStatic,
+    destroy() {
+      if (destroyed) return;
+      destroyed = true;
+      cancelFrame();
+      resizeObserver.disconnect();
+      intersectionObserver.disconnect();
+      motionQuery.removeEventListener('change', onMotionChange);
+      doc.removeEventListener('visibilitychange', onVisibilityChange);
+      canvas.remove();
+    },
+    setReviewState,
+    renderFrame(phase = lastPhase) {
+      return renderAtPhase(phase, 'explicit-render');
+    },
+    snapshot() {
+      return canvas.toDataURL('image/png');
+    },
+    getState() {
+      return {
+        width,
+        height,
+        dpr,
+        destroyed,
+        requestedRunning,
+        pageVisible,
+        intersecting,
+        reducedMotion,
+        reviewState,
+        lastPhase,
+        frameCount,
+        rafActive: !!rafId,
+      };
+    },
+  };
+}
+
+
+const root = document.querySelector('[data-brain-root]');
+const brain = createLivingSynapticBrain(root, {
+  seed: 20260728,
+  loopSeconds: 12,
+  maxFps: 30,
+  dprCap: 2,
+  mobileDprCap: 1.5,
+  textSafeFraction: 0,
+});
+window.__LIVING_SYNAPTIC_BRAIN__ = brain;
+window.__LIVING_SYNAPTIC_BRAIN_READY__ = true;
+</script></body></html>

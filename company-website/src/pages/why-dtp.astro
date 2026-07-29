@@ -415,6 +415,10 @@ const trustModes = [
     const group = new THREE.Group();
     scene.add(group);
 
+    // Keep the ambient particle field, but hold the old atom/network geometry
+    // outside the rendered scene.
+    const atomGeometry = new THREE.Group();
+
     const mint = new THREE.Color('#00e5a0');
     const blue = new THREE.Color('#7c8bff');
     const ivory = new THREE.Color('#f4f1e8');
@@ -484,7 +488,7 @@ const trustModes = [
       );
       core.position.set(...position);
       core.userData.focusScale = index === 0 ? 1.2 : 1;
-      group.add(core);
+      atomGeometry.add(core);
       nodeMeshes.push(core);
 
       const aura = new THREE.Mesh(
@@ -493,7 +497,7 @@ const trustModes = [
       );
       aura.position.set(...position);
       aura.userData.focusScale = index === 0 ? 1.05 : 0.9;
-      group.add(aura);
+      atomGeometry.add(aura);
       nodeMeshes.push(aura);
     });
 
@@ -516,7 +520,7 @@ const trustModes = [
         material
       );
       line.userData.focusOpacity = 0.18;
-      group.add(line);
+      atomGeometry.add(line);
       lines.push(line);
       return line.geometry;
     };
@@ -585,7 +589,7 @@ const trustModes = [
       );
       ring.rotation.x = Math.PI / 2 + index * 0.18;
       ring.rotation.y = index * 0.22;
-      group.add(ring);
+      atomGeometry.add(ring);
       return ring;
     });
 
