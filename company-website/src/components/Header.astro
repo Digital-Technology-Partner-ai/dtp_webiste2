@@ -90,8 +90,8 @@ const isActive = (href: string) => currentPath === href || currentPath.startsWit
         </span>
       </a>
       <a href="https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous" target="_blank" rel="noopener noreferrer" class="ma-btn ma-btn-mint ma-nav-cta">Book a Call</a>
-      <button class="ma-nav-index" data-st-index-open aria-label="Open ecosystem index" aria-expanded="false">
-        <span>INDEX</span>
+      <button class="ma-nav-index" data-st-index-open aria-label="Open menu" aria-controls="st-index" aria-expanded="false">
+        <span>MENU</span>
         <span class="ma-nav-index-lines" aria-hidden="true"><i></i><i></i></span>
       </button>
     </div>
@@ -526,6 +526,9 @@ const isActive = (href: string) => currentPath === href || currentPath.startsWit
 
     .ma-nav-logo {
       gap: 0;
+      min-width: 44px;
+      min-height: 44px;
+      justify-content: center;
     }
 
     .ma-logo-wordmark {
@@ -547,6 +550,9 @@ const isActive = (href: string) => currentPath === href || currentPath.startsWit
       padding: 9px 10px;
       gap: 8px;
       letter-spacing: 0.16em;
+      min-width: 44px;
+      min-height: 44px;
+      justify-content: center;
     }
 
     .ma-nav-index > span:first-child,

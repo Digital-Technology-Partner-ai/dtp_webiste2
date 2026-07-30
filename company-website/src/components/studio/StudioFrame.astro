@@ -5,19 +5,26 @@
    the full-screen ECOSYSTEM INDEX overlay. Injected by
    Layout.astro so every internal page shares one atmosphere. */
 
+const currentPath = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`;
+const isCurrent = (route: string) => currentPath === route;
+const isProgrammesRoute = currentPath.startsWith('/programmes/');
+
 const indexDestinations = [
   { num: '01', title: 'HOME', route: '/home/', desc: 'The landing narrative for AI that works.' },
   { num: '02', title: 'WHY DTP', route: '/why-dtp/', desc: 'Risk, governance and delivery confidence.' },
-  { num: '03', title: 'PROGRAMMES', route: '/programmes/', desc: 'Assessment, foundry work and leadership coaching.' },
   { num: '04', title: 'SOLUTIONS', route: '/solutions/', desc: 'Business systems, agents and automation.' },
   { num: '05', title: 'PROCESS', route: '/process/', desc: 'How delivery stays controlled.' },
   { num: '06', title: 'CASE STUDIES', route: '/case-studies/', desc: 'Evidence from real client outcomes.' },
   { num: '07', title: 'INSIGHTS', route: '/insights/', desc: 'Signal on AI adoption and implementation.' },
   { num: '08', title: 'NEWS', route: '/news/', desc: 'Updates from DTP and the AI landscape.' },
-  { num: '09', title: 'AI READINESS', route: '/programmes/ai-adoption-readiness/', desc: 'A one-week adoption and risk view.' },
-  { num: '10', title: 'AI FOUNDRY', route: '/programmes/ai-foundry/', desc: 'Opportunity discovery with working groups.' },
-  { num: '11', title: 'LEADERSHIP AI', route: '/programmes/leadership-ai-coaching/', desc: 'Private AI support for business leaders.' },
-  { num: '12', title: 'CONTACT', route: '/contact/', desc: 'Start the conversation.' },
+  { num: '09', title: 'CONTACT', route: '/contact/', desc: 'Start the conversation.' },
+];
+
+const programmeDestinations = [
+  { title: 'All Programmes', route: '/programmes/' },
+  { title: 'AI Adoption Readiness', route: '/programmes/ai-adoption-readiness/' },
+  { title: 'AI Foundry', route: '/programmes/ai-foundry/' },
+  { title: 'Leadership AI Coaching', route: '/programmes/leadership-ai-coaching/' },
 ];
 ---
 
@@ -31,22 +38,59 @@ const indexDestinations = [
 <div class="st-progress" id="st-progress" aria-hidden="true"></div>
 <div class="st-wipe" id="st-wipe" aria-hidden="true"></div>
 
-<nav class="st-index" id="st-index" aria-label="ecosystem index" aria-hidden="true">
+<div class="st-index" id="st-index" role="dialog" aria-modal="true" aria-label="Site menu" aria-hidden="true">
   <div class="st-index-head">
-    <span class="st-index-title">ECOSYSTEM INDEX</span>
-    <button class="st-index-close" id="st-index-close">CLOSE &times;</button>
+    <span class="st-index-title">SITE MENU</span>
+    <button class="st-index-close" id="st-index-close" aria-label="Close menu">CLOSE &times;</button>
   </div>
-  <ul class="st-index-list">
-    {indexDestinations.map((d) => (
-      <li>
-        <a href={d.route}>
-          <span class="st-index-num">{d.num}</span>
-          <span class="st-index-name">{d.title}</span>
-          <span class="st-index-desc">{d.desc}</span>
-        </a>
+  <nav class="st-index-navigation" aria-label="Primary navigation">
+    <ul class="st-index-list">
+      {indexDestinations.slice(0, 2).map((d) => (
+        <li>
+          <a href={d.route} aria-current={isCurrent(d.route) ? 'page' : undefined}>
+            <span class="st-index-num">{d.num}</span>
+            <span class="st-index-name">{d.title}</span>
+            <span class="st-index-desc">{d.desc}</span>
+          </a>
+        </li>
+      ))}
+      <li class:list={['st-index-group', { 'is-current': isProgrammesRoute }]}>
+        <button
+          class="st-index-programmes-toggle"
+          id="st-index-programmes-toggle"
+          type="button"
+          aria-expanded={isProgrammesRoute}
+          aria-controls="st-index-programmes"
+        >
+          <span class="st-index-num">03</span>
+          <span class="st-index-name">PROGRAMMES</span>
+          <span class="st-index-desc">Assessment, foundry work and leadership coaching.</span>
+          <span class="st-index-chevron" aria-hidden="true">+</span>
+        </button>
+        <ul class="st-index-children" id="st-index-programmes" hidden={!isProgrammesRoute}>
+          {programmeDestinations.map((programme) => (
+            <li>
+              <a href={programme.route} aria-current={isCurrent(programme.route) ? 'page' : undefined}>
+                <span>{programme.title}</span>
+                {isCurrent(programme.route) && (
+                  <span class="st-index-current-badge" aria-hidden="true">CURRENT</span>
+                )}
+              </a>
+            </li>
+          ))}
+        </ul>
       </li>
-    ))}
-  </ul>
+      {indexDestinations.slice(2).map((d) => (
+        <li>
+          <a href={d.route} aria-current={isCurrent(d.route) ? 'page' : undefined}>
+            <span class="st-index-num">{d.num}</span>
+            <span class="st-index-name">{d.title}</span>
+            <span class="st-index-desc">{d.desc}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
   <div class="st-index-foot">
     <a href="/">&lsaquo; Return to Gallery Sphere</a>
     <a
@@ -56,7 +100,7 @@ const indexDestinations = [
       class="ma-btn ma-btn-mint">Book a Call</a
     >
   </div>
-</nav>
+</div>
 
 <script>
   import { gsap } from 'gsap';
@@ -136,31 +180,71 @@ const indexDestinations = [
     });
   }
 
-  /* ============ ecosystem index overlay ============ */
+  /* ============ site menu overlay ============ */
   const indexOverlay = document.getElementById('st-index');
   const indexClose = document.getElementById('st-index-close');
+  const programmesToggle = document.getElementById('st-index-programmes-toggle');
+  const programmesList = document.getElementById('st-index-programmes');
   const indexOpenButtons = Array.from(document.querySelectorAll<HTMLElement>('[data-st-index-open]'));
   let indexOpen = false;
+  let lastIndexTrigger: HTMLElement | null = null;
 
   function setIndexButtonsOpen(open: boolean) {
     indexOpenButtons.forEach((button) => {
       button.classList.toggle('is-open', open);
       button.setAttribute('aria-expanded', String(open));
+      button.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     });
   }
 
-  function openIndex() {
+  function getIndexFocusables() {
+    if (!indexOverlay) return [] as HTMLElement[];
+    return Array.from(
+      indexOverlay.querySelectorAll<HTMLElement>(
+        'a[href]:not([hidden]), button:not([disabled]):not([hidden]), [tabindex]:not([tabindex="-1"]):not([hidden])'
+      )
+    ).filter(
+      (element) => !element.closest('[hidden]') && element.getClientRects().length > 0
+    );
+  }
+
+  function setPageInert(inert: boolean) {
+    Array.from(document.body.children).forEach((element) => {
+      if (
+        !(element instanceof HTMLElement) ||
+        element === indexOverlay ||
+        ['SCRIPT', 'STYLE'].includes(element.tagName)
+      ) return;
+      element.inert = inert;
+    });
+    document.documentElement.classList.toggle('st-index-open', inert);
+  }
+
+  function setProgrammesExpanded(expanded: boolean) {
+    if (!programmesToggle || !programmesList) return;
+    programmesToggle.setAttribute('aria-expanded', String(expanded));
+    programmesList.hidden = !expanded;
+  }
+
+  function openIndex(event?: Event) {
     if (!indexOverlay || indexOpen) return;
+    lastIndexTrigger = event?.currentTarget instanceof HTMLElement
+      ? event.currentTarget
+      : document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
     indexOpen = true;
     indexOverlay.setAttribute('aria-hidden', 'false');
     setIndexButtonsOpen(true);
+    setPageInert(true);
     lenis?.stop();
     gsap.to(indexOverlay, { autoAlpha: 1, duration: 0.4, ease: 'power2.out' });
     gsap.fromTo(
-      indexOverlay.querySelectorAll('.st-index-list li'),
+      indexOverlay.querySelectorAll('.st-index-list > li'),
       { y: 26, autoAlpha: 0 },
       { y: 0, autoAlpha: 1, duration: 0.55, stagger: 0.04, ease: 'power3.out', delay: 0.08 }
     );
+    requestAnimationFrame(() => indexClose?.focus());
   }
 
   function closeIndex() {
@@ -168,16 +252,38 @@ const indexDestinations = [
     indexOpen = false;
     indexOverlay.setAttribute('aria-hidden', 'true');
     setIndexButtonsOpen(false);
+    setPageInert(false);
     lenis?.start();
     gsap.to(indexOverlay, { autoAlpha: 0, duration: 0.3, ease: 'power2.in' });
+    lastIndexTrigger?.focus();
   }
 
   indexOpenButtons.forEach((btn) => {
     btn.addEventListener('click', openIndex);
   });
   indexClose?.addEventListener('click', closeIndex);
+  programmesToggle?.addEventListener('click', () => {
+    setProgrammesExpanded(programmesToggle.getAttribute('aria-expanded') !== 'true');
+  });
   window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && indexOpen) closeIndex();
+    if (!indexOpen) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeIndex();
+      return;
+    }
+    if (e.key !== 'Tab') return;
+    const focusables = getIndexFocusables();
+    if (!focusables.length) return;
+    const first = focusables[0]!;
+    const last = focusables[focusables.length - 1]!;
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
   });
 
   /* ============ header scroll state ============ */
