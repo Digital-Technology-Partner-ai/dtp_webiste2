@@ -480,6 +480,7 @@ def build_review_html(article_path: Path, frontmatter: dict[str, Any], body: str
   <header class="ma-header">
     <nav class="ma-container ma-nav-inner">
       <a href="/" class="ma-nav-logo" aria-label="Digital Technology Partner — return to ecosystem">
+        <img src="/images/DTP logo - White-2.png" alt="" class="ma-logo-img" />
         <span class="ma-logo-wordmark">Digital Technology Partner</span>
       </a>
       <ul class="ma-nav-links">
@@ -497,8 +498,8 @@ def build_review_html(article_path: Path, frontmatter: dict[str, Any], body: str
             <span class="ma-nav-cube"></span><span class="ma-nav-cube"></span><span class="ma-nav-cube"></span><span class="ma-nav-cube"></span><span class="ma-nav-cube"></span><span class="ma-nav-cube"></span>
           </span>
         </a>
-        <a href="/contact" class="ma-btn ma-btn-mint ma-nav-cta">Book a Call</a>
-        <button class="ma-nav-index" type="button" aria-label="Open ecosystem index">
+        <a href="https://outlook.office.com/bookwithme/user/f0762b9af6a94ed2add9818a4f3ca4e5@digitaltechnologypartner.ai/meetingtype/qc2lOXjEdkO6GkMS_jZJrQ2?anonymous" target="_blank" rel="noopener noreferrer" class="ma-btn ma-btn-mint ma-nav-cta">Book a Call</a>
+        <button class="ma-nav-index" type="button" data-st-index-open aria-label="Open ecosystem index" aria-expanded="false">
           <span>INDEX</span>
           <span class="ma-nav-index-lines" aria-hidden="true"><i></i><i></i></span>
         </button>
@@ -529,7 +530,7 @@ def build_review_html(article_path: Path, frontmatter: dict[str, Any], body: str
       <p class="ma-footer-copy">&copy; 2025 Digital Technology Partner. All Rights Reserved.</p>
       <div class="ma-footer-links">
         <a href="https://www.linkedin.com/company/dtp-ai/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-        <a href="/contact">Email</a>
+        <a href="mailto:Info@digitaltechnologypartner.ai">Email</a>
         <a href="https://wa.me/447769386204">WhatsApp</a>
       </div>
     </div>

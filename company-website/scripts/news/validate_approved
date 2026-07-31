@@ -24,6 +24,9 @@ OVERVIEW_SCAFFOLD_HEADINGS = [
     '## What to do next',
 ]
 
+STOCK_CTA_TITLE = '## Pressure-test your AI dependencies'
+STOCK_CTA_BODY = 'If AI is becoming part of your operating stack, let’s pressure-test the risks, dependencies and fallback options.'
+
 
 def field(text: str, name: str) -> str | None:
     m = re.search(rf'^{name}:\s*(.+)$', text, re.MULTILINE)
@@ -67,8 +70,8 @@ def main() -> int:
         if enforce_practical_ending and '## Why this matters in practice' not in text:
             problems.append(f'{md.name}: missing practical ending section')
 
-        if enforce_practical_ending and '## Pressure-test your AI dependencies' not in text:
-            problems.append(f'{md.name}: missing in-article CTA section')
+        if STOCK_CTA_TITLE in text or STOCK_CTA_BODY in text:
+            problems.append(f'{md.name}: stock newsroom CTA still present')
 
         if has_placeholder_scaffold(text):
             problems.append(f'{md.name}: placeholder scaffold text still present')

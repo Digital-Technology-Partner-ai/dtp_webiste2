@@ -4,6 +4,9 @@ Prepare a newsroom article for publish:
 - remove draft boilerplate
 - ensure description is not the default draft text
 - ensure the article has a practical ending section, not a DTP-centred sales section
+
+This script must not inject a stock closing CTA. The article ending should stay specific to
+the story being reviewed.
 """
 
 from __future__ import annotations
@@ -18,13 +21,13 @@ PRACTICAL_SECTION_BODY = (
     "The practical question is whether the business process still knows what to do "
     "if the preferred model, provider, or workflow becomes unavailable."
 )
-CTA_SECTION_TITLE = "## Pressure-test your AI dependencies"
-CTA_SECTION_BODY = (
+DRAFT_FOOTER = "*AI-assisted draft. Human review and approval required before publish.*"
+APPROVAL_LINE_PATTERN = r"^\s*Human-?approved by .*?$"
+STOCK_CTA_TITLE = "## Pressure-test your AI dependencies"
+STOCK_CTA_BODY = (
     "If AI is becoming part of your operating stack, let’s pressure-test the risks, "
     "dependencies and fallback options."
 )
-DRAFT_FOOTER = "*AI-assisted draft. Human review and approval required before publish.*"
-APPROVAL_LINE_PATTERN = r"^\s*Human-?approved by .*?$"
 
 
 def load_frontmatter(text: str) -> dict[str, str]:
@@ -61,9 +64,12 @@ def ensure_practical_section(text: str) -> str:
     text = text.replace("## Why this matters to Digital Technology Partner", PRACTICAL_SECTION_TITLE)
     if PRACTICAL_SECTION_TITLE not in text:
         text = text.rstrip() + f"\n\n{PRACTICAL_SECTION_TITLE}\n\n{PRACTICAL_SECTION_BODY}\n"
-    if CTA_SECTION_TITLE not in text:
-        text = text.rstrip() + f"\n\n{CTA_SECTION_TITLE}\n\n{CTA_SECTION_BODY}\n"
     return text
+
+
+def remove_stock_cta(text: str) -> str:
+    pattern = re.escape(STOCK_CTA_TITLE) + r"\n\n" + re.escape(STOCK_CTA_BODY) + r"\n?"
+    return re.sub(pattern, "", text).rstrip() + "\n"
 
 
 def main() -> int:
@@ -84,6 +90,7 @@ def main() -> int:
 
     text = remove_draft_footer(text)
     text = ensure_practical_section(text)
+    text = remove_stock_cta(text)
 
     path.write_text(text, encoding="utf-8")
     print(f"Prepared for publish: {path}")

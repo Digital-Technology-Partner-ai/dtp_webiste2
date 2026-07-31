@@ -206,7 +206,8 @@ class NewsroomWorkflowTests(unittest.TestCase):
         self.assertIn('## What stands out', text)
         self.assertIn('## What leaders should take from this', text)
         self.assertIn('## Why this matters in practice', text)
-        self.assertIn('## Pressure-test your AI dependencies', text)
+        self.assertNotIn('## Pressure-test your AI dependencies', text)
+        self.assertIn('replace any generic closing line with a story-specific final paragraph or CTA', text)
         self.assertNotIn('## What to do next', text)
         self.assertNotIn('What this signal means for leaders thinking about', text)
 
@@ -257,7 +258,7 @@ class NewsroomWorkflowTests(unittest.TestCase):
         self.assertIn('default draft description still present', output)
         self.assertIn('draft footer still present', output)
         self.assertIn('missing practical ending section', output)
-        self.assertIn('missing in-article CTA section', output)
+        self.assertNotIn('missing in-article CTA section', output)
 
     def test_validate_approved_fails_for_placeholder_scaffold_sections(self) -> None:
         article = self.root / 'src' / 'content' / 'news' / '2026-06-14-test.md'
@@ -316,7 +317,7 @@ class NewsroomWorkflowTests(unittest.TestCase):
         self.assertNotIn('Draft generated from newsroom shortlist.', text)
         self.assertNotIn('*AI-assisted draft. Human review and approval required before publish.*', text)
         self.assertEqual(text.count('## Why this matters in practice'), 1)
-        self.assertEqual(text.count('## Pressure-test your AI dependencies'), 1)
+        self.assertEqual(text.count('## Pressure-test your AI dependencies'), 0)
         self.assertNotIn('## Why this matters to Digital Technology Partner', text)
 
     def test_production_domain_guard_allows_ordinary_live_site_references(self) -> None:
@@ -382,8 +383,8 @@ class NewsroomWorkflowTests(unittest.TestCase):
             '---\n\n'
             '## Why this topic matters\n\n'
             'A useful paragraph.\n\n'
-            '## Pressure-test your AI dependencies\n\n'
-            'If AI is becoming part of your operating stack, test the controls.\n',
+            '## Questions worth asking now\n\n'
+            'If this same pattern showed up in your supplier stack tomorrow, what would you need to check first?\n',
             encoding='utf-8',
         )
         output_root = self.root / 'tmp-review-output'
@@ -409,6 +410,9 @@ class NewsroomWorkflowTests(unittest.TestCase):
         self.assertIn('class="ma-footer"', html)
         self.assertIn('class="ma-btn ma-btn-outline"', html)
         self.assertIn('class="ma-btn ma-btn-mint"', html)
+        self.assertIn('/images/DTP logo - White-2.png', html)
+        self.assertIn('mailto:Info@digitaltechnologypartner.ai', html)
+        self.assertIn('bookwithme', html)
         self.assertIn('← Back to Newsroom', html)
         self.assertIn('Contact us', html)
         self.assertNotIn('Status:', html)
@@ -447,7 +451,7 @@ class NewsroomWorkflowTests(unittest.TestCase):
         self.assertEqual(len(article_files), 1)
         text = article_files[0].read_text(encoding='utf-8')
         self.assertIn('## Why this matters in practice', text)
-        self.assertIn('## Pressure-test your AI dependencies', text)
+        self.assertNotIn('## Pressure-test your AI dependencies', text)
         self.assertNotIn('Draft generated from newsroom shortlist.', text)
         self.assertTrue((output_root / article_files[0].stem / 'index.html').exists())
 
