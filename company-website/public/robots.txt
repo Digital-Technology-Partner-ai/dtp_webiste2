@@ -1,0 +1,14 @@
+# Digital Technology Partner crawler policy
+# Public pages and the assets needed to render them may be crawled.
+# Internal previews, reviews, diagnostics and design experiments are excluded.
+User-agent: *
+Allow: /
+Disallow: /booking-test/
+Disallow: /design-lab/
+Disallow: /design-option-
+Disallow: /design-v
+Disallow: /gallery-starfield/
+Disallow: /news/preview/
+Disallow: /news/review/
+
+Sitemap: https://digitaltechnologypartner.ai/sitemap.xml

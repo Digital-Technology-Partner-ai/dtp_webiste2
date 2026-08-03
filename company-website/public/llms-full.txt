@@ -1,0 +1,94 @@
+# Digital Technology Partner: public information
+
+> This file expands DTP's concise [llms.txt](https://digitaltechnologypartner.ai/llms.txt) with public detail and authoritative links. It contains descriptions from DTP's own website, not independent validation of DTP's outcomes.
+
+## Organisation
+
+Digital Technology Partner (DTP) presents itself as helping leadership teams turn scattered AI activity into governed systems intended to create measurable operational value. Its public contact page says it operates from Aberdeen and works remotely.
+
+- [DTP home](https://digitaltechnologypartner.ai/home/)
+- [Why DTP](https://digitaltechnologypartner.ai/why-dtp/)
+- [Contact DTP](https://digitaltechnologypartner.ai/contact/)
+
+## Public programmes
+
+### AI Adoption Readiness Sprint
+
+DTP describes this as a one-week assessment of current AI use, risk, noise and opportunity.
+
+- [AI Adoption Readiness Sprint](https://digitaltechnologypartner.ai/programmes/ai-adoption-readiness/)
+
+### AI Foundry
+
+DTP describes AI Foundry as a twelve-week working group that turns experiments into evidence and leadership decisions. The page explicitly distinguishes it from a conventional course.
+
+- [AI Foundry](https://digitaltechnologypartner.ai/programmes/ai-foundry/)
+
+### Leadership AI Coaching
+
+DTP describes this as confidential, private and one-to-one coaching for senior leaders.
+
+- [Leadership AI Coaching](https://digitaltechnologypartner.ai/programmes/leadership-ai-coaching/)
+
+- [All AI programmes](https://digitaltechnologypartner.ai/programmes/)
+
+## Delivery process
+
+DTP describes a five-gate method: Discover, Prove, Build, Pilot and Launch. Its process page says there is a right to stop at every gate.
+
+- [DTP process](https://digitaltechnologypartner.ai/process/)
+
+## Solutions
+
+DTP says it designs and builds dashboards, workflow automation, AI agents and bespoke AI or business systems around workflow, data, people and governance.
+
+- [DTP solutions](https://digitaltechnologypartner.ai/solutions/)
+
+## Products
+
+### WhichLogin
+
+DTP presents WhichLogin as a local-only macOS menu-bar app that records sign-in routes on the user's Mac. Its privacy page says the data is stored locally.
+
+- [WhichLogin](https://digitaltechnologypartner.ai/apps/whichlogin/)
+- [WhichLogin privacy policy](https://digitaltechnologypartner.ai/apps/whichlogin/privacy-policy/)
+- [WhichLogin support](https://digitaltechnologypartner.ai/apps/whichlogin/support/)
+
+### 10 Touches
+
+The 10 Touches privacy policy describes it as a personal CRM whose production data stays locally on the device.
+
+- [10 Touches privacy policy](https://digitaltechnologypartner.ai/10-touches/privacy/)
+- [10 Touches TestFlight beta privacy policy](https://digitaltechnologypartner.ai/10-touches/privacy/beta/)
+
+## Publications
+
+DTP publishes a newsroom about AI adoption, governance, delivery and automation. Article titles below are links to DTP's published commentary. Titles and third-party figures appearing in them are not claims about DTP.
+
+- [Insights](https://digitaltechnologypartner.ai/insights/)
+- [Newsroom](https://digitaltechnologypartner.ai/news/)
+- [Newsroom archive](https://digitaltechnologypartner.ai/news/archive/)
+
+### Published newsroom articles
+
+- [How Aberdeen Operators Can Cut Decommissioning Documentation Time with AI](https://digitaltechnologypartner.ai/news/2026-02-22-aberdeen-decommissioning-ai/)
+- [Knowledge Retention Playbook for Field Teams Facing Workforce Contraction](https://digitaltechnologypartner.ai/news/2026-02-22-field-teams-knowledge-retention/)
+- [Netlify Governance Checklist for Regulated Client Websites](https://digitaltechnologypartner.ai/news/2026-02-22-netlify-governance-checklist/)
+- [Why AI Pilots Fail in Mid-Market Ops Teams (and How to Avoid It)](https://digitaltechnologypartner.ai/news/2026-02-22-why-ai-pilots-fail/)
+- [OpenAI Signals Multi-Agent Future as Peter Steinberger Joins, OpenClaw Moves to Foundation](https://digitaltechnologypartner.ai/news/2026-02-23-openai-personal-agents-openclaw-foundation/)
+- [When 'Vibe Coding' Goes Wrong: The Hidden Risks of AI Experiments in Enterprise Environments](https://digitaltechnologypartner.ai/news/2026-02-24-vibe-coding-enterprise-risks/)
+- [What CTOs Actually Need from AI Vendors in 2026](https://digitaltechnologypartner.ai/news/2026-03-04-what-ctos-actually-need-from-ai-vendors-in-2026/)
+- [Prompting After Autonomous Agents: The Five Primitives That Matter in 2026](https://digitaltechnologypartner.ai/news/2026-03-07-prompting-after-autonomous-agents/)
+- [The AI Off Switch Is the Real Story Behind the Anthropic Export-Control Row](https://digitaltechnologypartner.ai/news/2026-06-15-the-ai-off-switch-how-anthropics-export-controls-sparked-a-global-ai-sov/)
+- [Europe’s largest cybersecurity seed: NeuralTrust raises $20M to govern enterprise AI agents](https://digitaltechnologypartner.ai/news/2026-06-17-europes-largest-cybersecurity-seed-neuraltrust-raises-20m-to-govern-ente/)
+- [Midjourney's Ultrasound Bet Shows How Fast AI Companies Are Moving Beyond Software](https://digitaltechnologypartner.ai/news/2026-06-18-midjourney-goes-from-generating-cat-images-to-full-body-ultrasound-scans/)
+- [Rolling out AI agents? Move quickly, but keep the human in charge](https://digitaltechnologypartner.ai/news/2026-06-19-rolling-out-ai-agents-4-ways-to-move-fast-and-furious-but-with-extreme-c/)
+- [Customer service AI agents are moving from novelty to operating model](https://digitaltechnologypartner.ai/news/2026-06-25-70-of-companies-deploying-customer-service-ai-agents-see-roi-in-60-days/)
+- [Asian AI startups launch Mythos-like models as Anthropic’s export ban drags on](https://digitaltechnologypartner.ai/news/2026-06-29-asian-ai-startups-launch-mythos-like-models-as-anthropics-export-ban-dra/)
+- [Your AI agents need roles, not just logins](https://digitaltechnologypartner.ai/news/2026-07-31-as-ai-agents-multiply-identity-becomes-the-enterprise-control-plane-tngl/)
+
+## Case studies and evidence boundary
+
+DTP publishes anonymous case-study patterns. Because those pages do not identify clients or provide independent evidence, this file does not reproduce their outcome claims.
+
+- [Case studies](https://digitaltechnologypartner.ai/case-studies/)
