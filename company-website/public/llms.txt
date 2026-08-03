@@ -1,0 +1,34 @@
+# Digital Technology Partner
+
+> Digital Technology Partner (DTP) says it helps leadership teams turn scattered AI activity into governed systems intended to create measurable operational value.
+
+Source: https://digitaltechnologypartner.ai/home/
+
+## Programmes
+
+- [AI programmes](https://digitaltechnologypartner.ai/programmes/): DTP publicly offers an AI Adoption Readiness Sprint, AI Foundry and private senior-leadership AI coaching.
+- [AI Adoption Readiness Sprint](https://digitaltechnologypartner.ai/programmes/ai-adoption-readiness/): described by DTP as a one-week assessment of current AI use, risk, noise and opportunity.
+- [AI Foundry](https://digitaltechnologypartner.ai/programmes/ai-foundry/): described by DTP as a twelve-week working group that turns experiments into evidence and leadership decisions, rather than a conventional course.
+- [Leadership AI Coaching](https://digitaltechnologypartner.ai/programmes/leadership-ai-coaching/): described by DTP as confidential, private and one-to-one.
+
+## Solutions and delivery
+
+- [Solutions](https://digitaltechnologypartner.ai/solutions/): DTP says it designs and builds dashboards, workflow automation, AI agents and bespoke business systems around workflow, data, people and governance.
+- [Process](https://digitaltechnologypartner.ai/process/): DTP describes five evidence gates, Discover, Prove, Build, Pilot and Launch, with a right to stop at each gate.
+- [Why DTP](https://digitaltechnologypartner.ai/why-dtp/): DTP's public delivery principles, governance approach and buyer questions.
+
+## Publishing and products
+
+- [Newsroom](https://digitaltechnologypartner.ai/news/): DTP's public writing on AI adoption, governance, delivery and automation.
+- [Newsroom archive](https://digitaltechnologypartner.ai/news/archive/): the public archive of approved newsroom articles.
+- [WhichLogin](https://digitaltechnologypartner.ai/apps/whichlogin/): a local-only macOS menu-bar app from DTP that records sign-in routes on the user's Mac.
+- [10 Touches privacy](https://digitaltechnologypartner.ai/10-touches/privacy/): describes 10 Touches as a personal CRM whose production data stays locally on the device.
+
+## Contact
+
+- [Contact DTP](https://digitaltechnologypartner.ai/contact/): public email and WhatsApp contact routes. DTP says it operates from Aberdeen and remotely.
+
+## Further reference
+
+- [Full machine-readable reference](https://digitaltechnologypartner.ai/llms-full.txt): expanded, source-linked descriptions of DTP's public pages.
+- [XML sitemap](https://digitaltechnologypartner.ai/sitemap.xml): verified public canonical URLs intended for indexing.

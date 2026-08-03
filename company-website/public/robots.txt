@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+
+# Publicly reachable utility, preview, review, duplicate and test routes.
+Disallow: /booking-test/
+Disallow: /design-lab/
+Disallow: /design-option-
+Disallow: /design-v
+Disallow: /gallery-starfield/
+Disallow: /news-v2/
+Disallow: /news/preview/
+Disallow: /news/review/
+Disallow: /apps/10-touches/privacy-policy/
+Disallow: /thank-you/
+
+# Conventional private and administrative paths, if present.
+Disallow: /admin/
+Disallow: /api/private/
+Disallow: /.netlify/
+
+Sitemap: https://digitaltechnologypartner.ai/sitemap.xml

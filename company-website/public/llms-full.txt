@@ -1,0 +1,97 @@
+# Digital Technology Partner: public reference
+
+This file expands the concise https://digitaltechnologypartner.ai/llms.txt file. It describes only publicly accessible material on the DTP website. Statements about DTP's services and methods are attributed to DTP because the website is the source, not independent validation.
+
+## Organisation
+
+Digital Technology Partner (DTP) says it helps leadership teams turn scattered AI activity into governed systems intended to create measurable operational value.
+Source: https://digitaltechnologypartner.ai/home/
+
+DTP says it operates from Aberdeen and remotely. Its public contact page provides email and WhatsApp contact routes.
+Source: https://digitaltechnologypartner.ai/contact/
+
+## Programmes
+
+DTP publicly presents three AI programmes: an AI Adoption Readiness Sprint, AI Foundry and private senior-leadership AI coaching.
+Source: https://digitaltechnologypartner.ai/programmes/
+
+DTP describes the AI Adoption Readiness Sprint as a one-week assessment of current AI use, risk, noise and opportunity.
+Source: https://digitaltechnologypartner.ai/programmes/ai-adoption-readiness/
+
+DTP describes AI Foundry as a twelve-week working group that turns experiments into evidence and leadership decisions. The page says it is not a conventional course.
+Source: https://digitaltechnologypartner.ai/programmes/ai-foundry/
+
+DTP describes Leadership AI Coaching as confidential, private and one-to-one.
+Source: https://digitaltechnologypartner.ai/programmes/leadership-ai-coaching/
+
+## Solutions and delivery method
+
+DTP says it designs and builds dashboards, workflow automation, AI agents and bespoke business systems around workflow, data, people and governance.
+Source: https://digitaltechnologypartner.ai/solutions/
+
+DTP describes its delivery method as five evidence gates: Discover, Prove, Build, Pilot and Launch. The public page says there is a right to stop at each gate.
+Source: https://digitaltechnologypartner.ai/process/
+
+DTP publishes its delivery principles, governance approach and questions buyers can use to assess an AI partner.
+Source: https://digitaltechnologypartner.ai/why-dtp/
+
+DTP publishes anonymous case-study patterns. They are DTP's own descriptions and should not be treated as independent proof or generalised into named-client, sector-wide or quantified outcome claims.
+Source: https://digitaltechnologypartner.ai/case-studies/
+
+## Public writing
+
+DTP publishes a newsroom covering AI adoption, governance, delivery and automation.
+Source: https://digitaltechnologypartner.ai/news/
+
+The approved public article archive is available here:
+Source: https://digitaltechnologypartner.ai/news/archive/
+
+DTP also publishes an insights page describing its editorial point of view and linking to current material.
+Source: https://digitaltechnologypartner.ai/insights/
+
+## Products
+
+DTP presents WhichLogin as a local-only macOS menu-bar app that records sign-in routes on the user's Mac.
+Sources: https://digitaltechnologypartner.ai/apps/whichlogin/ and https://digitaltechnologypartner.ai/apps/whichlogin/privacy-policy/
+
+Public WhichLogin support information is available here:
+Source: https://digitaltechnologypartner.ai/apps/whichlogin/support/
+
+The 10 Touches privacy policy describes 10 Touches as a personal CRM whose production data stays locally on the device.
+Source: https://digitaltechnologypartner.ai/10-touches/privacy/
+
+The separate TestFlight beta privacy policy is available here:
+Source: https://digitaltechnologypartner.ai/10-touches/privacy/beta/
+
+## Primary public page index
+
+- Domain entry point: https://digitaltechnologypartner.ai/
+- Main corporate landing page: https://digitaltechnologypartner.ai/home/
+- Programmes: https://digitaltechnologypartner.ai/programmes/
+- AI Adoption Readiness Sprint: https://digitaltechnologypartner.ai/programmes/ai-adoption-readiness/
+- AI Foundry: https://digitaltechnologypartner.ai/programmes/ai-foundry/
+- Leadership AI Coaching: https://digitaltechnologypartner.ai/programmes/leadership-ai-coaching/
+- Solutions: https://digitaltechnologypartner.ai/solutions/
+- Process: https://digitaltechnologypartner.ai/process/
+- Delivery principles: https://digitaltechnologypartner.ai/why-dtp/
+- Case studies: https://digitaltechnologypartner.ai/case-studies/
+- Insights: https://digitaltechnologypartner.ai/insights/
+- Newsroom: https://digitaltechnologypartner.ai/news/
+- Newsroom archive: https://digitaltechnologypartner.ai/news/archive/
+- WhichLogin: https://digitaltechnologypartner.ai/apps/whichlogin/
+- WhichLogin privacy: https://digitaltechnologypartner.ai/apps/whichlogin/privacy-policy/
+- WhichLogin support: https://digitaltechnologypartner.ai/apps/whichlogin/support/
+- 10 Touches privacy: https://digitaltechnologypartner.ai/10-touches/privacy/
+- 10 Touches beta privacy: https://digitaltechnologypartner.ai/10-touches/privacy/beta/
+- Contact: https://digitaltechnologypartner.ai/contact/
+
+## Interpretation limits
+
+- The website does not publicly identify clients on the pages used for this file.
+- This file does not publish contract values, fees, revenue, savings values or price ranges.
+- Anonymous case-study outcomes are not presented here as independently verified facts.
+- Newsroom headlines, quoted figures and third-party predictions are article subjects, not facts about DTP.
+- Public proposition statements are descriptions of what DTP says and offers, not independent evidence of outcomes.
+
+Canonical URL list: https://digitaltechnologypartner.ai/sitemap.xml
+Concise reference: https://digitaltechnologypartner.ai/llms.txt
