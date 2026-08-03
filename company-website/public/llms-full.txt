@@ -1,0 +1,5 @@
+# Digital Technology Partner: full machine-readable information
+
+The maintained machine-readable index is https://digitaltechnologypartner.ai/llms.txt.
+
+DTP does not publish a duplicated full-text corpus at this URL. Follow the links in llms.txt to the current public source pages.
