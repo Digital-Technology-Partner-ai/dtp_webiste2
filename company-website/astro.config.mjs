@@ -1,14 +1,10 @@
 import { defineConfig } from 'astro/config';
-import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   site: 'https://digitaltechnologypartner.ai', // Production domain for absolute URLs
-  integrations: [
-    sitemap({
-      filter: (page) => !page.includes('/news/review/'),
-    }),
-  ],
+  // public/sitemap.xml is the reviewed canonical inventory. Do not publish a
+  // second generated sitemap with internal, preview or utility routes.
   output: 'static',
   devToolbar: {
     enabled: false,

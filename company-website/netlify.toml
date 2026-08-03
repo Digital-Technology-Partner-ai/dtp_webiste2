@@ -53,11 +53,6 @@
   status = 301
 
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-[[redirects]]
   from = "/home1"
   to = "/"
   status = 301
@@ -73,8 +68,7 @@
     Cache-Control = "public, max-age=0, must-revalidate"
 
 # Machine-readable root files are physical public/ assets. These exact-path
-# rules make their MIME, encoding and revalidation contract explicit; the
-# non-forced gallery fallback cannot replace an existing static file.
+# rules make their MIME, encoding and revalidation contract explicit.
 [[headers]]
   for = "/robots.txt"
   [headers.values]

@@ -15,7 +15,7 @@
     "news:validate": "./scripts/news/validate_approved",
     "news:guard": "python3 ./scripts/news/guard_production_domains.py",
     "news:test": "python3 -m unittest tests/newsroom_workflow_test.py",
-    "machine:verify": "npm run build && python3 -m unittest tests/machine_readable_surfaces_test.py",
+    "machine-readable:verify": "npm run build && python3 -m unittest tests/machine_readable_surfaces_test.py",
     "newsroom:verify": "npm run news:guard && npm run news:test && npm run news:validate && npm run type-check && npm run build"
   },
   "dependencies": {

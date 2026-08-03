@@ -52,37 +52,6 @@
     # HTML/doc requests should always revalidate with the CDN/origin
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# Machine-readable root files are physical public/ assets. These exact-path
-# rules make their MIME, encoding and revalidation contract explicit; the
-# non-forced gallery fallback cannot replace an existing static file.
-[[headers]]
-  for = "/robots.txt"
-  [headers.values]
-    Content-Type = "text/plain; charset=utf-8"
-    Cache-Control = "public, max-age=0, must-revalidate"
-    X-Content-Type-Options = "nosniff"
-
-[[headers]]
-  for = "/sitemap.xml"
-  [headers.values]
-    Content-Type = "application/xml; charset=utf-8"
-    Cache-Control = "public, max-age=0, must-revalidate"
-    X-Content-Type-Options = "nosniff"
-
-[[headers]]
-  for = "/llms.txt"
-  [headers.values]
-    Content-Type = "text/plain; charset=utf-8"
-    Cache-Control = "public, max-age=0, must-revalidate"
-    X-Content-Type-Options = "nosniff"
-
-[[headers]]
-  for = "/llms-full.txt"
-  [headers.values]
-    Content-Type = "text/plain; charset=utf-8"
-    Cache-Control = "public, max-age=0, must-revalidate"
-    X-Content-Type-Options = "nosniff"
-
 [[headers]]
   for = "/_astro/*"
   [headers.values]
