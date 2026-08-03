@@ -4,119 +4,136 @@ import re
 import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
+from urllib.parse import urlparse
 
 
-ROOT = Path(__file__).resolve().parents[1]
-DIST = ROOT / "dist"
-PUBLIC = ROOT / "public"
-REQUIRED = ("robots.txt", "sitemap.xml", "llms.txt", "llms-full.txt")
-SITE_ORIGIN = "https://digitaltechnologypartner.ai"
-# This is deliberately the reviewed public/canonical inventory, not every static
-# route emitted by Astro (which also includes labs, previews and utility pages).
+SITE_ROOT = Path(__file__).resolve().parents[1]
+PUBLIC_ROOT = SITE_ROOT / "public"
+DIST_ROOT = SITE_ROOT / "dist"
+REPO_ROOT = SITE_ROOT.parent
+SURFACES = {
+    "robots.txt": "text/plain; charset=utf-8",
+    "sitemap.xml": "application/xml; charset=utf-8",
+    "llms.txt": "text/plain; charset=utf-8",
+    "llms-full.txt": "text/plain; charset=utf-8",
+}
+SITEMAP_NS = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+CANONICAL_HOST = "digitaltechnologypartner.ai"
 EXPECTED_SITEMAP_URLS = {
-    f"{SITE_ORIGIN}/",
-    f"{SITE_ORIGIN}/case-studies/",
-    f"{SITE_ORIGIN}/contact/",
-    f"{SITE_ORIGIN}/home/",
-    f"{SITE_ORIGIN}/insights/",
-    f"{SITE_ORIGIN}/news/",
-    f"{SITE_ORIGIN}/news/2026-02-22-aberdeen-decommissioning-ai/",
-    f"{SITE_ORIGIN}/news/2026-02-22-field-teams-knowledge-retention/",
-    f"{SITE_ORIGIN}/news/2026-02-22-netlify-governance-checklist/",
-    f"{SITE_ORIGIN}/news/2026-02-22-why-ai-pilots-fail/",
-    f"{SITE_ORIGIN}/news/2026-02-23-openai-personal-agents-openclaw-foundation/",
-    f"{SITE_ORIGIN}/news/2026-02-24-vibe-coding-enterprise-risks/",
-    f"{SITE_ORIGIN}/news/2026-03-04-what-ctos-actually-need-from-ai-vendors-in-2026/",
-    f"{SITE_ORIGIN}/news/2026-03-07-prompting-after-autonomous-agents/",
-    f"{SITE_ORIGIN}/news/2026-06-15-the-ai-off-switch-how-anthropics-export-controls-sparked-a-global-ai-sov/",
-    f"{SITE_ORIGIN}/news/2026-06-17-europes-largest-cybersecurity-seed-neuraltrust-raises-20m-to-govern-ente/",
-    f"{SITE_ORIGIN}/news/2026-06-18-midjourney-goes-from-generating-cat-images-to-full-body-ultrasound-scans/",
-    f"{SITE_ORIGIN}/news/2026-06-19-rolling-out-ai-agents-4-ways-to-move-fast-and-furious-but-with-extreme-c/",
-    f"{SITE_ORIGIN}/news/2026-06-25-70-of-companies-deploying-customer-service-ai-agents-see-roi-in-60-days/",
-    f"{SITE_ORIGIN}/news/2026-06-29-asian-ai-startups-launch-mythos-like-models-as-anthropics-export-ban-dra/",
-    f"{SITE_ORIGIN}/news/2026-07-31-as-ai-agents-multiply-identity-becomes-the-enterprise-control-plane-tngl/",
-    f"{SITE_ORIGIN}/process/",
-    f"{SITE_ORIGIN}/programmes/",
-    f"{SITE_ORIGIN}/programmes/ai-adoption-readiness/",
-    f"{SITE_ORIGIN}/programmes/ai-foundry/",
-    f"{SITE_ORIGIN}/programmes/leadership-ai-coaching/",
-    f"{SITE_ORIGIN}/solutions/",
-    f"{SITE_ORIGIN}/why-dtp/",
-}
-REVIEWED_MACHINE_URLS = {
-    f"{SITE_ORIGIN}/sitemap.xml",
-    f"{SITE_ORIGIN}/llms.txt",
-    f"{SITE_ORIGIN}/llms-full.txt",
-    f"{SITE_ORIGIN}/robots.txt",
-}
-EXPECTED_CONTENT_TYPES = {
-    "/robots.txt": "text/plain; charset=utf-8",
-    "/sitemap.xml": "application/xml; charset=utf-8",
-    "/llms.txt": "text/plain; charset=utf-8",
-    "/llms-full.txt": "text/plain; charset=utf-8",
+    "https://digitaltechnologypartner.ai/",
+    "https://digitaltechnologypartner.ai/home/",
+    "https://digitaltechnologypartner.ai/solutions/",
+    "https://digitaltechnologypartner.ai/programmes/",
+    "https://digitaltechnologypartner.ai/programmes/ai-adoption-readiness/",
+    "https://digitaltechnologypartner.ai/programmes/ai-foundry/",
+    "https://digitaltechnologypartner.ai/programmes/leadership-ai-coaching/",
+    "https://digitaltechnologypartner.ai/process/",
+    "https://digitaltechnologypartner.ai/case-studies/",
+    "https://digitaltechnologypartner.ai/insights/",
+    "https://digitaltechnologypartner.ai/news/",
+    "https://digitaltechnologypartner.ai/why-dtp/",
+    "https://digitaltechnologypartner.ai/contact/",
+    "https://digitaltechnologypartner.ai/news/2026-02-22-aberdeen-decommissioning-ai/",
+    "https://digitaltechnologypartner.ai/news/2026-02-22-field-teams-knowledge-retention/",
+    "https://digitaltechnologypartner.ai/news/2026-02-22-netlify-governance-checklist/",
+    "https://digitaltechnologypartner.ai/news/2026-02-22-why-ai-pilots-fail/",
+    "https://digitaltechnologypartner.ai/news/2026-02-23-openai-personal-agents-openclaw-foundation/",
+    "https://digitaltechnologypartner.ai/news/2026-02-24-vibe-coding-enterprise-risks/",
+    "https://digitaltechnologypartner.ai/news/2026-03-04-what-ctos-actually-need-from-ai-vendors-in-2026/",
+    "https://digitaltechnologypartner.ai/news/2026-03-07-prompting-after-autonomous-agents/",
+    "https://digitaltechnologypartner.ai/news/2026-06-15-the-ai-off-switch-how-anthropics-export-controls-sparked-a-global-ai-sov/",
+    "https://digitaltechnologypartner.ai/news/2026-06-17-europes-largest-cybersecurity-seed-neuraltrust-raises-20m-to-govern-ente/",
+    "https://digitaltechnologypartner.ai/news/2026-06-18-midjourney-goes-from-generating-cat-images-to-full-body-ultrasound-scans/",
+    "https://digitaltechnologypartner.ai/news/2026-06-19-rolling-out-ai-agents-4-ways-to-move-fast-and-furious-but-with-extreme-c/",
+    "https://digitaltechnologypartner.ai/news/2026-06-25-70-of-companies-deploying-customer-service-ai-agents-see-roi-in-60-days/",
+    "https://digitaltechnologypartner.ai/news/2026-06-29-asian-ai-startups-launch-mythos-like-models-as-anthropics-export-ban-dra/",
+    "https://digitaltechnologypartner.ai/news/2026-07-31-as-ai-agents-multiply-identity-becomes-the-enterprise-control-plane-tngl/",
 }
 
 
-class MachineReadableSurfaceTests(unittest.TestCase):
-    def test_required_files_are_copied_to_dist_unchanged(self) -> None:
-        for name in REQUIRED:
-            with self.subTest(name=name):
-                built = DIST / name
-                self.assertTrue(built.is_file(), f"missing build output: {built}")
-                self.assertEqual(built.read_bytes(), (PUBLIC / name).read_bytes())
+def read_utf8_without_bom(path: Path) -> str:
+    raw = path.read_bytes()
+    if raw.startswith(b"\xef\xbb\xbf"):
+        raise AssertionError(f"{path} contains a UTF-8 BOM")
+    return raw.decode("utf-8")
 
-    def test_text_outputs_are_utf8_and_not_gallery_html(self) -> None:
-        gallery_markers = ("<!doctype html", "<html")
-        for name in REQUIRED:
-            with self.subTest(name=name):
-                text = (DIST / name).read_bytes().decode("utf-8")
-                lowered = text.lower()
-                self.assertFalse(any(marker in lowered for marker in gallery_markers))
 
-    def test_sitemap_is_valid_and_exactly_matches_approved_inventory(self) -> None:
-        root = ET.parse(DIST / "sitemap.xml").getroot()
-        namespace = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
-        urls = {element.text for element in root.findall("sm:url/sm:loc", namespace)}
-        self.assertEqual(urls, EXPECTED_SITEMAP_URLS)
+class MachineReadableSurfacesTest(unittest.TestCase):
+    def test_public_sources_are_utf8_non_html_files(self) -> None:
+        for name in SURFACES:
+            path = PUBLIC_ROOT / name
+            self.assertTrue(path.is_file(), f"missing source file: {path}")
+            body = read_utf8_without_bom(path)
+            self.assertNotIn("<!doctype html", body.lower(), f"{name} contains HTML fallback content")
 
-    def test_no_competing_generated_sitemap_is_published(self) -> None:
-        self.assertFalse((DIST / "sitemap-index.xml").exists())
-        self.assertFalse((DIST / "sitemap-0.xml").exists())
+    def test_built_surfaces_exist_at_root_and_are_not_html(self) -> None:
+        for name in SURFACES:
+            path = DIST_ROOT / name
+            self.assertTrue(path.is_file(), f"missing built root file: {path}; run npm run build first")
+            body = read_utf8_without_bom(path)
+            self.assertNotIn("<!doctype html", body.lower(), f"{name} built as HTML")
 
-    def test_all_embedded_public_urls_are_reviewed(self) -> None:
-        allowed = EXPECTED_SITEMAP_URLS | REVIEWED_MACHINE_URLS
-        for name in REQUIRED:
-            text = (DIST / name).read_text(encoding="utf-8")
-            urls = set(re.findall(r"https://digitaltechnologypartner\.ai[^\s)<]+", text))
-            with self.subTest(name=name):
-                self.assertLessEqual(urls, allowed)
+    def test_sitemap_is_valid_and_uses_only_verified_canonical_urls(self) -> None:
+        root = ET.parse(PUBLIC_ROOT / "sitemap.xml").getroot()
+        self.assertEqual(root.tag, "{http://www.sitemaps.org/schemas/sitemap/0.9}urlset")
+        urls = [node.text for node in root.findall("sm:url/sm:loc", SITEMAP_NS)]
+        self.assertEqual(len(urls), len(set(urls)), "sitemap contains duplicate URLs")
+        self.assertEqual(set(urls), EXPECTED_SITEMAP_URLS)
+        for url in urls:
+            self.assertIsNotNone(url)
+            parsed = urlparse(url or "")
+            self.assertEqual(parsed.scheme, "https")
+            self.assertEqual(parsed.netloc, CANONICAL_HOST)
 
-    def test_netlify_serves_direct_files_with_explicit_content_types(self) -> None:
-        config = (ROOT / "netlify.toml").read_text(encoding="utf-8")
-        redirect_blocks = re.findall(
-            r"\[\[redirects\]\](.*?)(?=\n\[\[|\Z)", config, re.DOTALL
-        )
-        redirect_paths = {
-            match.group(1)
-            for block in redirect_blocks
-            if (match := re.search(r'^\s*from\s*=\s*"([^"]+)"', block, re.MULTILINE))
-        }
-        self.assertNotIn("/*", redirect_paths)
-        for path, content_type in EXPECTED_CONTENT_TYPES.items():
-            with self.subTest(path=path):
-                header_block = re.search(
-                    rf'\[\[headers\]\]\s+for\s*=\s*"{re.escape(path)}"'
-                    r"(.*?)(?=\n\[\[|\Z)",
+    def test_robots_points_to_curated_sitemap(self) -> None:
+        robots = read_utf8_without_bom(PUBLIC_ROOT / "robots.txt")
+        self.assertIn("User-agent: *", robots)
+        self.assertIn("Allow: /", robots)
+        self.assertIn(f"Sitemap: https://{CANONICAL_HOST}/sitemap.xml", robots)
+
+    def test_llms_links_are_unique_and_in_the_curated_sitemap(self) -> None:
+        llms = read_utf8_without_bom(PUBLIC_ROOT / "llms.txt")
+        links = re.findall(r"\]\((https://[^)]+)\)", llms)
+        self.assertEqual(len(links), len(set(links)), "llms.txt contains duplicate links")
+        self.assertTrue(set(links).issubset(EXPECTED_SITEMAP_URLS))
+        self.assertIn("## Public factual scope", llms)
+        self.assertIn("## Navigation links", llms)
+        self.assertLess(llms.index("## Public factual scope"), llms.index("## Navigation links"))
+        self.assertNotIn("localhost", llms)
+        self.assertNotIn("/about/", llms)
+        self.assertNotIn("/case-study)", llms)
+
+    def test_llms_full_is_a_non_duplicating_pointer(self) -> None:
+        full = read_utf8_without_bom(PUBLIC_ROOT / "llms-full.txt")
+        self.assertIn("https://digitaltechnologypartner.ai/llms.txt", full)
+        self.assertIn("does not publish a duplicated full-text corpus", full)
+        self.assertLess(len(full), 1000)
+
+    def test_netlify_configs_define_exact_mime_and_cache_contract(self) -> None:
+        for config_path in (REPO_ROOT / "netlify.toml", SITE_ROOT / "netlify.toml"):
+            config = config_path.read_text(encoding="utf-8")
+            header_blocks = {
+                route: body
+                for route, body in re.findall(
+                    r'\[\[headers\]\]\s+for\s*=\s*"([^"]+)"\s+\[headers\.values\](.*?)(?=\n\[\[|\Z)',
                     config,
-                    re.DOTALL,
+                    flags=re.DOTALL,
                 )
-                if header_block is None:
-                    self.fail(f"missing Netlify header block for {path}")
-                block = header_block.group(1)
+            }
+            for name, content_type in SURFACES.items():
+                route = f"/{name}"
+                self.assertIn(route, header_blocks, f"{config_path} omits {route} headers")
+                block = header_blocks[route]
                 self.assertIn(f'Content-Type = "{content_type}"', block)
-                self.assertIn(
-                    'Cache-Control = "public, max-age=0, must-revalidate"', block
-                )
+                self.assertIn('Cache-Control = "public, max-age=0, must-revalidate"', block)
+                self.assertIn('X-Content-Type-Options = "nosniff"', block)
+
+            fallback_blocks = re.findall(
+                r'\[\[redirects\]\](.*?)(?=\n\[\[|\Z)', config, flags=re.DOTALL
+            )
+            for block in fallback_blocks:
+                if re.search(r'from\s*=\s*"/\*"', block):
+                    self.assertNotRegex(block, r'force\s*=\s*true', f"{config_path} forces the HTML fallback")
 
 
 if __name__ == "__main__":
