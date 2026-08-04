@@ -19,6 +19,8 @@ SURFACES = {
 }
 SITEMAP_NS = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
 CANONICAL_HOST = "digitaltechnologypartner.ai"
+DRAFT_URL = "https://digitaltechnologypartner.ai/news/2026-02-22-netlify-governance-checklist/"
+FULL_GUIDE_URL = "https://digitaltechnologypartner.ai/llms-full.txt"
 EXPECTED_SITEMAP_URLS = {
     "https://digitaltechnologypartner.ai/",
     "https://digitaltechnologypartner.ai/home/",
@@ -35,7 +37,6 @@ EXPECTED_SITEMAP_URLS = {
     "https://digitaltechnologypartner.ai/contact/",
     "https://digitaltechnologypartner.ai/news/2026-02-22-aberdeen-decommissioning-ai/",
     "https://digitaltechnologypartner.ai/news/2026-02-22-field-teams-knowledge-retention/",
-    "https://digitaltechnologypartner.ai/news/2026-02-22-netlify-governance-checklist/",
     "https://digitaltechnologypartner.ai/news/2026-02-22-why-ai-pilots-fail/",
     "https://digitaltechnologypartner.ai/news/2026-02-23-openai-personal-agents-openclaw-foundation/",
     "https://digitaltechnologypartner.ai/news/2026-02-24-vibe-coding-enterprise-risks/",
@@ -88,6 +89,7 @@ class MachineReadableSurfacesTest(unittest.TestCase):
     def test_robots_points_to_curated_sitemap(self) -> None:
         robots = read_utf8_without_bom(PUBLIC_ROOT / "robots.txt")
         self.assertIn("User-agent: *", robots)
+        self.assertIn("Disallow: /news/2026-02-22-netlify-governance-checklist/", robots)
         self.assertIn("Allow: /", robots)
         self.assertIn(f"Sitemap: https://{CANONICAL_HOST}/sitemap.xml", robots)
 
@@ -95,19 +97,23 @@ class MachineReadableSurfacesTest(unittest.TestCase):
         llms = read_utf8_without_bom(PUBLIC_ROOT / "llms.txt")
         links = re.findall(r"\]\((https://[^)]+)\)", llms)
         self.assertEqual(len(links), len(set(links)), "llms.txt contains duplicate links")
-        self.assertTrue(set(links).issubset(EXPECTED_SITEMAP_URLS))
-        self.assertIn("## Public factual scope", llms)
-        self.assertIn("## Navigation links", llms)
-        self.assertLess(llms.index("## Public factual scope"), llms.index("## Navigation links"))
+        self.assertIn(FULL_GUIDE_URL, links)
+        self.assertTrue((set(links) - {FULL_GUIDE_URL}).issubset(EXPECTED_SITEMAP_URLS))
+        self.assertIn("## Start here", llms)
+        self.assertIn("## Programmes", llms)
+        self.assertIn("## Evidence and commentary", llms)
+        self.assertIn("## More detail", llms)
+        self.assertNotIn(DRAFT_URL, llms)
         self.assertNotIn("localhost", llms)
         self.assertNotIn("/about/", llms)
         self.assertNotIn("/case-study)", llms)
 
-    def test_llms_full_is_a_non_duplicating_pointer(self) -> None:
+    def test_llms_full_indexes_the_complete_approved_inventory(self) -> None:
         full = read_utf8_without_bom(PUBLIC_ROOT / "llms-full.txt")
-        self.assertIn("https://digitaltechnologypartner.ai/llms.txt", full)
-        self.assertIn("does not publish a duplicated full-text corpus", full)
-        self.assertLess(len(full), 1000)
+        links = re.findall(r"\]\((https://[^)]+)\)", full)
+        self.assertEqual(len(links), len(set(links)), "llms-full.txt contains duplicate links")
+        self.assertEqual(set(links), EXPECTED_SITEMAP_URLS)
+        self.assertNotIn(DRAFT_URL, full)
 
     def test_netlify_configs_define_exact_mime_and_cache_contract(self) -> None:
         for config_path in (REPO_ROOT / "netlify.toml", SITE_ROOT / "netlify.toml"):

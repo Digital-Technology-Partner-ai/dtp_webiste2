@@ -1,5 +1,44 @@
-# Digital Technology Partner: full machine-readable information
+# Digital Technology Partner: full public-page guide
 
-The maintained machine-readable index is https://digitaltechnologypartner.ai/llms.txt.
+> This file summarises approved public information on digitaltechnologypartner.ai. The linked pages remain the authoritative source.
 
-DTP does not publish a duplicated full-text corpus at this URL. Follow the links in llms.txt to the current public source pages.
+## Organisation and approach
+
+Digital Technology Partner (DTP) helps leadership teams turn scattered AI activity into governed systems with measurable operational value. Its public site describes practical AI programmes and systems, an evidence-gated delivery process, anonymised case-study patterns, and commentary on AI adoption, governance and delivery.
+
+- [Ecosystem index](https://digitaltechnologypartner.ai/): Interactive index linking DTP's main public sections.
+- [Home](https://digitaltechnologypartner.ai/home/): Overview of DTP's position and routes through readiness, leadership support and delivery.
+- [Why DTP](https://digitaltechnologypartner.ai/why-dtp/): DTP's stage-gated delivery approach, governance position and questions for evaluating an AI partner.
+- [Solutions](https://digitaltechnologypartner.ai/solutions/): Problem-led work on dashboards, automation, AI agents and bespoke systems, delivered through staged gates.
+- [Process](https://digitaltechnologypartner.ai/process/): Discover, Prove, Build, Pilot and Launch, including evidence requirements and stop decisions.
+- [Contact](https://digitaltechnologypartner.ai/contact/): Public enquiry routes and what happens after a message is sent.
+
+## Programmes
+
+- [AI programmes](https://digitaltechnologypartner.ai/programmes/): Index to AI Adoption Readiness, AI Foundry and Leadership AI Coaching.
+- [AI Adoption Readiness](https://digitaltechnologypartner.ai/programmes/ai-adoption-readiness/): A one-week assessment of current AI use, risk, opportunity and practical next decisions.
+- [AI Foundry](https://digitaltechnologypartner.ai/programmes/ai-foundry/): A twelve-week working-group format for turning AI experiments into evidence and leadership choices.
+- [Leadership AI Coaching](https://digitaltechnologypartner.ai/programmes/leadership-ai-coaching/): Private AI coaching for senior leaders covering concepts, decisions and strategic judgement.
+
+## Evidence and editorial indexes
+
+- [Case studies](https://digitaltechnologypartner.ai/case-studies/): Four anonymised delivery patterns organised around travel risk, workflow drag, visibility and missing capability.
+- [Insights](https://digitaltechnologypartner.ai/insights/): DTP commentary on AI adoption, governance, delivery and leadership decisions.
+- [Newsroom](https://digitaltechnologypartner.ai/news/): Index of public DTP articles on AI adoption, governance, delivery and automation.
+
+## Approved newsroom articles
+
+- [How Aberdeen Operators Can Cut Decommissioning Documentation Time with AI](https://digitaltechnologypartner.ai/news/2026-02-22-aberdeen-decommissioning-ai/): Applying AI to decommissioning documentation while retaining compliance controls.
+- [Knowledge Retention Playbook for Field Teams Facing Workforce Contraction](https://digitaltechnologypartner.ai/news/2026-02-22-field-teams-knowledge-retention/): Capturing field-team knowledge before experienced staff leave.
+- [Why AI Pilots Fail in Mid-Market Ops Teams (and How to Avoid It)](https://digitaltechnologypartner.ai/news/2026-02-22-why-ai-pilots-fail/): Operational causes of AI pilot failure and a staged alternative.
+- [OpenAI Signals Multi-Agent Future as Peter Steinberger Joins, OpenClaw Moves to Foundation](https://digitaltechnologypartner.ai/news/2026-02-23-openai-personal-agents-openclaw-foundation/): OpenAI's personal-agent direction and OpenClaw's stated foundation model.
+- [When 'Vibe Coding' Goes Wrong](https://digitaltechnologypartner.ai/news/2026-02-24-vibe-coding-enterprise-risks/): Governance and operational risks from informal AI-assisted software development.
+- [What CTOs Actually Need from AI Vendors in 2026](https://digitaltechnologypartner.ai/news/2026-03-04-what-ctos-actually-need-from-ai-vendors-in-2026/): Outcomes, integration and risk questions for AI vendors.
+- [Prompting After Autonomous Agents](https://digitaltechnologypartner.ai/news/2026-03-07-prompting-after-autonomous-agents/): Specifying autonomous-agent work beyond chat-style prompts.
+- [The AI Off Switch Is the Real Story Behind the Anthropic Export-Control Row](https://digitaltechnologypartner.ai/news/2026-06-15-the-ai-off-switch-how-anthropics-export-controls-sparked-a-global-ai-sov/): Model access as an operational resilience dependency.
+- [Europe's largest cybersecurity seed: NeuralTrust raises $20M to govern enterprise AI agents](https://digitaltechnologypartner.ai/news/2026-06-17-europes-largest-cybersecurity-seed-neuraltrust-raises-20m-to-govern-ente/): Enterprise demand for AI-agent governance and security controls.
+- [Midjourney's Ultrasound Bet Shows How Fast AI Companies Are Moving Beyond Software](https://digitaltechnologypartner.ai/news/2026-06-18-midjourney-goes-from-generating-cat-images-to-full-body-ultrasound-scans/): AI companies expanding into hardware, health data and regulated services.
+- [Rolling out AI agents? Move quickly, but keep the human in charge](https://digitaltechnologypartner.ai/news/2026-06-19-rolling-out-ai-agents-4-ways-to-move-fast-and-furious-but-with-extreme-c/): Rolling out agents quickly within a human-controlled operating model.
+- [Customer service AI agents are moving from novelty to operating model](https://digitaltechnologypartner.ai/news/2026-06-25-70-of-companies-deploying-customer-service-ai-agents-see-roi-in-60-days/): Customer-service agents, hand-offs, operating discipline and adoption.
+- [Asian AI startups launch Mythos-like models as Anthropic's export ban drags on](https://digitaltechnologypartner.ai/news/2026-06-29-asian-ai-startups-launch-mythos-like-models-as-anthropics-export-ban-dra/): Frontier-model availability as an operational dependency.
+- [Your AI agents need roles, not just logins](https://digitaltechnologypartner.ai/news/2026-07-31-as-ai-agents-multiply-identity-becomes-the-enterprise-control-plane-tngl/): Agent roles, access limits, evidence trails and accountable human ownership.
