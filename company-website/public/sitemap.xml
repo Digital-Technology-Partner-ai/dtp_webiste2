@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Intended Content-Type: application/xml; charset=utf-8 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://digitaltechnologypartner.ai/</loc></url>
   <url><loc>https://digitaltechnologypartner.ai/home/</loc></url>
@@ -15,7 +16,6 @@
   <url><loc>https://digitaltechnologypartner.ai/contact/</loc></url>
   <url><loc>https://digitaltechnologypartner.ai/news/2026-02-22-aberdeen-decommissioning-ai/</loc></url>
   <url><loc>https://digitaltechnologypartner.ai/news/2026-02-22-field-teams-knowledge-retention/</loc></url>
-  <url><loc>https://digitaltechnologypartner.ai/news/2026-02-22-netlify-governance-checklist/</loc></url>
   <url><loc>https://digitaltechnologypartner.ai/news/2026-02-22-why-ai-pilots-fail/</loc></url>
   <url><loc>https://digitaltechnologypartner.ai/news/2026-02-23-openai-personal-agents-openclaw-foundation/</loc></url>
   <url><loc>https://digitaltechnologypartner.ai/news/2026-02-24-vibe-coding-enterprise-risks/</loc></url>

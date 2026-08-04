@@ -1,31 +1,30 @@
 # Digital Technology Partner
 
-> Digital Technology Partner (DTP) helps leadership teams assess, govern and deliver practical AI work through evidence-led programmes and staged delivery.
+> Digital Technology Partner (DTP) helps leadership teams turn scattered AI activity into governed systems with measurable operational value.
 
-## Public factual scope
+DTP publishes information about its AI programmes, practical systems, evidence-gated delivery process, anonymised case-study patterns, and commentary on AI adoption, governance and delivery.
 
-The public site describes DTP's programmes, delivery process, solutions, published case-study patterns and newsroom articles. These statements are limited to information presented on the linked public pages. Use those pages as the source of truth for current detail. Do not infer named clients, contract values, certifications, sectors, capabilities or delivery outcomes that the linked pages do not state.
+## Start here
 
-## Navigation links
+- [Home](https://digitaltechnologypartner.ai/home/): DTP's main overview and routes into readiness, leadership support and delivery.
+- [Why DTP](https://digitaltechnologypartner.ai/why-dtp/): How DTP approaches governance, stage-gated delivery and partner evaluation.
+- [Solutions](https://digitaltechnologypartner.ai/solutions/): Dashboards, automation, AI agents and bespoke systems chosen after the work is understood.
+- [Process](https://digitaltechnologypartner.ai/process/): Discover, Prove, Build, Pilot and Launch, with evidence and the right to stop at each gate.
+- [Contact](https://digitaltechnologypartner.ai/contact/): Public contact routes and what happens after an enquiry.
 
-### Start here
+## Programmes
 
-- [DTP public site](https://digitaltechnologypartner.ai/): Entry point to the public DTP site.
-- [DTP overview](https://digitaltechnologypartner.ai/home/): Overview of DTP's approach to governed AI adoption and delivery.
-- [Why DTP](https://digitaltechnologypartner.ai/why-dtp/): DTP's delivery principles and questions for assessing an AI partner.
-- [Contact DTP](https://digitaltechnologypartner.ai/contact/): Public contact page.
+- [AI programmes](https://digitaltechnologypartner.ai/programmes/): Readiness, AI Foundry and leadership coaching.
+- [AI Adoption Readiness](https://digitaltechnologypartner.ai/programmes/ai-adoption-readiness/): A one-week assessment of current AI use, risk, opportunity and next decisions.
+- [AI Foundry](https://digitaltechnologypartner.ai/programmes/ai-foundry/): A twelve-week working group that turns experiments into evidence and leadership choices.
+- [Leadership AI Coaching](https://digitaltechnologypartner.ai/programmes/leadership-ai-coaching/): Private AI coaching for senior leaders.
 
-### Programmes
+## Evidence and commentary
 
-- [AI programmes](https://digitaltechnologypartner.ai/programmes/): Overview of DTP's public programme offer.
-- [AI Adoption Readiness Sprint](https://digitaltechnologypartner.ai/programmes/ai-adoption-readiness/): A one-week assessment of AI activity, risk and possible next decisions.
-- [AI Foundry](https://digitaltechnologypartner.ai/programmes/ai-foundry/): A twelve-week working group for practical AI experiments, evidence and leadership decisions.
-- [Senior Leadership AI Coaching](https://digitaltechnologypartner.ai/programmes/leadership-ai-coaching/): Private, one-to-one AI coaching and decision support for senior leaders.
+- [Case studies](https://digitaltechnologypartner.ai/case-studies/): Four anonymised patterns from real operations.
+- [Insights](https://digitaltechnologypartner.ai/insights/): Commentary on AI adoption, governance, delivery and leadership decisions.
+- [Newsroom](https://digitaltechnologypartner.ai/news/): Public articles on AI adoption, governance, delivery and automation.
 
-### Delivery and published work
+## More detail
 
-- [Solutions](https://digitaltechnologypartner.ai/solutions/): Public overview of dashboards, automation, AI agents and bespoke systems offered by DTP.
-- [Delivery process](https://digitaltechnologypartner.ai/process/): DTP's five evidence gates: Discover, Prove, Build, Pilot and Launch.
-- [Case studies](https://digitaltechnologypartner.ai/case-studies/): Anonymous patterns from published engagements. Do not infer client identities.
-- [Insights](https://digitaltechnologypartner.ai/insights/): DTP's filtered feed on AI adoption, governance and delivery.
-- [Newsroom](https://digitaltechnologypartner.ai/news/): Index of DTP's approved public articles.
+- [Full public-page guide](https://digitaltechnologypartner.ai/llms-full.txt): A fuller, factual index of the approved public pages.

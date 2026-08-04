@@ -1,4 +1,6 @@
+# Intended Content-Type: text/plain; charset=utf-8
 User-agent: *
+Disallow: /news/2026-02-22-netlify-governance-checklist/
 Allow: /
 
 Sitemap: https://digitaltechnologypartner.ai/sitemap.xml
