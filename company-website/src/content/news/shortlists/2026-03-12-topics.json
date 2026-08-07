@@ -1,0 +1,64 @@
+{
+  "date": "2026-03-12",
+  "generatedAt": "2026-03-12T21:12:04.033620",
+  "count": 8,
+  "topics": [
+    {
+      "id": "topic-01",
+      "title": "How Aberdeen Operators Can Cut Decommissioning Documentation Time with AI",
+      "category": "Automation",
+      "source": "Energy transition operations trend",
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-02",
+      "title": "Knowledge Retention Playbook for Field Teams Facing Workforce Contraction",
+      "category": "Operations",
+      "source": "Workforce planning trend",
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-03",
+      "title": "Why AI Pilots Fail in Mid-Market Ops Teams (and How to Avoid It)",
+      "category": "Strategy",
+      "source": "Delivery postmortems",
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-04",
+      "title": "Netlify Governance Checklist for Regulated Client Websites",
+      "category": "Digital Transformation",
+      "source": "Web delivery governance",
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-05",
+      "title": "The KPI Stack Every AI-Assisted Ops Team Needs",
+      "category": "Operations",
+      "source": "Client reporting requirements",
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-06",
+      "title": "AI-Assisted, Human-Approved: The Content Operating Model Clients Trust",
+      "category": "Strategy",
+      "source": "Editorial workflow design",
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-07",
+      "title": "Practical Automation Opportunities in Scottish Manufacturing Ops",
+      "category": "Automation",
+      "source": "Regional operations trend",
+      "status": "shortlisted"
+    },
+    {
+      "id": "topic-08",
+      "title": "What CTOs Actually Need from AI Vendors in 2026",
+      "category": "AI",
+      "source": "Buyer conversations",
+      "status": "shortlisted"
+    }
+  ],
+  "notes": "Workflow: shortlist -> Steve pick -> generate_draft -> PR preview -> merge publish"
+}
